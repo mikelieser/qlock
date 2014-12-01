@@ -192,7 +192,7 @@ qlock = {
       }
     }
     if (this.config.clock_titletime) {
-      this.showTitleTime();
+      this.setTitle();
     }
     this.old_chars = this.new_chars.slice();
   },
@@ -208,7 +208,7 @@ qlock = {
     }
     return res;
   },
-  showTitleTime: function() {
+  setTitle: function() {
     var last_char, time, x, y, z, _i, _j, _len, _len1, _ref;
     time = "";
     _ref = this.new_chars;

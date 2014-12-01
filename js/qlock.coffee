@@ -190,7 +190,7 @@ qlock =
       for z in x
         $("#char_#{z}").addClass('on')
 
-    this.showTitleTime() if this.config.clock_titletime
+    this.setTitle() if this.config.clock_titletime
 
     # time change event
 
@@ -205,7 +205,7 @@ qlock =
         res += "#{z}|"
     return res
 
-  showTitleTime: ->
+  setTitle: ->
     time = ""
     for x,y in this.new_chars
       last_char = -1
