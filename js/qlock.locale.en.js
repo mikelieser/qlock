@@ -63,23 +63,23 @@
       } else if (m >= 35 && m < 40) {
         qlock.enqueueCharacters(words.minutes_25);
         qlock.enqueueCharacters(words.to);
-        qlock.enqueueCharacters(words["hours_" + (qlock.helperNextHour(h))]);
+        qlock.enqueueCharacters(words["hours_" + (qlock.helper.nextHour(h))]);
       } else if (m >= 40 && m < 45) {
         qlock.enqueueCharacters(words.minutes_20);
         qlock.enqueueCharacters(words.to);
-        qlock.enqueueCharacters(words["hours_" + (qlock.helperNextHour(h))]);
+        qlock.enqueueCharacters(words["hours_" + (qlock.helper.nextHour(h))]);
       } else if (m >= 45 && m < 50) {
         qlock.enqueueCharacters(words.minutes_15);
         qlock.enqueueCharacters(words.to);
-        qlock.enqueueCharacters(words["hours_" + (qlock.helperNextHour(h))]);
+        qlock.enqueueCharacters(words["hours_" + (qlock.helper.nextHour(h))]);
       } else if (m >= 50 && m < 55) {
         qlock.enqueueCharacters(words.minutes_10);
         qlock.enqueueCharacters(words.to);
-        qlock.enqueueCharacters(words["hours_" + (qlock.helperNextHour(h))]);
+        qlock.enqueueCharacters(words["hours_" + (qlock.helper.nextHour(h))]);
       } else if (m >= 55) {
         qlock.enqueueCharacters(words.minutes_5);
         qlock.enqueueCharacters(words.to);
-        qlock.enqueueCharacters(words["hours_" + (qlock.helperNextHour(h))]);
+        qlock.enqueueCharacters(words["hours_" + (qlock.helper.nextHour(h))]);
       }
     }
   };

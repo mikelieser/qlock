@@ -55,7 +55,7 @@ qlock =
     this.fillClockCharacters()
     this.setClockSize()
     theme = this.config.theme # one theme
-    theme = this.config.theme[this.helperRandomInt(0, theme.length-1)] if typeof this.config.theme is 'object' # array of themes, get one by random
+    theme = this.config.theme[this.helper.randomInt(0, theme.length-1)] if typeof this.config.theme is 'object' # array of themes, get one by random
     $('body').addClass("theme-#{theme}")
     $('#clock_wrapper').addClass("animated #{this.config.clock_start_animation}") if this.config.clock_start_animation != "none"
     
@@ -132,7 +132,7 @@ qlock =
     if this.config.mode == "demo"
       if this.last_moment
         step = this.config.demo_step
-        step = this.helperRandomInt(1,1440) if typeof this.config.demo_step is 'string' # must be random
+        step = this.helper.randomInt(1,1440) if typeof this.config.demo_step is 'string' # must be random
         this.last_moment = moment(this.last_moment).add(step, 'minutes')
       else
         this.last_moment = moment()
@@ -227,10 +227,12 @@ qlock =
   addLocale: (locale) ->
     this.locales.push locale
   
-  helperNextHour: (h) ->
-    return 1 if h == 12
-    return h+1
+  
+  helper:
+    nextHour: (h) ->
+      return 1 if h == 12
+      return h+1
 
-  helperRandomInt: (min, max) ->
-    Math.floor(Math.random() * (max - min + 1)) + min
+    randomInt: (min, max) ->
+      Math.floor(Math.random() * (max - min + 1)) + min
   

@@ -53,7 +53,7 @@ qlock = {
     this.setClockSize();
     theme = this.config.theme;
     if (typeof this.config.theme === 'object') {
-      theme = this.config.theme[this.helperRandomInt(0, theme.length - 1)];
+      theme = this.config.theme[this.helper.randomInt(0, theme.length - 1)];
     }
     $('body').addClass("theme-" + theme);
     if (this.config.clock_start_animation !== "none") {
@@ -128,7 +128,7 @@ qlock = {
       if (this.last_moment) {
         step = this.config.demo_step;
         if (typeof this.config.demo_step === 'string') {
-          step = this.helperRandomInt(1, 1440);
+          step = this.helper.randomInt(1, 1440);
         }
         this.last_moment = moment(this.last_moment).add(step, 'minutes');
       } else {
@@ -243,13 +243,15 @@ qlock = {
   addLocale: function(locale) {
     return this.locales.push(locale);
   },
-  helperNextHour: function(h) {
-    if (h === 12) {
-      return 1;
+  helper: {
+    nextHour: function(h) {
+      if (h === 12) {
+        return 1;
+      }
+      return h + 1;
+    },
+    randomInt: function(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-    return h + 1;
-  },
-  helperRandomInt: function(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 };
