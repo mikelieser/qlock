@@ -55,15 +55,13 @@ locale =
     # 14.50 - 15.54 => es ist zehn vor drei
     # 14.55 - 14.59 => es ist fünf vor drei
 
-    # es ist ein uhr / es ist viertel nach eins (einzige ausnahme?)
-
     # intro
     qlock.enqueueCharacters words.intro if qlock.config.clock_intro
 
     # time
     if m >= 0 && m < 5
       chars_hours = words["hours_#{h}"]
-      chars_hours = words["hours_1s"] if h == 1
+      chars_hours = words["hours_1s"] if h == 1 # ausnahme: es ist ein uhr / es ist viertel nach eins
       qlock.enqueueCharacters chars_hours
       qlock.enqueueCharacters words.hour
     else if m >= 5 && m < 10
