@@ -9,7 +9,7 @@ qlock = {
   config: null,
   locales: [],
   locale: null,
-  defaults: {
+  config: {
     mode: "standard",
     clock_interval: 1000,
     demo_interval: 4000,
@@ -33,7 +33,7 @@ qlock = {
   },
   init: function(params) {
     var l, theme, _i, _len, _ref;
-    this.config = $.extend(this.defaults, params);
+    this.config = $.extend(this.config, params);
     this.log(this.config);
     _ref = this.locales;
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {

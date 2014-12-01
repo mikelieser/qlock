@@ -9,7 +9,8 @@ qlock =
   locales: [] # array of locales
   locale: null # active locale
   
-  defaults:
+  # config with default params
+  config:
     mode: "standard" # standard, all_words, demo
     clock_interval: 1000 # ms, 1000 is fine, increase for better performance and less efficiency
     demo_interval: 4000 # ms, if mode is "demo"
@@ -34,7 +35,7 @@ qlock =
   init: (params) ->
     
     # merge defaults with user params
-    this.config = $.extend this.defaults, params
+    this.config = $.extend this.config, params
     this.log this.config
     
     # set locale
