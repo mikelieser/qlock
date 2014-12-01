@@ -30,7 +30,7 @@
       hours_12: [94, 95, 96, 97, 98, 99]
     },
     setChars: function(words, h, m, now) {
-      if (qlock.config.show_intro) {
+      if (qlock.config.clock_intro) {
         qlock.enqueueCharacters(words.intro);
       }
       if (m >= 0 && m < 5) {

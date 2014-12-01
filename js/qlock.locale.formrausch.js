@@ -53,7 +53,7 @@
         }
         return;
       }
-      if (qlock.config.show_intro) {
+      if (qlock.config.clock_intro) {
         qlock.enqueueCharacters(words.intro);
       }
       if (m >= 0 && m < 5) {

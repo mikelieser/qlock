@@ -58,7 +58,7 @@ locale =
     # es ist ein uhr / es ist viertel nach eins (einzige ausnahme?)
 
     # intro
-    qlock.enqueueCharacters words.intro if qlock.config.show_intro
+    qlock.enqueueCharacters words.intro if qlock.config.clock_intro
 
     # time
     if m >= 0 && m < 5

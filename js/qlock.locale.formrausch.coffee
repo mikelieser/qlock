@@ -67,7 +67,7 @@ locale =
     # normal operating mode
 
     # intro
-    qlock.enqueueCharacters words.intro if qlock.config.show_intro
+    qlock.enqueueCharacters words.intro if qlock.config.clock_intro
 
     # time
     if m >= 0 && m < 5

@@ -18,11 +18,11 @@ qlock =
     locale: "en" # en, de, formrausch
     theme: ["standard"] # standard, blue, red, gradient, timeonly, formrausch (or array for random theme)
   
-    show_intro: true # true, false (it is, es ist)
+    clock_intro: true # true, false (it is, es ist)
     clock_size: 0.8 # 0.5 - 0.9 percentage of window
     clock_padding: 0.14 # 0.0 - 0.3 (percentage padding to margins in clock)
     clock_char_size: 0.65 # 0.3 - 1 (percentage char size in clock)
-    minutes: true # true, false (show or hide minute dots)
+    clock_minutes: true # true, false (show or hide minute dots)
     clock_minute_size: 0.4 # 0.2 - 0.6 (percentage minute dot size)
     clock_titletime: true # show time in doc/tab title (true or false)
     clock_start_animation: "zoomIn" # none, fadeInDown, bounceInDown, rotateIn, zoomIn, zoomInUp
@@ -102,7 +102,7 @@ qlock =
     char_font_size = Math.round(char_height * this.config.clock_char_size)
     $('#clock #chars .char').css('height',char_height).css('line-height', "#{char_height}px").css('font-size',char_font_size)
 
-    if this.config.minutes
+    if this.config.clock_minutes
       minute_size = Math.round(clock_padding * this.config.clock_minute_size)
       minute_padding = Math.round(clock_padding * (1-this.config.clock_minute_size) / 2)
       $('.minute').css('width', minute_size).css('height', minute_size)
@@ -153,7 +153,7 @@ qlock =
     $('#clock').removeData('title-time')
 
     # set minutes if activated
-    this.setMinutes(m, now) if this.config.minutes
+    this.setMinutes(m, now) if this.config.clock_minutes
 
     this.last_m = m
     this.last_h = h

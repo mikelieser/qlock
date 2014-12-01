@@ -17,11 +17,11 @@ qlock = {
     debug: false,
     locale: "en",
     theme: ["standard"],
-    show_intro: true,
+    clock_intro: true,
     clock_size: 0.8,
     clock_padding: 0.14,
     clock_char_size: 0.65,
-    minutes: true,
+    clock_minutes: true,
     clock_minute_size: 0.4,
     clock_titletime: true,
     clock_start_animation: "zoomIn"
@@ -99,7 +99,7 @@ qlock = {
     char_height = Math.round(clock_size * (1 - this.config.clock_padding * 2) / 10);
     char_font_size = Math.round(char_height * this.config.clock_char_size);
     $('#clock #chars .char').css('height', char_height).css('line-height', "" + char_height + "px").css('font-size', char_font_size);
-    if (this.config.minutes) {
+    if (this.config.clock_minutes) {
       minute_size = Math.round(clock_padding * this.config.clock_minute_size);
       minute_padding = Math.round(clock_padding * (1 - this.config.clock_minute_size) / 2);
       $('.minute').css('width', minute_size).css('height', minute_size);
@@ -146,7 +146,7 @@ qlock = {
       return;
     }
     $('#clock').removeData('title-time');
-    if (this.config.minutes) {
+    if (this.config.clock_minutes) {
       this.setMinutes(m, now);
     }
     this.last_m = m;
