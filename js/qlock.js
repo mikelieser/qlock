@@ -145,7 +145,6 @@ qlock = {
     if (h === this.last_h && m === this.last_m) {
       return;
     }
-    $('#clock').removeData('title-time');
     if (this.config.clock_minutes) {
       this.setMinutes(m, now);
     }
@@ -192,7 +191,7 @@ qlock = {
       }
     }
     if (this.config.clock_titletime) {
-      this.setTitle();
+      this.setDocumentTitle();
     }
     this.old_chars = this.new_chars.slice();
   },
@@ -208,7 +207,10 @@ qlock = {
     }
     return res;
   },
-  setTitle: function() {
+  setTitle: function(title) {
+    return $('#clock').data('title-time', title);
+  },
+  setDocumentTitle: function() {
     var last_char, time, x, y, z, _i, _j, _len, _len1, _ref;
     time = "";
     _ref = this.new_chars;
@@ -228,6 +230,7 @@ qlock = {
     time = time.trim();
     if ($('#clock').data('title-time')) {
       time = $('#clock').data('title-time');
+      $('#clock').removeData('title-time');
     }
     document.title = time;
   },

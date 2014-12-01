@@ -149,9 +149,6 @@ qlock =
     # stop if no change
     return if h == this.last_h && m == this.last_m
 
-    # reset overwritten title time
-    $('#clock').removeData('title-time')
-
     # set minutes if activated
     this.setMinutes(m, now) if this.config.clock_minutes
 
@@ -190,7 +187,7 @@ qlock =
       for z in x
         $("#char_#{z}").addClass('on')
 
-    this.setTitle() if this.config.clock_titletime
+    this.setDocumentTitle() if this.config.clock_titletime
 
     # time change event
 
@@ -205,7 +202,9 @@ qlock =
         res += "#{z}|"
     return res
 
-  setTitle: ->
+  setTitle: (title) ->
+    $('#clock').data('title-time', title)
+  setDocumentTitle: ->
     time = ""
     for x,y in this.new_chars
       last_char = -1
@@ -215,8 +214,13 @@ qlock =
         time += $("#char_#{z}").text()
       time += " "
     time = time.trim()
-    time = $('#clock').data('title-time') if $('#clock').data('title-time')
+    
+    if $('#clock').data('title-time')
+      time = $('#clock').data('title-time') 
+      $('#clock').removeData('title-time')
+      
     document.title = time
+    
     return
 
   activateAllWords: ->

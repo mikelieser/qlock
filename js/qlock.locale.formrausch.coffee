@@ -50,13 +50,13 @@ locale =
     if hh == 11 && m >= 15 && m <= 45 && m % 2 == 1
       $('.minute').addClass('on')
       qlock.enqueueCharacters words.happa
-      $('#clock').data('title-time', 'FRÜHSTÜCKSZEIT ;)')
+      qlock.setTitle "FRÜHSTÜCKSZEIT ;)"
       return
 
     # FEIERABEND ;)
     if hh == 18
       $('.minute').addClass('on')
-      $('#clock').data('title-time', 'FEIERABEND ;)')
+      qlock.setTitle "'FEIERABEND ;)"
       if m % 2 == 0
         qlock.enqueueCharacters words.intro
         qlock.enqueueCharacters words.feierabend
