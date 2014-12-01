@@ -205,3 +205,35 @@
     }
     }
 }
+
+.theme-metal {
+  
+  #clock_wrapper {
+    border-radius:1%;
+    background-color:initial;
+    background-image:url(../images/themes/metal/bg.png);
+    background-size:100%;
+    
+    #clock {
+    
+      .minute {
+        background-color:rgba(255,255,255,0.1);
+      
+        &.on {
+          background-color:rgba(255,255,255,1.0);
+        }
+      }    
+      .char {
+        color: rgba(255, 255, 255, 0.22);
+      
+        &.on {
+          color:#444;
+          text-shadow:0px 0px 8px #555;
+        }
+      }
+    }
+    
+  }
+  
+
+}

@@ -115,3 +115,18 @@
     .theme-purple #clock .char.on {
       color: #fff;
       text-shadow: 0px 0px 8px #555; }
+
+.theme-metal #clock_wrapper {
+  border-radius: 1%;
+  background-color: initial;
+  background-image: url(../images/themes/metal/bg.png);
+  background-size: 100%; }
+  .theme-metal #clock_wrapper #clock .minute {
+    background-color: rgba(255, 255, 255, 0.1); }
+    .theme-metal #clock_wrapper #clock .minute.on {
+      background-color: white; }
+  .theme-metal #clock_wrapper #clock .char {
+    color: rgba(255, 255, 255, 0.22); }
+    .theme-metal #clock_wrapper #clock .char.on {
+      color: #444;
+      text-shadow: 0px 0px 8px #555; }
