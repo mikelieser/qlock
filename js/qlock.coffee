@@ -15,7 +15,7 @@ qlock =
     clock_interval: 1000 # ms, 1000 is fine, increase for better performance and less efficiency
     demo_interval: 4000 # ms, if mode is "demo"
     demo_step: "random" # in minutes (1, 5, 60 or "random"), if mode is "demo"
-    debug: false
+    debug: false # show debug messages?
     locale: "en" # en, de, formrausch
     theme: ["standard"] # standard, blue, red, gradient, timeonly, formrausch (or array for random theme)
   
