@@ -1,0 +1,47 @@
+body {
+  overflow: hidden;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+  body.no-transitions * {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -ms-transition: none !important;
+    -o-transition: none !important; }
+  body #clock_wrapper {
+    margin: auto;
+    background-color: #000; }
+  body #clock {
+    overflow: hidden;
+    position: relative; }
+    body #clock .minute {
+      position: absolute;
+      width: 0px;
+      height: 0px;
+      background-color: rgba(255, 255, 255, 0.14);
+      border-radius: 50%;
+      line-height: 0px;
+      font-size: 0px; }
+      body #clock .minute.on {
+        background-color: white;
+        box-shadow: 0px 0px 4px #fff; }
+    body #clock #chars {
+      line-height: 0px; }
+      body #clock #chars .char {
+        width: 9.09%;
+        display: block;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.14);
+        font-weight: 100;
+        text-transform: uppercase;
+        float: left;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+        overflow: hidden; }
+        body #clock #chars .char.on {
+          color: white;
+          text-shadow: 0px 0px 4px #fff; }

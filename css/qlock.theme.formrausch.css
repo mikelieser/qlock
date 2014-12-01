@@ -1,0 +1,40 @@
+.theme-formrausch {
+  background-image: url(../images/themes/formrausch/pattern.jpg); }
+  .theme-formrausch #clock_wrapper {
+    background-color: initial;
+    background: radial-gradient(rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.02) 60%, rgba(255, 255, 255, 0) 100%); }
+    .theme-formrausch #clock_wrapper #clock {
+      background-color: rgba(0, 0, 0, 0.5);
+      font-family: "Helvetica Neue",Helvetica,Arial,"Sans Serif"; }
+      .theme-formrausch #clock_wrapper #clock #chars .char {
+        color: rgba(255, 228, 0, 0.2); }
+        .theme-formrausch #clock_wrapper #clock #chars .char.on {
+          background-color: rgba(255, 228, 0, 0.9);
+          color: black;
+          font-weight: 500;
+          text-shadow: none;
+          transition: background-color 1000ms ease-out; }
+      .theme-formrausch #clock_wrapper #clock .minute {
+        background-color: initial;
+        background-image: url(../images/themes/formrausch/cross.png);
+        background-size: 100%;
+        opacity: 0;
+        transition: opacity 1000ms ease-out; }
+        .theme-formrausch #clock_wrapper #clock .minute.on {
+          background-color: initial;
+          box-shadow: none;
+          opacity: 1;
+          transition: opacity 1000ms ease-out; }
+
+@-webkit-keyframes formrausch-spin {
+  from {
+    -webkit-transform: rotate(0deg); }
+
+  to {
+    -webkit-transform: rotate(360deg); } }
+@keyframes formrausch-spin {
+  from {
+    transform: rotate(0deg); }
+
+  to {
+    transform: rotate(360deg); } }

@@ -1,0 +1,117 @@
+.theme-blue #clock_wrapper {
+  background-color: initial; }
+.theme-blue #clock {
+  border-radius: 5px;
+  background-color: #0ab1e4; }
+  .theme-blue #clock .minute {
+    background-color: rgba(255, 255, 255, 0); }
+    .theme-blue #clock .minute.on {
+      background-color: white; }
+  .theme-blue #clock .char {
+    text-transform: lowercase !important;
+    color: #0389be; }
+    .theme-blue #clock .char.on {
+      color: #fff;
+      text-shadow: 0px 0px 8px #555;
+      text-decoration: underline; }
+
+.theme-red {
+  background-color: red; }
+  .theme-red #clock_wrapper {
+    background-color: initial; }
+  .theme-red #clock {
+    border-radius: 15px;
+    background-color: red; }
+    .theme-red #clock .char {
+      color: rgba(20, 20, 20, 0.15); }
+      .theme-red #clock .char.on {
+        color: #fff; }
+
+.theme-timeonly {
+  background-color: red; }
+  .theme-timeonly #clock_wrapper {
+    background-color: initial; }
+  .theme-timeonly #clock {
+    background-color: red; }
+    .theme-timeonly #clock .char {
+      color: rgba(20, 20, 20, 0); }
+      .theme-timeonly #clock .char.on {
+        color: #fff; }
+
+.theme-gradient #clock_wrapper {
+  background-color: initial; }
+.theme-gradient #clock {
+  border-radius: 4%;
+  background-color: #0ab1e4;
+  background: #87e0fd;
+  background: -moz-radial-gradient(center, ellipse cover, #87e0fd 0%, #53cbf1 24%, #05abe0 100%);
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #87e0fd), color-stop(24%, #53cbf1), color-stop(100%, #05abe0));
+  background: -webkit-radial-gradient(center, ellipse cover, #87e0fd 0%, #53cbf1 24%, #05abe0 100%);
+  background: -o-radial-gradient(center, ellipse cover, #87e0fd 0%, #53cbf1 24%, #05abe0 100%);
+  background: -ms-radial-gradient(center, ellipse cover, #87e0fd 0%, #53cbf1 24%, #05abe0 100%);
+  background: radial-gradient(ellipse at center, #87e0fd 0%, #53cbf1 24%, #05abe0 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#87e0fd', endColorstr='#05abe0',GradientType=1 ); }
+  .theme-gradient #clock .minute {
+    border: 1px solid #fff; }
+
+.theme-yellow {
+  background-image: url(../images/themes/formrausch/pattern.jpg); }
+  .theme-yellow #clock_wrapper {
+    background-color: initial; }
+  .theme-yellow #clock {
+    background-color: rgba(0, 0, 0, 0.4);
+    font-family: "Helvetica Neue",Helvetica,Arial,"Sans Serif";
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.03) 0%, black 100%);
+    background: #fefcea;
+    background: -moz-radial-gradient(center, ellipse cover, #fefcea 0%, #f1da36 100%);
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%, #fefcea), color-stop(100%, #f1da36));
+    background: -webkit-radial-gradient(center, ellipse cover, #fefcea 0%, #f1da36 100%);
+    background: -o-radial-gradient(center, ellipse cover, #fefcea 0%, #f1da36 100%);
+    background: -ms-radial-gradient(center, ellipse cover, #fefcea 0%, #f1da36 100%);
+    background: radial-gradient(ellipse at center, #fefcea 0%, #f1da36 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fefcea', endColorstr='#f1da36',GradientType=1 ); }
+    .theme-yellow #clock #chars .char {
+      color: rgba(255, 228, 0, 0.2); }
+      .theme-yellow #clock #chars .char.on {
+        background-color: rgba(255, 228, 0, 0.7);
+        color: black;
+        font-weight: 500;
+        text-shadow: none;
+        transition: background-color 1000ms ease-out; }
+    .theme-yellow #clock .minute {
+      background-color: initial;
+      background-image: url(../images/themes/formrausch/cross.png);
+      background-size: 100%;
+      opacity: 0;
+      transition: opacity 1000ms ease-out; }
+      .theme-yellow #clock .minute.on {
+        background-color: initial;
+        box-shadow: none;
+        opacity: 1;
+        transition: opacity 1000ms ease-out; }
+
+.theme-purple #clock_wrapper {
+  background-color: initial; }
+.theme-purple #clock {
+  background-color: #B72AD4; }
+  .theme-purple #clock .minute {
+    background-color: rgba(255, 255, 255, 0); }
+    .theme-purple #clock .minute#minute1 {
+      left: -2% !important;
+      top: -2% !important; }
+    .theme-purple #clock .minute#minute2 {
+      right: -2% !important;
+      top: -2% !important; }
+    .theme-purple #clock .minute#minute3 {
+      right: -2% !important;
+      bottom: -2% !important; }
+    .theme-purple #clock .minute#minute4 {
+      left: -2% !important;
+      bottom: -2% !important; }
+    .theme-purple #clock .minute.on {
+      background-color: white; }
+  .theme-purple #clock .char {
+    color: #0389be; }
+    .theme-purple #clock .char.on {
+      color: #fff;
+      text-shadow: 0px 0px 8px #555; }

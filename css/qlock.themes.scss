@@ -1,0 +1,207 @@
+.theme-blue {
+  
+  #clock_wrapper {
+    background-color:initial;
+  }
+  
+  #clock {
+    border-radius:5px;
+    background-color:#0ab1e4; 
+    .minute {
+      background-color:rgba(255,255,255,0);
+      
+      &.on {
+        background-color:rgba(255,255,255,1);
+      }
+    }    
+    .char {
+      text-transform:lowercase !important;
+      color:#0389be;
+      
+      &.on {
+        color:#fff;
+        text-shadow:0px 0px 8px #555;
+        text-decoration:underline;
+      }
+    }
+    }
+}
+
+.theme-red {
+  background-color:red;
+  
+  #clock_wrapper {
+    background-color:initial;
+  }
+  
+  #clock {
+    border-radius:15px;
+    background-color:red;
+    .char {
+      color:rgba(20,20,20,0.15);
+      &.on {
+        color:#fff;
+        //text-shadow:0px 0px 8px #555;
+      }
+    }
+  }
+}
+
+.theme-timeonly {
+  background-color:red;
+  
+  #clock_wrapper {
+    background-color:initial;
+  }
+  
+  #clock {
+    background-color:red;
+    .char {
+      color:rgba(20,20,20,0);
+      &.on {
+        color:#fff;
+        //text-shadow:0px 0px 8px #555;
+      }
+    }
+  }  
+}
+
+.theme-gradient {
+  
+  #clock_wrapper {
+    background-color:initial;
+  }
+  
+  #clock {
+    border-radius:4%;
+    background-color:#0ab1e4;
+    
+    background: rgb(135,224,253);
+    background: -moz-radial-gradient(center, ellipse cover,  rgba(135,224,253,1) 0%, rgba(83,203,241,1) 24%, rgba(5,171,224,1) 100%);
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(135,224,253,1)), color-stop(24%,rgba(83,203,241,1)), color-stop(100%,rgba(5,171,224,1)));
+    background: -webkit-radial-gradient(center, ellipse cover,  rgba(135,224,253,1) 0%,rgba(83,203,241,1) 24%,rgba(5,171,224,1) 100%);
+    background: -o-radial-gradient(center, ellipse cover,  rgba(135,224,253,1) 0%,rgba(83,203,241,1) 24%,rgba(5,171,224,1) 100%);
+    background: -ms-radial-gradient(center, ellipse cover,  rgba(135,224,253,1) 0%,rgba(83,203,241,1) 24%,rgba(5,171,224,1) 100%);
+    background: radial-gradient(ellipse at center,  rgba(135,224,253,1) 0%,rgba(83,203,241,1) 24%,rgba(5,171,224,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#87e0fd', endColorstr='#05abe0',GradientType=1 );
+    
+    .minute {
+      border:1px solid #fff;
+    }
+  }
+}
+
+.theme-yellow {
+  background-image:url(../images/themes/formrausch/pattern.jpg);
+  
+  #clock_wrapper {
+    background-color:initial;
+  }
+  
+  #clock {
+      background-color:rgba(0,0,0,0.4);
+      font-family: "Helvetica Neue",Helvetica,Arial,"Sans Serif";
+      
+      background: radial-gradient(ellipse at center, rgba(255,255,255,0.03) 0%, rgba(0,0,0,1) 100%);
+      
+      background: rgb(254,252,234);
+      background: -moz-radial-gradient(center, ellipse cover,  rgba(254,252,234,1) 0%, rgba(241,218,54,1) 100%);
+      background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(254,252,234,1)), color-stop(100%,rgba(241,218,54,1)));
+      background: -webkit-radial-gradient(center, ellipse cover,  rgba(254,252,234,1) 0%,rgba(241,218,54,1) 100%);
+      background: -o-radial-gradient(center, ellipse cover,  rgba(254,252,234,1) 0%,rgba(241,218,54,1) 100%);
+      background: -ms-radial-gradient(center, ellipse cover,  rgba(254,252,234,1) 0%,rgba(241,218,54,1) 100%);
+      background: radial-gradient(ellipse at center,  rgba(254,252,234,1) 0%,rgba(241,218,54,1) 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefcea', endColorstr='#f1da36',GradientType=1 );
+      
+      
+      
+//      #chars {
+//        .char {
+//          color:rgba(255,228,0,0.14);
+//          &.on {
+//            color:rgba(255,228,0,1);
+//          }
+//        }
+//      }
+
+      #chars {
+        
+        .char {
+          color:rgba(255,228,0,0.2);
+          &.on {
+            background-color:rgba(255,228,0,0.7);
+            color:rgba(0,0,0,1);
+            font-weight:500; // 100 - 900
+            text-shadow:none;
+            
+            transition:background-color 1000ms ease-out;  
+          }
+        }
+      }
+      
+      .minute {
+        background-color:initial;
+        background-image:url(../images/themes/formrausch/cross.png);
+        background-size:100%;
+        opacity:0;
+
+        transition:opacity 1000ms ease-out;  
+        
+        &.on {
+          background-color:initial;
+          box-shadow:none;
+          opacity:1;
+          
+          transition:opacity 1000ms ease-out;
+        }
+      }
+    }
+}
+
+.theme-purple {
+  
+  #clock_wrapper {
+    background-color:initial;
+  }
+  
+  #clock {
+    background-color:#B72AD4; 
+    .minute {
+      background-color:rgba(255,255,255,0);
+      
+      // place minutes more to the corner
+      &#minute1 {
+        left:-2% !important;
+        top:-2% !important;
+      }
+      &#minute2 {
+        right:-2% !important;
+        top:-2% !important;
+      }
+      &#minute3 {
+        right:-2% !important;
+        bottom:-2% !important;
+      }
+      &#minute4 {
+        left:-2% !important;
+        bottom:-2% !important;
+      }
+      
+      &.on {
+        background-color:rgba(255,255,255,1);
+      }
+    }
+    
+    
+    
+      
+    .char {
+      color:#0389be;
+      
+      &.on {
+        color:#fff;
+        text-shadow:0px 0px 8px #555;
+      }
+    }
+    }
+}

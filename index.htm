@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>QLOCK</title>
+  
+  <link rel="stylesheet" href="css/lib/normalize.css" type="text/css">
+  <link rel="stylesheet" href="css/lib/animate.css" type="text/css">
+  <link rel="stylesheet" href="css/qlock.core.css" type="text/css">
+  <link rel="stylesheet" href="css/qlock.themes.css" type="text/css">
+  <link rel="stylesheet" href="css/qlock.theme.formrausch.css" type="text/css">
+  
+  <script src="js/lib/jquery-2.1.1.min.js"></script>
+  <script src="js/lib/moment.min.js"></script>
+  
+  <script src="js/qlock.js" charset="utf-8"></script>
+  <script src="js/qlock.locale.en.js" charset="utf-8"></script>
+  <script src="js/qlock.locale.de.js" charset="utf-8"></script>
+  <script src="js/qlock.locale.formrausch.js" charset="utf-8"></script>
+  
+  <script>
+    $(function() {
+      qlock.init(
+        {
+          mode: "demo",
+          locale: "formrausch",
+          theme: "formrausch",
+          debug: false
+        }
+      );
+    });
+  </script>
+  
+</head>
+
+<body>
+  <div id="body_inner">
+    <div id="clock_wrapper">
+      <div id="clock">
+        <div id="minute1" class="minute"></div>
+        <div id="minute2" class="minute"></div>
+        <div id="minute3" class="minute"></div>
+        <div id="minute4" class="minute"></div>
+        <div id="chars" class=""></div>
+      </div>
+    </div>
+  </div>
+  
+</body>
+
+</html>

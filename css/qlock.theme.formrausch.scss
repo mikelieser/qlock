@@ -1,0 +1,79 @@
+.theme-formrausch {
+  background-image:url(../images/themes/formrausch/pattern.jpg);
+  
+  #clock_wrapper {
+    background-color:initial;
+    background: radial-gradient(rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.02) 60%, rgba(255,255,255,0) 100%);
+    #clock {
+        background-color:rgba(0,0,0,0.5);
+        font-family: "Helvetica Neue",Helvetica,Arial,"Sans Serif";
+      
+  //      #chars {
+  //        .char {
+  //          color:rgba(255,228,0,0.14);
+  //          &.on {
+  //            color:rgba(255,228,0,1);
+  //          }
+  //        }
+  //      }
+
+        #chars {
+
+          .char {
+            color:rgba(255,228,0,0.2);
+            &.on {
+              background-color:rgba(255,228,0,0.9);
+              color:rgba(0,0,0,1);
+              font-weight:500; // 100 - 900
+              text-shadow:none;
+
+              transition:background-color 1000ms ease-out;
+            }
+          }
+        }
+      
+        .minute {
+          background-color:initial;
+          background-image:url(../images/themes/formrausch/cross.png);
+          background-size:100%;
+          opacity:0;
+        
+          // http://cubic-bezier.com/#.37,1.25,.14,-0.13
+          //-webkit-animation: formrausch-spin 10.0s infinite cubic-bezier(.37,1.25,.14,-0.13);
+          //animation: formrausch-spin 10.0s infinite cubic-bezier(.37,1.25,.14,-0.13);
+        
+          //-webkit-animation: formrausch-spin 10.0s infinite linear;
+          //animation: formrausch-spin 10.0s infinite linear;
+        
+          transition:opacity 1000ms ease-out;  
+        
+          &.on {
+            background-color:initial;
+            box-shadow:none;
+            opacity:1;     
+            transition:opacity 1000ms ease-out;
+          }
+        }
+      }
+  }
+  
+}
+
+
+@-webkit-keyframes formrausch-spin {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes formrausch-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
