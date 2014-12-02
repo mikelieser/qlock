@@ -29,41 +29,41 @@ qlock =
     clock_start_animation: "zoomIn" # none, fadeInDown, bounceInDown, rotateIn, zoomIn, zoomInUp
   
   log: (msg) ->
-    console.log(msg) if this.config.debug
+    console.log(msg) if @config.debug
     return
   
   init: (params) ->
     
     # merge defaults with user params
-    this.config = $.extend this.config, params
-    this.log this.config
+    @config = $.extend @config, params
+    @log @config
     
     # set locale
-    for l in this.locales
-      if l.code == this.config.locale
-        this.locale = l
+    for l in @locales
+      if l.code == @config.locale
+        @locale = l
         break
-        
-    if !this.locale
-      this.log "locale #{this.config.locale} not found"
+    
+    unless @locale
+      @log "locale #{@config.locale} not found"
       return
       
-    this.log "locale: #{this.locale.code} (#{this.locale.name})"
+    @log "locale: #{@locale.code} (#{@locale.name})"
     
     # disable css transitions on page load
     $('body').addClass('no-transitions')
 
-    this.fillClockCharacters()
-    this.setClockSize()
-    theme = this.config.theme # one theme
-    theme = this.config.theme[this.helper.randomInt(0, theme.length-1)] if typeof this.config.theme is 'object' # array of themes, get one by random
+    @fillClockCharacters()
+    @setClockSize()
+    theme = @config.theme # one theme
+    theme = @config.theme[@helper.randomInt(0, theme.length-1)] if typeof @config.theme is 'object' # array of themes, get one by random
     $('body').addClass("theme-#{theme}")
-    $('#clock_wrapper').addClass("animated #{this.config.clock_start_animation}") if this.config.clock_start_animation != "none"
+    $('#clock_wrapper').addClass("animated #{@config.clock_start_animation}") if @config.clock_start_animation != "none"
     
-    if this.config.mode == "all_words"
-      this.activateAllWords() # show all used chars
+    if @config.mode == "all_words"
+      @activateAllWords() # show all used chars
     else
-      this.startTimer()
+      @startTimer()
 
     # enable css transitions after on page load
     $(window).load ->
@@ -82,7 +82,7 @@ qlock =
   fillClockCharacters: ->
     $('#chars').html("")
     char_index = 1
-    for c,i in this.locale.characters
+    for c,i in @locale.characters
       continue if c == " "
       char = "<span id=\"char_#{char_index}\" class=\"char alpha_#{c.toLowerCase()}\">#{c}</span>" # title=\"#{char_index}\"
       $('#chars').append(char)
@@ -92,20 +92,20 @@ qlock =
   setClockSize: ->
     base = Math.min($(window).height(), $(window).width())
     $('#body_inner').css('width', $(window).width()).css('height', $(window).height())
-    clock_size = Math.round(base * this.config.clock_size)
-    clock_margin_top = Math.round(base * (1-this.config.clock_size) / 2)
+    clock_size = Math.round(base * @config.clock_size)
+    clock_margin_top = Math.round(base * (1-@config.clock_size) / 2)
     $('#clock_wrapper,#clock').css('width',clock_size).css('height',clock_size)
     $('#clock_wrapper').css('margin-top',clock_margin_top)
 
-    clock_padding = Math.round(clock_size * this.config.clock_padding)
+    clock_padding = Math.round(clock_size * @config.clock_padding)
     $('#clock #chars').css('padding', clock_padding)
-    char_height = Math.round(clock_size * (1-this.config.clock_padding*2) / 10)
-    char_font_size = Math.round(char_height * this.config.clock_char_size)
+    char_height = Math.round(clock_size * (1-@config.clock_padding*2) / 10)
+    char_font_size = Math.round(char_height * @config.clock_char_size)
     $('#clock #chars .char').css('height',char_height).css('line-height', "#{char_height}px").css('font-size',char_font_size)
 
-    if this.config.clock_minutes
-      minute_size = Math.round(clock_padding * this.config.clock_minute_size)
-      minute_padding = Math.round(clock_padding * (1-this.config.clock_minute_size) / 2)
+    if @config.clock_minutes
+      minute_size = Math.round(clock_padding * @config.clock_minute_size)
+      minute_padding = Math.round(clock_padding * (1-@config.clock_minute_size) / 2)
       $('.minute').css('width', minute_size).css('height', minute_size)
       $('#minute1').css('left',minute_padding).css('top', minute_padding)
       $('#minute2').css('right',minute_padding).css('top', minute_padding)
@@ -117,9 +117,9 @@ qlock =
     return
 
   startTimer: ->
-    this.updateTime()
-    interval = this.config.clock_interval
-    interval = this.config.demo_interval if this.config.mode == "demo"
+    @updateTime()
+    interval = @config.clock_interval
+    interval = @config.demo_interval if @config.mode == "demo"
     setInterval (->
       qlock.updateTime()
       return
@@ -130,14 +130,14 @@ qlock =
   updateTime: ->
         
     # set time
-    if this.config.mode == "demo"
-      if this.last_moment
-        step = this.config.demo_step
-        step = this.helper.randomInt(1,1440) if typeof this.config.demo_step is 'string' # must be random
-        this.last_moment = moment(this.last_moment).add(step, 'minutes')
+    if @config.mode == "demo"
+      if @last_moment
+        step = @config.demo_step
+        step = @helper.randomInt(1,1440) if typeof @config.demo_step is 'string' # must be random
+        @last_moment = moment(@last_moment).add(step, 'minutes')
       else
-        this.last_moment = moment()
-      now = this.last_moment
+        @last_moment = moment()
+      now = @last_moment
     else
       now = moment()
       now = moment(now) #.add(32, 'minutes').add(7,'hours')
@@ -145,21 +145,21 @@ qlock =
     # get time parts
     m = parseInt(now.format("m"))
     h = parseInt(now.format("h"))
-    this.log "hour: #{h} / minute: #{m}"
+    @log "hour: #{h} / minute: #{m}"
 
     # stop if no change
-    return if h == this.last_h && m == this.last_m
+    return if h == @last_h && m == @last_m
 
     # set minutes if activated
-    this.setMinutes(m, now) if this.config.clock_minutes
+    @setMinutes(m, now) if @config.clock_minutes
 
-    this.last_m = m
-    this.last_h = h
-    this.new_chars = []
+    @last_m = m
+    @last_h = h
+    @new_chars = []
     
     # queue new words and activate them
-    this.locale.setChars(this.locale.words, h, m, now)
-    this.activateQueuedCharacters()
+    @locale.setChars(@locale.words, h, m, now)
+    @activateQueuedCharacters()
     
     return
 
@@ -171,28 +171,28 @@ qlock =
     return
 
   enqueueCharacters: (chars) ->
-    this.new_chars.push chars.slice()
+    @new_chars.push chars.slice()
     return
 
   activateQueuedCharacters: ->
-    this.log "activateQueuedCharacters"
-    return if this.getQueueSignature(this.old_chars) == this.getQueueSignature(this.new_chars)
+    @log "activateQueuedCharacters"
+    return if @getQueueSignature(@old_chars) == @getQueueSignature(@new_chars)
 
-    this.log "change time!"
+    @log "change time!"
 
-    for x,y in this.old_chars
+    for x,y in @old_chars
       for z in x
         $("#char_#{z}").removeClass('on')
 
-    for x,y in this.new_chars
+    for x,y in @new_chars
       for z in x
         $("#char_#{z}").addClass('on')
 
-    this.setDocumentTitle() if this.config.clock_titletime
+    @setDocumentTitle() if @config.clock_titletime
 
     # time change event
 
-    this.old_chars = this.new_chars.slice()
+    @old_chars = @new_chars.slice()
 
     return
 
@@ -207,7 +207,7 @@ qlock =
     $('#clock').data('title-time', title)
   setDocumentTitle: ->
     time = ""
-    for x,y in this.new_chars
+    for x,y in @new_chars
       last_char = -1
       for z in x
         time += " " if last_char != -1 && last_char < z-1
@@ -225,12 +225,12 @@ qlock =
     return
 
   activateAllWords: ->
-    for key, value of this.locale.words
-      this.enqueueCharacters value
-    this.activateQueuedCharacters()
+    for key, value of @locale.words
+      @enqueueCharacters value
+    @activateQueuedCharacters()
     return
   addLocale: (locale) ->
-    this.locales.push locale
+    @locales.push locale
   
   
   helper:
