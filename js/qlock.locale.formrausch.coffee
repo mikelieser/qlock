@@ -2,7 +2,8 @@ locale =
   code: "formrausch"
   name: "formrausch"
   
-  characters:  "ESRISTSFÜNF
+  characters:  "
+                ESRISTSFÜNF
                 ZEHNZWANZIG
                 DREIVIERTEL
                 VøRFøRMNACH
