@@ -12,7 +12,7 @@ qlock = {
   config: {
     mode: "standard",
     clock_interval: 1000,
-    demo_interval: 4000,
+    demo_interval: 3000,
     demo_step: "random",
     debug: false,
     locale: "en",
@@ -24,7 +24,9 @@ qlock = {
     clock_minutes: true,
     clock_minute_size: 0.4,
     clock_titletime: true,
-    clock_start_animation: "zoomIn"
+    clock_start_animation: "zoomIn",
+    clock_rows: 10,
+    clock_cols: 11
   },
   log: function(msg) {
     if (this.config.debug) {
@@ -72,22 +74,49 @@ qlock = {
     });
   },
   fillClockCharacters: function() {
-    var c, char, char_index, i, _i, _len, _ref;
+    var c, char_index, i, _i, _len, _ref;
     $('#chars').html("");
     char_index = 1;
     _ref = this.locale.characters;
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       c = _ref[i];
       if (c === " ") {
-        continue;
+        $('#chars').append('<br />');
+      } else {
+        $('#chars').append("<span id=\"char_" + char_index + "\" class=\"char alpha_" + (c.toLowerCase()) + "\">" + c + "</span>");
+        char_index++;
       }
-      char = "<span id=\"char_" + char_index + "\" class=\"char alpha_" + (c.toLowerCase()) + "\">" + c + "</span>";
-      $('#chars').append(char);
-      char_index++;
     }
   },
+  setCharRowsAndCols: function() {
+    var c, cols, i, rows, tmp_cols, _i, _len, _ref;
+    cols = 0;
+    rows = 1;
+    tmp_cols = 0;
+    _ref = this.locale.characters;
+    for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
+      c = _ref[i];
+      if (c === " ") {
+        rows++;
+        if (tmp_cols > cols) {
+          cols = tmp_cols;
+        }
+        tmp_cols = 0;
+      } else {
+        tmp_cols++;
+      }
+    }
+    if (tmp_cols > cols) {
+      cols = tmp_cols;
+    }
+    this.log("rows: " + rows);
+    this.log("cols: " + cols);
+    this.config.clock_rows = rows;
+    this.config.clock_cols = cols;
+  },
   setClockSize: function() {
-    var base, char_font_size, char_height, clock_margin_top, clock_padding, clock_size, minute_padding, minute_size;
+    var base, char_font_size, char_height, char_width, clock_margin_top, clock_padding, clock_size, minute_padding, minute_size;
+    this.setCharRowsAndCols();
     base = Math.min($(window).height(), $(window).width());
     $('#body_inner').css('width', $(window).width()).css('height', $(window).height());
     clock_size = Math.round(base * this.config.clock_size);
@@ -96,9 +125,10 @@ qlock = {
     $('#clock_wrapper').css('margin-top', clock_margin_top);
     clock_padding = Math.round(clock_size * this.config.clock_padding);
     $('#clock #chars').css('padding', clock_padding);
-    char_height = Math.round(clock_size * (1 - this.config.clock_padding * 2) / 10);
+    char_height = Math.round(clock_size * (1 - this.config.clock_padding * 2) / this.config.clock_rows);
+    char_width = Math.floor(clock_size * (1 - this.config.clock_padding * 2) / this.config.clock_cols);
     char_font_size = Math.round(char_height * this.config.clock_char_size);
-    $('#clock #chars .char').css('height', char_height).css('line-height', "" + char_height + "px").css('font-size', char_font_size);
+    $('#clock #chars .char').css('height', char_height).css('width', char_width).css('line-height', "" + char_height + "px").css('font-size', char_font_size);
     if (this.config.clock_minutes) {
       minute_size = Math.round(clock_padding * this.config.clock_minute_size);
       minute_padding = Math.round(clock_padding * (1 - this.config.clock_minute_size) / 2);
@@ -142,9 +172,6 @@ qlock = {
     m = parseInt(now.format("m"));
     h = parseInt(now.format("h"));
     this.log("hour: " + h + " / minute: " + m);
-    if (h === this.last_h && m === this.last_m) {
-      return;
-    }
     if (this.config.clock_minutes) {
       this.setMinutes(m, now);
     }

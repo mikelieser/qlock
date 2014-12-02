@@ -237,3 +237,38 @@
   
 
 }
+
+.theme-ticktack {
+  
+  #clock_wrapper {
+    border-radius:1%;
+    
+    #clock {
+      
+      #chars {
+        text-align:center;
+      }
+    }
+    
+  }
+  
+
+}
+
+.theme-right {
+  
+  #clock_wrapper {
+    border-radius:1%;
+    background-color:#333;
+    
+    #clock {
+      
+      #chars {
+        text-align:right;
+      }
+    }
+    
+  }
+  
+
+}

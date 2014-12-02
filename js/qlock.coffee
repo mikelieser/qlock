@@ -13,7 +13,7 @@ qlock =
   config:
     mode: "standard" # standard, all_words, demo
     clock_interval: 1000 # ms, 1000 is fine, increase for better performance and less efficiency
-    demo_interval: 4000 # ms, if mode is "demo"
+    demo_interval: 3000 # ms, if mode is "demo"
     demo_step: "random" # in minutes (1, 5, 60 or "random"), if mode is "demo"
     debug: false # show debug messages?
     locale: "en" # en, de, formrausch
@@ -27,6 +27,9 @@ qlock =
     clock_minute_size: 0.4 # 0.2 - 0.6 (percentage minute dot size)
     clock_titletime: true # show time in doc/tab title (true or false)
     clock_start_animation: "zoomIn" # none, fadeInDown, bounceInDown, rotateIn, zoomIn, zoomInUp
+    
+    clock_rows: 10 # default scheme
+    clock_cols: 11 # default scheme
   
   log: (msg) ->
     console.log(msg) if @config.debug
@@ -83,13 +86,43 @@ qlock =
     $('#chars').html("")
     char_index = 1
     for c,i in @locale.characters
-      continue if c == " "
-      char = "<span id=\"char_#{char_index}\" class=\"char alpha_#{c.toLowerCase()}\">#{c}</span>" # title=\"#{char_index}\"
-      $('#chars').append(char)
-      char_index++
+      if c == " "
+        $('#chars').append('<br />')
+      else
+        $('#chars').append("<span id=\"char_#{char_index}\" class=\"char alpha_#{c.toLowerCase()}\">#{c}</span>") # title=\"#{char_index}\"
+        char_index++
+        
     return
 
+  setCharRowsAndCols: ->
+    
+    cols = 0
+    rows = 1
+    tmp_cols = 0
+    
+    for c,i in @locale.characters
+      if c == " "
+        rows++
+        if tmp_cols > cols
+          cols = tmp_cols
+        tmp_cols = 0
+      else
+        tmp_cols++
+    
+    cols = tmp_cols if tmp_cols > cols
+    
+    @log "rows: #{rows}"
+    @log "cols: #{cols}"
+    
+    @config.clock_rows = rows
+    @config.clock_cols = cols
+    
+    return
+    
   setClockSize: ->
+    
+    @setCharRowsAndCols()
+
     base = Math.min($(window).height(), $(window).width())
     $('#body_inner').css('width', $(window).width()).css('height', $(window).height())
     clock_size = Math.round(base * @config.clock_size)
@@ -99,9 +132,14 @@ qlock =
 
     clock_padding = Math.round(clock_size * @config.clock_padding)
     $('#clock #chars').css('padding', clock_padding)
-    char_height = Math.round(clock_size * (1-@config.clock_padding*2) / 10)
+    char_height = Math.round(clock_size * (1-@config.clock_padding*2) / @config.clock_rows)
+    char_width = Math.floor(clock_size * (1-@config.clock_padding*2) / @config.clock_cols)
+    
+    #@log char_height
+    #@log char_width
+    
     char_font_size = Math.round(char_height * @config.clock_char_size)
-    $('#clock #chars .char').css('height',char_height).css('line-height', "#{char_height}px").css('font-size',char_font_size)
+    $('#clock #chars .char').css('height',char_height).css('width',char_width).css('line-height', "#{char_height}px").css('font-size',char_font_size)
 
     if @config.clock_minutes
       minute_size = Math.round(clock_padding * @config.clock_minute_size)
@@ -146,9 +184,6 @@ qlock =
     m = parseInt(now.format("m"))
     h = parseInt(now.format("h"))
     @log "hour: #{h} / minute: #{m}"
-
-    # stop if no change
-    return if h == @last_h && m == @last_m
 
     # set minutes if activated
     @setMinutes(m, now) if @config.clock_minutes

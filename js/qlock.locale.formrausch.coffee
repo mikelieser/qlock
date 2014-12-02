@@ -57,7 +57,7 @@ locale =
     # FEIERABEND ;)
     if hh == 18
       $('.minute').addClass('on')
-      qlock.setTitle "'FEIERABEND ;)"
+      qlock.setTitle "FEIERABEND ;)"
       if m % 2 == 0
         qlock.enqueueCharacters words.intro
         qlock.enqueueCharacters words.feierabend
