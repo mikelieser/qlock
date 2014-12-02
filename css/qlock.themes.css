@@ -135,6 +135,10 @@
   border-radius: 1%; }
   .theme-ticktack #clock_wrapper #clock #chars {
     text-align: center; }
+    .theme-ticktack #clock_wrapper #clock #chars #row3 {
+      text-align: left; }
+    .theme-ticktack #clock_wrapper #clock #chars #row4 {
+      text-align: right; }
 
 .theme-right #clock_wrapper {
   border-radius: 1%;

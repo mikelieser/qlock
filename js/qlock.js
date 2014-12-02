@@ -74,16 +74,21 @@ qlock = {
     });
   },
   fillClockCharacters: function() {
-    var c, char_index, i, _i, _len, _ref;
+    var c, char_index, i, row, _i, _len, _ref;
     $('#chars').html("");
     char_index = 1;
+    row = 1;
     _ref = this.locale.characters;
     for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
       c = _ref[i];
+      if ($("#chars #row" + row).length === 0) {
+        $("#chars").append("<span id=\"row" + row + "\" class=\"row\"></span>");
+      }
       if (c === " ") {
-        $('#chars').append('<br />');
+        $("#chars #row" + row).append('<br />');
+        row++;
       } else {
-        $('#chars').append("<span id=\"char_" + char_index + "\" class=\"char alpha_" + (c.toLowerCase()) + "\">" + c + "</span>");
+        $("#chars #row" + row).append("<span id=\"char_" + char_index + "\" class=\"char alpha_" + (c.toLowerCase()) + "\">" + c + "</span>");
         char_index++;
       }
     }

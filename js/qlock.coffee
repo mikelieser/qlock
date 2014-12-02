@@ -85,11 +85,17 @@ qlock =
   fillClockCharacters: ->
     $('#chars').html("")
     char_index = 1
+    row = 1
     for c,i in @locale.characters
+      
+      if $("#chars #row#{row}").length == 0
+        $("#chars").append("<span id=\"row#{row}\" class=\"row\"></span>")
+      
       if c == " "
-        $('#chars').append('<br />')
+        $("#chars #row#{row}").append('<br />')
+        row++
       else
-        $('#chars').append("<span id=\"char_#{char_index}\" class=\"char alpha_#{c.toLowerCase()}\">#{c}</span>") # title=\"#{char_index}\"
+        $("#chars #row#{row}").append("<span id=\"char_#{char_index}\" class=\"char alpha_#{c.toLowerCase()}\">#{c}</span>") # title=\"#{char_index}\"
         char_index++
         
     return

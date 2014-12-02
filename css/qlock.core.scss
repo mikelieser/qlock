@@ -46,24 +46,31 @@ body {
       line-height:0px;      
       text-align:left;
       
-      .char {
+      .row {
         display:inline-block;
-        text-align:center;
-        color:rgba(255,255,255,0.14);
-        font-weight:100;
-        text-transform: uppercase;
+        width: 100%;
+        text-align:left;
+        
+        .char {
+          display:inline-block;
+          text-align:center;
+          color:rgba(255,255,255,0.14);
+          font-weight:100;
+          text-transform: uppercase;
        
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-        overflow:hidden;
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+          overflow:hidden;
       
-        &.on {
-          color:rgba(255,255,255,1);
-          text-shadow:0px 0px 4px #fff;
+          &.on {
+            color:rgba(255,255,255,1);
+            text-shadow:0px 0px 4px #fff;
+          }
         }
+        
       }
-      
+        
     }
   }
   
