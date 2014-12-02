@@ -3,16 +3,13 @@ locale =
   name: "ticktack"
   
   characters:  "
-                ES
-                IST
                 TICK
                 TACK
-                UHRZEIT
                "
   
   words:
-    tick: [6..9]
-    tack: [10..13]
+    tick: [1..4]
+    tack: [5..8]
   
   setChars: (words, h, m, now) ->
     

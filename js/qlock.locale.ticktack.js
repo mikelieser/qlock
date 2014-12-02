@@ -4,10 +4,10 @@
   locale = {
     code: "ticktack",
     name: "ticktack",
-    characters: "ES IST TICK TACK UHRZEIT",
+    characters: "TICK TACK",
     words: {
-      tick: [6, 7, 8, 9],
-      tack: [10, 11, 12, 13]
+      tick: [1, 2, 3, 4],
+      tack: [5, 6, 7, 8]
     },
     setChars: function(words, h, m, now) {
       var s;
