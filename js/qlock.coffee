@@ -26,7 +26,7 @@ qlock =
     clock_minutes: true # true, false (show or hide minute dots)
     clock_minute_size: 0.4 # 0.2 - 0.6 (percentage minute dot size)
     clock_titletime: true # show time in doc/tab title (true or false)
-    clock_start_animation: "zoomIn" # none, fadeInDown, bounceInDown, rotateIn, zoomIn, zoomInUp
+    clock_start_animation: "none" # none, fadeInDown, bounceInDown, rotateIn, zoomIn, zoomInUp
     
     clock_rows: 10 # default scheme
     clock_cols: 11 # default scheme

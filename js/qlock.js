@@ -24,7 +24,7 @@ qlock = {
     clock_minutes: true,
     clock_minute_size: 0.4,
     clock_titletime: true,
-    clock_start_animation: "zoomIn",
+    clock_start_animation: "none",
     clock_rows: 10,
     clock_cols: 11
   },
