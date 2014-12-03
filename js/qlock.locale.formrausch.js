@@ -33,12 +33,12 @@
       formrausch: [37, 38, 39, 40, 49, 60, 71, 72, 73, 84],
       happa: [27, 28, 29, 38, 39, 40, 49, 50, 51, 60, 61, 62, 71, 72, 73, 82, 83, 84, 6, 105, 25, 47, 69, 86, 64, 42]
     },
-    setChars: function(words, h, m, now) {
+    setChars: function(h, m, now) {
       var chars_hours, hh;
       hh = parseInt(now.format("H"));
       if (hh === 11 && m >= 15 && m <= 45 && m % 2 === 1) {
         $('.minute').addClass('on');
-        qlock.enqueueCharacters(words.happa);
+        qlock.enqueueCharacters(this.words.happa);
         qlock.setTitle("FRÜHSTÜCKSZEIT ;)");
         return;
       }
@@ -46,68 +46,68 @@
         $('.minute').addClass('on');
         qlock.setTitle("FEIERABEND ;)");
         if (m % 2 === 0) {
-          qlock.enqueueCharacters(words.intro);
-          qlock.enqueueCharacters(words.feierabend);
+          qlock.enqueueCharacters(this.words.intro);
+          qlock.enqueueCharacters(this.words.feierabend);
         } else {
-          qlock.enqueueCharacters(words.formrausch);
+          qlock.enqueueCharacters(this.words.formrausch);
         }
         return;
       }
       if (qlock.config.clock_intro) {
-        qlock.enqueueCharacters(words.intro);
+        qlock.enqueueCharacters(this.words.intro);
       }
       if (m >= 0 && m < 5) {
-        chars_hours = words["hours_" + h];
+        chars_hours = this.words["hours_" + h];
         if (h === 1) {
-          chars_hours = words["hours_1s"];
+          chars_hours = this.words["hours_1s"];
         }
         qlock.enqueueCharacters(chars_hours);
-        qlock.enqueueCharacters(words.hour);
+        qlock.enqueueCharacters(this.words.hour);
       } else if (m >= 5 && m < 10) {
-        qlock.enqueueCharacters(words.minutes_5);
-        qlock.enqueueCharacters(words.past);
-        qlock.enqueueCharacters(words["hours_" + h]);
+        qlock.enqueueCharacters(this.words.minutes_5);
+        qlock.enqueueCharacters(this.words.past);
+        qlock.enqueueCharacters(this.words["hours_" + h]);
       } else if (m >= 10 && m < 15) {
-        qlock.enqueueCharacters(words.minutes_10);
-        qlock.enqueueCharacters(words.past);
-        qlock.enqueueCharacters(words["hours_" + h]);
+        qlock.enqueueCharacters(this.words.minutes_10);
+        qlock.enqueueCharacters(this.words.past);
+        qlock.enqueueCharacters(this.words["hours_" + h]);
       } else if (m >= 15 && m < 20) {
-        qlock.enqueueCharacters(words.minutes_15);
-        qlock.enqueueCharacters(words.past);
-        qlock.enqueueCharacters(words["hours_" + h]);
+        qlock.enqueueCharacters(this.words.minutes_15);
+        qlock.enqueueCharacters(this.words.past);
+        qlock.enqueueCharacters(this.words["hours_" + h]);
       } else if (m >= 20 && m < 25) {
-        qlock.enqueueCharacters(words.minutes_20);
-        qlock.enqueueCharacters(words.past);
-        qlock.enqueueCharacters(words["hours_" + h]);
+        qlock.enqueueCharacters(this.words.minutes_20);
+        qlock.enqueueCharacters(this.words.past);
+        qlock.enqueueCharacters(this.words["hours_" + h]);
       } else if (m >= 25 && m < 30) {
-        qlock.enqueueCharacters(words.minutes_5);
-        qlock.enqueueCharacters(words.before);
-        qlock.enqueueCharacters(words.half);
-        qlock.enqueueCharacters(words["hours_" + (qlock.helper.nextHour(h))]);
+        qlock.enqueueCharacters(this.words.minutes_5);
+        qlock.enqueueCharacters(this.words.before);
+        qlock.enqueueCharacters(this.words.half);
+        qlock.enqueueCharacters(this.words["hours_" + (qlock.helper.nextHour(h))]);
       } else if (m >= 30 && m < 35) {
-        qlock.enqueueCharacters(words.half);
-        qlock.enqueueCharacters(words["hours_" + (qlock.helper.nextHour(h))]);
+        qlock.enqueueCharacters(this.words.half);
+        qlock.enqueueCharacters(this.words["hours_" + (qlock.helper.nextHour(h))]);
       } else if (m >= 35 && m < 40) {
-        qlock.enqueueCharacters(words.minutes_5);
-        qlock.enqueueCharacters(words.past);
-        qlock.enqueueCharacters(words.half);
-        qlock.enqueueCharacters(words["hours_" + (qlock.helper.nextHour(h))]);
+        qlock.enqueueCharacters(this.words.minutes_5);
+        qlock.enqueueCharacters(this.words.past);
+        qlock.enqueueCharacters(this.words.half);
+        qlock.enqueueCharacters(this.words["hours_" + (qlock.helper.nextHour(h))]);
       } else if (m >= 40 && m < 45) {
-        qlock.enqueueCharacters(words.minutes_20);
-        qlock.enqueueCharacters(words.before);
-        qlock.enqueueCharacters(words["hours_" + (qlock.helper.nextHour(h))]);
+        qlock.enqueueCharacters(this.words.minutes_20);
+        qlock.enqueueCharacters(this.words.before);
+        qlock.enqueueCharacters(this.words["hours_" + (qlock.helper.nextHour(h))]);
       } else if (m >= 45 && m < 50) {
-        qlock.enqueueCharacters(words.minutes_15);
-        qlock.enqueueCharacters(words.before);
-        qlock.enqueueCharacters(words["hours_" + (qlock.helper.nextHour(h))]);
+        qlock.enqueueCharacters(this.words.minutes_15);
+        qlock.enqueueCharacters(this.words.before);
+        qlock.enqueueCharacters(this.words["hours_" + (qlock.helper.nextHour(h))]);
       } else if (m >= 50 && m < 55) {
-        qlock.enqueueCharacters(words.minutes_10);
-        qlock.enqueueCharacters(words.before);
-        qlock.enqueueCharacters(words["hours_" + (qlock.helper.nextHour(h))]);
+        qlock.enqueueCharacters(this.words.minutes_10);
+        qlock.enqueueCharacters(this.words.before);
+        qlock.enqueueCharacters(this.words["hours_" + (qlock.helper.nextHour(h))]);
       } else if (m >= 55) {
-        qlock.enqueueCharacters(words.minutes_5);
-        qlock.enqueueCharacters(words.before);
-        qlock.enqueueCharacters(words["hours_" + (qlock.helper.nextHour(h))]);
+        qlock.enqueueCharacters(this.words.minutes_5);
+        qlock.enqueueCharacters(this.words.before);
+        qlock.enqueueCharacters(this.words["hours_" + (qlock.helper.nextHour(h))]);
       }
     }
   };

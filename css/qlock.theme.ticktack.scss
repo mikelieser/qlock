@@ -1,0 +1,84 @@
+@import url(http://fonts.googleapis.com/css?family=Amatic+SC:400,700);
+
+.theme-ticktack {
+  background-image:url(../images/themes/formrausch/pattern.jpg);
+  
+  #clock_wrapper {
+    background-color:initial;
+    background: radial-gradient(rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.02) 60%, rgba(255,255,255,0) 100%);
+    #clock {
+        border-radius:3%;
+        background-color:rgba(0,0,0,0.5);
+        font-family: "Helvetica Neue",Helvetica,Arial,"Sans Serif";
+      
+  //      #chars {
+  //        .char {
+  //          color:rgba(255,228,0,0.14);
+  //          &.on {
+  //            color:rgba(255,228,0,1);
+  //          }
+  //        }
+  //      }
+
+        #chars {
+          .char {
+            font-family: 'Amatic SC', cursive;
+            font-weight:400;
+            
+            color:rgba(255,228,0,0.2);
+            &.on {
+              background-color:rgba(255,228,0,0.9);
+              color:rgba(0,0,0,1);
+              font-weight:700;
+              text-shadow:none;
+              transition:background-color 200ms ease-out;
+            }
+          }
+        }
+      
+        .minute {
+          display:none !important;
+          background-color:initial;
+          background-image:url(../images/themes/formrausch/cross.png);
+          background-size:100%;
+          opacity:0;
+        
+          // http://cubic-bezier.com/#.37,1.25,.14,-0.13
+          //-webkit-animation: formrausch-spin 10.0s infinite cubic-bezier(.37,1.25,.14,-0.13);
+          //animation: formrausch-spin 10.0s infinite cubic-bezier(.37,1.25,.14,-0.13);
+        
+          //-webkit-animation: formrausch-spin 10.0s infinite linear;
+          //animation: formrausch-spin 10.0s infinite linear;
+        
+          transition:opacity 100ms ease-out;  
+        
+          &.on {
+            background-color:initial;
+            box-shadow:none;
+            opacity:1;     
+            transition:opacity 100ms ease-out;
+          }
+        }
+      }
+  }
+  
+}
+
+
+@-webkit-keyframes formrausch-spin {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes formrausch-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

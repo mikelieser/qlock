@@ -40,7 +40,7 @@ locale =
     hours_11: [50..52]
     hours_12: [95..99]
     
-  setChars: (words, h, m, now) ->
+  setChars: (h, m, now) ->
     
     # 14.00 - 14.04 => es ist drei uhr
     # 14.05 - 14.09 => es ist fünf nach drei
@@ -56,59 +56,59 @@ locale =
     # 14.55 - 14.59 => es ist fünf vor drei
 
     # intro
-    qlock.enqueueCharacters words.intro if qlock.config.clock_intro
+    qlock.enqueueCharacters @words.intro if qlock.config.clock_intro
 
     # time
     if m >= 0 && m < 5
-      chars_hours = words["hours_#{h}"]
-      chars_hours = words["hours_1s"] if h == 1 # ausnahme: es ist ein uhr / es ist viertel nach eins
+      chars_hours = @words["hours_#{h}"]
+      chars_hours = @words["hours_1s"] if h == 1 # ausnahme: es ist ein uhr / es ist viertel nach eins
       qlock.enqueueCharacters chars_hours
-      qlock.enqueueCharacters words.hour
+      qlock.enqueueCharacters @words.hour
     else if m >= 5 && m < 10
-      qlock.enqueueCharacters words.minutes_5
-      qlock.enqueueCharacters words.past
-      qlock.enqueueCharacters words["hours_#{h}"]
+      qlock.enqueueCharacters @words.minutes_5
+      qlock.enqueueCharacters @words.past
+      qlock.enqueueCharacters @words["hours_#{h}"]
     else if m >= 10 && m < 15
-      qlock.enqueueCharacters words.minutes_10
-      qlock.enqueueCharacters words.past
-      qlock.enqueueCharacters words["hours_#{h}"]
+      qlock.enqueueCharacters @words.minutes_10
+      qlock.enqueueCharacters @words.past
+      qlock.enqueueCharacters @words["hours_#{h}"]
     else if m >= 15 && m < 20
-      qlock.enqueueCharacters words.minutes_15
-      qlock.enqueueCharacters words.past
-      qlock.enqueueCharacters words["hours_#{h}"]
+      qlock.enqueueCharacters @words.minutes_15
+      qlock.enqueueCharacters @words.past
+      qlock.enqueueCharacters @words["hours_#{h}"]
     else if m >= 20 && m < 25
-      qlock.enqueueCharacters words.minutes_20
-      qlock.enqueueCharacters words.past
-      qlock.enqueueCharacters words["hours_#{h}"]
+      qlock.enqueueCharacters @words.minutes_20
+      qlock.enqueueCharacters @words.past
+      qlock.enqueueCharacters @words["hours_#{h}"]
     else if m >= 25 && m < 30
-      qlock.enqueueCharacters words.minutes_5
-      qlock.enqueueCharacters words.before
-      qlock.enqueueCharacters words.half
-      qlock.enqueueCharacters words["hours_#{qlock.helper.nextHour(h)}"]
+      qlock.enqueueCharacters @words.minutes_5
+      qlock.enqueueCharacters @words.before
+      qlock.enqueueCharacters @words.half
+      qlock.enqueueCharacters @words["hours_#{qlock.helper.nextHour(h)}"]
     else if m >= 30 && m < 35
-      qlock.enqueueCharacters words.half
-      qlock.enqueueCharacters words["hours_#{qlock.helper.nextHour(h)}"]
+      qlock.enqueueCharacters @words.half
+      qlock.enqueueCharacters @words["hours_#{qlock.helper.nextHour(h)}"]
     else if m >= 35 && m < 40
-      qlock.enqueueCharacters words.minutes_5
-      qlock.enqueueCharacters words.past
-      qlock.enqueueCharacters words.half
-      qlock.enqueueCharacters words["hours_#{qlock.helper.nextHour(h)}"]
+      qlock.enqueueCharacters @words.minutes_5
+      qlock.enqueueCharacters @words.past
+      qlock.enqueueCharacters @words.half
+      qlock.enqueueCharacters @words["hours_#{qlock.helper.nextHour(h)}"]
     else if m >= 40 && m < 45
-      qlock.enqueueCharacters words.minutes_20
-      qlock.enqueueCharacters words.before
-      qlock.enqueueCharacters words["hours_#{qlock.helper.nextHour(h)}"]
+      qlock.enqueueCharacters @words.minutes_20
+      qlock.enqueueCharacters @words.before
+      qlock.enqueueCharacters @words["hours_#{qlock.helper.nextHour(h)}"]
     else if m >= 45 && m < 50
-      qlock.enqueueCharacters words.minutes_15
-      qlock.enqueueCharacters words.before
-      qlock.enqueueCharacters words["hours_#{qlock.helper.nextHour(h)}"]
+      qlock.enqueueCharacters @words.minutes_15
+      qlock.enqueueCharacters @words.before
+      qlock.enqueueCharacters @words["hours_#{qlock.helper.nextHour(h)}"]
     else if m >= 50 && m < 55
-      qlock.enqueueCharacters words.minutes_10
-      qlock.enqueueCharacters words.before
-      qlock.enqueueCharacters words["hours_#{qlock.helper.nextHour(h)}"]
+      qlock.enqueueCharacters @words.minutes_10
+      qlock.enqueueCharacters @words.before
+      qlock.enqueueCharacters @words["hours_#{qlock.helper.nextHour(h)}"]
     else if m >= 55
-      qlock.enqueueCharacters words.minutes_5
-      qlock.enqueueCharacters words.before
-      qlock.enqueueCharacters words["hours_#{qlock.helper.nextHour(h)}"]
+      qlock.enqueueCharacters @words.minutes_5
+      qlock.enqueueCharacters @words.before
+      qlock.enqueueCharacters @words["hours_#{qlock.helper.nextHour(h)}"]
 
     return
     

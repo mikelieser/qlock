@@ -11,17 +11,17 @@ locale =
     tick: [1..4]
     tack: [5..8]
   
-  setChars: (words, h, m, now) ->
+  setChars: (h, m, now) ->
     
     s = parseInt(now.format("s"))
     
     if s % 2 == 0
       $('.minute').addClass('on')
-      qlock.enqueueCharacters words.tick
+      qlock.enqueueCharacters @words.tick
       qlock.setTitle "TICK"
     else
       $('.minute').removeClass('on')
-      qlock.enqueueCharacters words.tack
+      qlock.enqueueCharacters @words.tack
       qlock.setTitle "TACK"
     
     return

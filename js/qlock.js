@@ -183,7 +183,7 @@ qlock = {
     this.last_m = m;
     this.last_h = h;
     this.new_chars = [];
-    this.locale.setChars(this.locale.words, h, m, now);
+    this.locale.setChars(h, m, now);
     this.activateQueuedCharacters();
   },
   setMinutes: function(m, now) {

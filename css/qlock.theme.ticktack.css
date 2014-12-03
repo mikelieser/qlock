@@ -1,0 +1,45 @@
+@import url(http://fonts.googleapis.com/css?family=Amatic+SC:400,700);
+.theme-ticktack {
+  background-image: url(../images/themes/formrausch/pattern.jpg); }
+  .theme-ticktack #clock_wrapper {
+    background-color: initial;
+    background: radial-gradient(rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.02) 60%, rgba(255, 255, 255, 0) 100%); }
+    .theme-ticktack #clock_wrapper #clock {
+      border-radius: 3%;
+      background-color: rgba(0, 0, 0, 0.5);
+      font-family: "Helvetica Neue",Helvetica,Arial,"Sans Serif"; }
+      .theme-ticktack #clock_wrapper #clock #chars .char {
+        font-family: 'Amatic SC', cursive;
+        font-weight: 400;
+        color: rgba(255, 228, 0, 0.2); }
+        .theme-ticktack #clock_wrapper #clock #chars .char.on {
+          background-color: rgba(255, 228, 0, 0.9);
+          color: black;
+          font-weight: 700;
+          text-shadow: none;
+          transition: background-color 200ms ease-out; }
+      .theme-ticktack #clock_wrapper #clock .minute {
+        display: none !important;
+        background-color: initial;
+        background-image: url(../images/themes/formrausch/cross.png);
+        background-size: 100%;
+        opacity: 0;
+        transition: opacity 100ms ease-out; }
+        .theme-ticktack #clock_wrapper #clock .minute.on {
+          background-color: initial;
+          box-shadow: none;
+          opacity: 1;
+          transition: opacity 100ms ease-out; }
+
+@-webkit-keyframes formrausch-spin {
+  from {
+    -webkit-transform: rotate(0deg); }
+
+  to {
+    -webkit-transform: rotate(360deg); } }
+@keyframes formrausch-spin {
+  from {
+    transform: rotate(0deg); }
+
+  to {
+    transform: rotate(360deg); } }

@@ -199,7 +199,7 @@ qlock =
     @new_chars = []
     
     # queue new words and activate them
-    @locale.setChars(@locale.words, h, m, now)
+    @locale.setChars(h, m, now)
     @activateQueuedCharacters()
     
     return
