@@ -8,6 +8,8 @@ qlock =
   config: null # merged user params with defaults
   locales: [] # array of locales
   locale: null # active locale
+  transitions: [] # all transitions
+  transition: null # active transition
   
   # config with default params
   config:
@@ -18,7 +20,8 @@ qlock =
     debug: false # show debug messages?
     locale: "en" # en, de, formrausch
     theme: ["standard"] # standard, blue, red, gradient, timeonly, formrausch (or array for random theme)
-  
+    transition: "none" # none, explode
+    
     clock_intro: true # true, false (it is, es ist)
     clock_size: 0.8 # 0.5 - 0.9 percentage of window
     clock_padding: 0.14 # 0.0 - 0.3 (percentage padding to margins in clock)
@@ -52,6 +55,13 @@ qlock =
       return
       
     @log "locale: #{@locale.code} (#{@locale.name})"
+    
+    # set transitions
+    for t in @transitions
+      
+      if t.name == @config.transition
+        @transition = t
+        break
     
     # disable css transitions on page load
     $('body').addClass('no-transitions')
@@ -218,17 +228,15 @@ qlock =
   activateQueuedCharacters: ->
     @log "activateQueuedCharacters"
     return if @getQueueSignature(@old_chars) == @getQueueSignature(@new_chars)
-
+    
     @log "change time!"
-
-    for x,y in @old_chars
-      for z in x
-        $("#char_#{z}").removeClass('on')
-
-    for x,y in @new_chars
-      for z in x
-        $("#char_#{z}").addClass('on')
-
+    
+    if @config.transition == "none"
+      @helper.transition.buildElements(@old_chars).removeClass('on')
+      @helper.transition.buildElements(@new_chars).addClass('on')
+    else
+      @transition.method(@old_chars, @new_chars, @helper.transition.calculateOldChars(), @helper.transition.calculateNewChars())
+    
     @setDocumentTitle() if @config.clock_titletime
 
     # time change event
@@ -272,7 +280,8 @@ qlock =
     return
   addLocale: (locale) ->
     @locales.push locale
-  
+  addTransition: (transition) ->
+    @transitions.push transition
   
   helper:
     nextHour: (h) ->
@@ -281,4 +290,20 @@ qlock =
 
     randomInt: (min, max) ->
       Math.floor(Math.random() * (max - min + 1)) + min
-  
+    transition:
+      buildElements: (array) ->
+        str = ""
+        counter = 0
+        for x,y in array
+          for z in x
+            str += "," if counter > 0
+            str += "#char_#{z}"
+            counter++
+        return $(str)
+        
+      calculateOldChars: ->
+        return qlock.old_chars
+    
+      calculateNewChars: ->
+        return qlock.new_chars
+      

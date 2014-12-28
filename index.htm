@@ -14,12 +14,15 @@
    
   <script src="js/lib/jquery-2.1.1.min.js"></script>
   <script src="js/lib/moment.min.js"></script>
+  <script src="js/lib/velocity.min.js"></script>
+  <script src="js/lib/velocity.ui.min.js"></script>
   
   <script src="js/qlock.js" charset="utf-8"></script>
   <script src="js/qlock.locale.en.js" charset="utf-8"></script>
   <script src="js/qlock.locale.de.js" charset="utf-8"></script>
   <script src="js/qlock.locale.formrausch.js" charset="utf-8"></script>
   <script src="js/qlock.locale.ticktack.js" charset="utf-8"></script>
+  <script src="js/qlock.transitions.js" charset="utf-8"></script>
   
   <script>
     $(function() {
@@ -29,12 +32,13 @@
       // qlock.config.clock_char_size = 0.2;
       // qlock.config.clock_padding = 0;
       // qlock.config.clock_start_animation = "zoomIn"
+      // qlock.config.transition = "explode"
       
       qlock.init(
         {
-          mode: "demo1",
-          locale: "ticktack",
-          theme: "ticktack",
+          mode: "standard",
+          locale: "formrausch",
+          theme: "formrausch",
           debug: true
         }
       );

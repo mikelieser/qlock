@@ -9,6 +9,8 @@ qlock = {
   config: null,
   locales: [],
   locale: null,
+  transitions: [],
+  transition: null,
   config: {
     mode: "standard",
     clock_interval: 1000,
@@ -17,6 +19,7 @@ qlock = {
     debug: false,
     locale: "en",
     theme: ["standard"],
+    transition: "none",
     clock_intro: true,
     clock_size: 0.8,
     clock_padding: 0.14,
@@ -34,7 +37,7 @@ qlock = {
     }
   },
   init: function(params) {
-    var l, theme, _i, _len, _ref;
+    var l, t, theme, _i, _j, _len, _len1, _ref, _ref1;
     this.config = $.extend(this.config, params);
     this.log(this.config);
     _ref = this.locales;
@@ -50,6 +53,14 @@ qlock = {
       return;
     }
     this.log("locale: " + this.locale.code + " (" + this.locale.name + ")");
+    _ref1 = this.transitions;
+    for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+      t = _ref1[_j];
+      if (t.name === this.config.transition) {
+        this.transition = t;
+        break;
+      }
+    }
     $('body').addClass('no-transitions');
     this.fillClockCharacters();
     this.setClockSize();
@@ -200,27 +211,16 @@ qlock = {
     this.new_chars.push(chars.slice());
   },
   activateQueuedCharacters: function() {
-    var x, y, z, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1;
     this.log("activateQueuedCharacters");
     if (this.getQueueSignature(this.old_chars) === this.getQueueSignature(this.new_chars)) {
       return;
     }
     this.log("change time!");
-    _ref = this.old_chars;
-    for (y = _i = 0, _len = _ref.length; _i < _len; y = ++_i) {
-      x = _ref[y];
-      for (_j = 0, _len1 = x.length; _j < _len1; _j++) {
-        z = x[_j];
-        $("#char_" + z).removeClass('on');
-      }
-    }
-    _ref1 = this.new_chars;
-    for (y = _k = 0, _len2 = _ref1.length; _k < _len2; y = ++_k) {
-      x = _ref1[y];
-      for (_l = 0, _len3 = x.length; _l < _len3; _l++) {
-        z = x[_l];
-        $("#char_" + z).addClass('on');
-      }
+    if (this.config.transition === "none") {
+      this.helper.transition.buildElements(this.old_chars).removeClass('on');
+      this.helper.transition.buildElements(this.new_chars).addClass('on');
+    } else {
+      this.transition.method(this.old_chars, this.new_chars, this.helper.transition.calculateOldChars(), this.helper.transition.calculateNewChars());
     }
     if (this.config.clock_titletime) {
       this.setDocumentTitle();
@@ -278,6 +278,9 @@ qlock = {
   addLocale: function(locale) {
     return this.locales.push(locale);
   },
+  addTransition: function(transition) {
+    return this.transitions.push(transition);
+  },
   helper: {
     nextHour: function(h) {
       if (h === 12) {
@@ -287,6 +290,31 @@ qlock = {
     },
     randomInt: function(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
+    transition: {
+      buildElements: function(array) {
+        var counter, str, x, y, z, _i, _j, _len, _len1;
+        str = "";
+        counter = 0;
+        for (y = _i = 0, _len = array.length; _i < _len; y = ++_i) {
+          x = array[y];
+          for (_j = 0, _len1 = x.length; _j < _len1; _j++) {
+            z = x[_j];
+            if (counter > 0) {
+              str += ",";
+            }
+            str += "#char_" + z;
+            counter++;
+          }
+        }
+        return $(str);
+      },
+      calculateOldChars: function() {
+        return qlock.old_chars;
+      },
+      calculateNewChars: function() {
+        return qlock.new_chars;
+      }
     }
   }
 };

@@ -38,13 +38,13 @@ body {
         body #clock #chars .row .char {
           display: inline-block;
           text-align: center;
-          color: rgba(255, 255, 255, 0.14);
           font-weight: 100;
           text-transform: uppercase;
           -webkit-box-sizing: border-box;
           -moz-box-sizing: border-box;
           box-sizing: border-box;
-          overflow: hidden; }
+          overflow: hidden;
+          color: rgba(255, 255, 255, 0.14); }
           body #clock #chars .row .char.on {
             color: white;
             text-shadow: 0px 0px 4px #fff; }
