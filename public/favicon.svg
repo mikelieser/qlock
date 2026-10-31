@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="4" fill="#000"/>
+  <g fill="#ffe400">
+    <circle cx="4" cy="4" r="1.5"/><circle cx="28" cy="4" r="1.5"/>
+    <circle cx="28" cy="28" r="1.5"/><circle cx="4" cy="28" r="1.5"/>
+  </g>
+  <text x="16" y="22.5" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="600" fill="#ffe400">Q</text>
+</svg>

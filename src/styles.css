@@ -1,0 +1,2140 @@
+:root,
+[data-theme] {
+  --page-bg: #050505;
+  --face-bg: #000;
+  --face-radius: 0;
+  --face-deco: none;
+  --face-shadow: 0 2vmin 8vmin rgb(0 0 0 / 0.6);
+  --clock-size: 0.8;
+  --pad: 0.14;
+
+  --font: 'Inter Variable', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --case: uppercase;
+  --weight-off: 200;
+  --weight-on: 380;
+  --char-scale: 0.62;
+  --char-off: rgb(255 255 255 / 0.14);
+  --char-on: #fff;
+  --char-on-bg: transparent;
+  --char-glow: 0 0 0.3em rgb(255 255 255 / 0.75);
+  --char-decoration: none;
+
+  --dot-size: 0.22;
+  --dot-off: rgb(255 255 255 / 0.14);
+  --dot-on: #fff;
+  --dot-glow: 0 0 0.6vmin #fff;
+  /* Per-corner colours; themes override these, the dots pick them up below. */
+  --dot-1: var(--dot-on);
+  --dot-2: var(--dot-on);
+  --dot-3: var(--dot-on);
+  --dot-4: var(--dot-on);
+
+  --progress-color: rgb(255 255 255 / 0.28);
+  --progress-track: transparent;
+  --progress-width: 1px;
+  --caption-color: var(--char-on);
+  --caption-opacity: 0.6;
+
+  /* Idle letter effect (key E). Themes pick one of the fx-* keyframes below. */
+  --fx-name: fx-breathe;
+  --fx-duration: 4s;
+  --fx-ease: ease-in-out;
+  --fx-step: 150ms;
+  --fx-gradient: none;
+  --fx-clip: border-box;
+  --fx-color: var(--char-on);
+  --fx-shadow: var(--char-glow);
+
+  /* Background effect (key B); off unless a theme opts in. */
+  --amb-display: none;
+  --amb-name: amb-fall;
+  --amb-top: -8%;
+  --amb-size: 4cqmin;
+  --amb-ratio: 1;
+  --amb-radius: 0;
+  --amb-shape: none;
+  --amb-duration: 14s;
+  --amb-opacity: 0.8;
+  --amb-c1: #fff;
+  --amb-c2: #fff;
+  --amb-c3: #fff;
+
+  --fade: 900ms;
+  --stagger: 45ms;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--page-bg);
+  transition: background-color 600ms ease;
+}
+
+body {
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  font-family: var(--font);
+  color: #fff;
+}
+
+.stage {
+  height: 100dvh;
+  display: grid;
+  place-items: center;
+}
+
+.stage.idle {
+  cursor: none;
+}
+
+/* Stretched: the face fills the whole viewport instead of a centred square. */
+.stretch .clock {
+  width: 100vw;
+  height: 100dvh;
+  aspect-ratio: auto;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Seconds view: digits change every second, so no stagger and a quicker fade. */
+.seconds {
+  --stagger: 0ms;
+  --fade: 350ms;
+}
+
+/* ---- Clock ---------------------------------------------------------------- */
+
+.clock {
+  position: relative;
+  width: calc(100vmin * var(--clock-size));
+  aspect-ratio: 1;
+  container-type: size;
+  --pad-size: calc(100cqmin * var(--pad));
+  background: var(--face-deco), var(--face-bg);
+  border-radius: var(--face-radius);
+  box-shadow: var(--face-shadow);
+  font-family: var(--font);
+  animation: clock-in 1400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes clock-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+    filter: blur(12px);
+  }
+}
+
+.chars {
+  position: absolute;
+  inset: var(--pad-size);
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  grid-template-rows: repeat(var(--rows), 1fr);
+}
+
+.char {
+  display: grid;
+  place-items: center;
+  font-size: min(
+    calc((100cqh - 2 * var(--pad-size)) / var(--rows) * var(--char-scale)),
+    calc((100cqw - 2 * var(--pad-size)) / var(--cols) * 0.9)
+  );
+  line-height: 1;
+  text-transform: var(--case);
+  font-weight: var(--weight-off);
+  color: var(--char-off);
+  background-color: transparent;
+  transition:
+    color var(--fade) ease,
+    background-color var(--fade) ease,
+    text-shadow var(--fade) ease,
+    font-weight var(--fade) ease;
+}
+
+.char.on {
+  font-weight: var(--weight-on);
+  color: var(--char-on);
+  background-color: var(--char-on-bg);
+  text-shadow: var(--char-glow);
+  text-decoration: var(--char-decoration);
+  transition-delay: calc(var(--order) * var(--stagger));
+}
+
+.dot {
+  --size: calc(var(--pad-size) * var(--dot-size));
+  --inset: calc(var(--pad-size) / 2 - var(--size) / 2);
+  position: absolute;
+  width: var(--size);
+  height: var(--size);
+  border-radius: 50%;
+  background-color: var(--dot-off);
+  transition:
+    background-color var(--fade) ease,
+    box-shadow var(--fade) ease,
+    opacity var(--fade) ease;
+}
+
+.dot.on {
+  background-color: var(--dot-on);
+  box-shadow: var(--dot-glow);
+}
+
+.dot[data-corner='1'] {
+  --dot-on: var(--dot-1);
+  top: var(--inset);
+  left: var(--inset);
+}
+.dot[data-corner='2'] {
+  --dot-on: var(--dot-2);
+  top: var(--inset);
+  right: var(--inset);
+}
+.dot[data-corner='3'] {
+  --dot-on: var(--dot-3);
+  right: var(--inset);
+  bottom: var(--inset);
+}
+.dot[data-corner='4'] {
+  --dot-on: var(--dot-4);
+  bottom: var(--inset);
+  left: var(--inset);
+}
+
+/* Seconds progress: a line through the corner dots, once around per minute. Moves once per second. */
+.progress {
+  position: absolute;
+  top: calc(var(--pad-size) / 2);
+  left: calc(var(--pad-size) / 2);
+  width: calc(100% - var(--pad-size));
+  height: calc(100% - var(--pad-size));
+  overflow: visible;
+  pointer-events: none;
+}
+
+.progress path {
+  fill: none;
+  stroke-width: var(--progress-width);
+  stroke-linejoin: round;
+}
+
+.progress-track {
+  stroke: var(--progress-track);
+}
+
+.progress-bar {
+  stroke: var(--progress-color);
+  stroke-dasharray: 60;
+  transition: stroke-dashoffset 400ms ease-out;
+}
+
+/* At :00 the bar empties; jump instead of running backwards. */
+.progress.wrap .progress-bar {
+  transition: none;
+}
+
+/* Weekday and date, small and spaced out between the progress line and the first row. */
+.caption {
+  position: absolute;
+  left: var(--pad-size);
+  right: var(--pad-size);
+  top: calc(var(--pad-size) * 0.7);
+  transform: translateY(-50%);
+  text-align: center;
+  white-space: nowrap;
+  font-family: var(--font);
+  font-size: calc(var(--pad-size) * 0.14);
+  font-weight: var(--weight-on);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--caption-color);
+  opacity: var(--caption-opacity);
+  pointer-events: none;
+  animation: caption-in 900ms ease both;
+}
+
+@keyframes caption-in {
+  from {
+    opacity: 0;
+    letter-spacing: 0.6em;
+  }
+}
+
+/* ---- Chrome: help, toast ------------------------------------------------- */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 32px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.6);
+  backdrop-filter: blur(8px);
+  font: 400 14px/1.2 'Inter Variable', system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  transition:
+    opacity 250ms ease,
+    transform 250ms ease;
+  pointer-events: none;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.help {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: 24px;
+  padding: 16px;
+  background: rgb(0 0 0 / 0.75);
+  backdrop-filter: blur(16px);
+  font: 400 16px/1.4 'Inter Variable', system-ui, sans-serif;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 250ms ease;
+}
+
+.help.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.help dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px 16px;
+  margin: 0;
+}
+
+.help dd {
+  margin: 0;
+  align-self: center;
+}
+
+.help kbd {
+  display: inline-block;
+  min-width: 2em;
+  padding: 4px 8px;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  border-radius: 6px;
+  font: 500 14px/1 ui-monospace, monospace;
+  text-align: center;
+}
+
+.help p {
+  margin: 0;
+  font-size: 13px;
+  color: rgb(255 255 255 / 0.55);
+}
+
+/* ---- Theme picker -------------------------------------------------------- */
+
+.picker {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  overflow-y: auto;
+  background: rgb(8 8 12 / 0.82);
+  backdrop-filter: blur(18px);
+  font: 400 15px/1.4 'Inter Variable', system-ui, sans-serif;
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 250ms ease;
+}
+
+.picker.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.picker-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+.picker-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.picker-head h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.picker-close {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgb(255 255 255 / 0.25);
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  font: 400 22px/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.picker-group h2 {
+  margin: 28px 0 12px;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.picker-group h2 span {
+  margin-left: 8px;
+  font-size: 13px;
+  font-weight: 400;
+  color: rgb(255 255 255 / 0.5);
+}
+
+.picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 16px;
+}
+
+.swatch {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+
+.swatch-face {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: max(var(--face-radius), 6px);
+  background: var(--face-deco), var(--face-bg);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.12);
+  font-family: var(--font);
+  text-transform: var(--case);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.swatch:hover .swatch-face {
+  transform: translateY(-2px);
+}
+
+.swatch.active .swatch-face {
+  box-shadow: 0 0 0 2px #0a0a0f, 0 0 0 4px #fff;
+}
+
+.swatch-word {
+  font-size: 15px;
+  letter-spacing: 0.2em;
+}
+
+.swatch-word b {
+  font-weight: var(--weight-on);
+  color: var(--char-on);
+  background: var(--char-on-bg);
+  text-shadow: var(--char-glow);
+}
+
+.swatch-word i {
+  font-style: normal;
+  font-weight: var(--weight-off);
+  color: var(--char-off);
+}
+
+.swatch-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.swatch-dot:nth-child(1) {
+  top: 9px;
+  left: 9px;
+  background: var(--dot-1);
+}
+.swatch-dot:nth-child(2) {
+  top: 9px;
+  right: 9px;
+  background: var(--dot-2);
+}
+.swatch-dot:nth-child(3) {
+  right: 9px;
+  bottom: 9px;
+  background: var(--dot-3);
+}
+.swatch-dot:nth-child(4) {
+  bottom: 9px;
+  left: 9px;
+  background: var(--dot-4);
+}
+
+/* Language cards: the sample sentence on the current theme's face. */
+.lang-grid {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.lang-face {
+  padding: 12px;
+  font-size: 13px;
+  font-weight: var(--weight-on);
+  line-height: 1.35;
+  letter-spacing: 0.12em;
+  /* Caption colour, not char-on: some themes put dark letters on light blocks. */
+  color: var(--caption-color);
+  text-shadow: var(--char-glow);
+  text-wrap: balance;
+}
+
+.swatch-name {
+  font-size: 13px;
+  color: rgb(255 255 255 / 0.75);
+}
+
+.swatch.active .swatch-name {
+  color: #fff;
+  font-weight: 600;
+}
+
+/* ---- Themes -------------------------------------------------------------- */
+
+[data-theme='formrausch'],
+[data-theme='ticktack'] {
+  --page-bg: #111 url('./assets/themes/formrausch/pattern.jpg');
+  --face-bg: linear-gradient(rgb(0 0 0 / 0.5), rgb(0 0 0 / 0.5)),
+    radial-gradient(rgb(255 255 255 / 0.25) 0%, rgb(255 255 255 / 0.02) 60%, transparent 100%);
+  --weight-off: 300;
+  --weight-on: 560;
+  --char-off: rgb(255 228 0 / 0.2);
+  --char-on: #000;
+  --char-on-bg: rgb(255 228 0 / 0.9);
+  --char-glow: none;
+  --progress-color: rgb(255 228 0 / 0.35);
+  --caption-color: rgb(255 228 0);
+}
+
+[data-theme='formrausch'] .dot,
+[data-theme='ticktack'] .dot {
+  background: url('./assets/themes/formrausch/cross.png') center / contain no-repeat;
+  box-shadow: none;
+  opacity: 0;
+}
+
+[data-theme='formrausch'] .dot.on {
+  opacity: 1;
+}
+
+[data-theme='ticktack'] {
+  --font: 'Amatic SC', 'Helvetica Neue', sans-serif;
+  --weight-off: 400;
+  --weight-on: 700;
+  --face-radius: 3%;
+  --char-scale: 0.8;
+  --fade: 200ms;
+  --stagger: 0ms;
+}
+
+[data-theme='ticktack'] .clock {
+  animation: ticktack-in 1600ms cubic-bezier(0.34, 1.8, 0.5, 1) both;
+}
+
+[data-theme='ticktack'] .dot {
+  display: none;
+}
+
+@keyframes ticktack-in {
+  from {
+    transform: scale(0.25, 0.5);
+  }
+}
+
+[data-theme='metal'] {
+  --page-bg: #1a1a1a;
+  --face-bg: url('./assets/themes/metal/bg.png') center / cover;
+  --face-radius: 1%;
+  --char-off: rgb(255 255 255 / 0.22);
+  --char-on: #444;
+  --char-glow: 0 0 8px #555;
+  --weight-on: 500;
+  --dot-off: rgb(255 255 255 / 0.1);
+  --dot-glow: none;
+}
+
+[data-theme='blue'] {
+  --page-bg: #062a3a;
+  --face-bg: #0ab1e4;
+  --face-radius: 1%;
+  --case: lowercase;
+  --char-off: #0389be;
+  --char-glow: 0 0 8px #555;
+  --char-decoration: underline;
+  --dot-off: transparent;
+  --dot-glow: none;
+}
+
+[data-theme='red'],
+[data-theme='timeonly'] {
+  --page-bg: #e10600;
+  --face-bg: #e10600;
+  --face-shadow: none;
+  --char-off: rgb(20 20 20 / 0.15);
+  --char-glow: none;
+  --weight-on: 500;
+  --dot-off: rgb(20 20 20 / 0.15);
+  --dot-glow: none;
+}
+
+[data-theme='red'] {
+  --face-radius: 2%;
+}
+
+[data-theme='timeonly'] {
+  --char-off: transparent;
+  --dot-off: transparent;
+}
+
+[data-theme='gradient'] {
+  --page-bg: #03263a;
+  --face-bg: radial-gradient(ellipse at center, #87e0fd 0%, #53cbf1 24%, #05abe0 100%);
+  --face-radius: 4%;
+  --char-off: rgb(255 255 255 / 0.25);
+  --char-glow: 0 0 0.3em rgb(0 60 90 / 0.6);
+  --dot-off: transparent;
+  --dot-glow: none;
+}
+
+[data-theme='gradient'] .dot {
+  border: 1px solid #fff;
+}
+
+/* ---- Home themes: colourful corner dots, one colour each ------------------- */
+
+[data-theme='sunset'] .dot,
+[data-theme='lagoon'] .dot,
+[data-theme='cozy'] .dot,
+[data-theme='sunrise'] .dot,
+[data-theme='nightsurf'] .dot,
+[data-theme='dunes'] .dot {
+  --dot-glow: 0 0 1.2vmin var(--dot-on), 0 0 3vmin var(--dot-on);
+}
+
+[data-theme='sunset'],
+[data-theme='lagoon'],
+[data-theme='sunrise'],
+[data-theme='dunes'] {
+  --dot-1: #ff6b6b;
+}
+[data-theme='sunset'],
+[data-theme='lagoon'],
+[data-theme='sunrise'],
+[data-theme='dunes'] {
+  --dot-2: #ffb84d;
+}
+[data-theme='sunset'],
+[data-theme='lagoon'],
+[data-theme='sunrise'],
+[data-theme='dunes'] {
+  --dot-3: #4fd6c4;
+}
+[data-theme='sunset'],
+[data-theme='lagoon'],
+[data-theme='sunrise'],
+[data-theme='dunes'] {
+  --dot-4: #b79cff;
+}
+
+/* Dusk at the beach: purple sky into coral, sun sinking behind the waves. */
+[data-theme='sunset'] {
+  --page-bg: linear-gradient(#1b1733, #3a1f45 55%, #6b2c4f);
+  --face-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 18 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%231d7a83'/%3E%3Cpath d='M0 52 Q50 36 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%230c4a5e'/%3E%3C/svg%3E") bottom / 100% 16% no-repeat,
+    radial-gradient(circle at 50% 92%, #ffd27a 0 7%, rgb(255 160 90 / 0.55) 9%, transparent 30%),
+    linear-gradient(#211c42 0%, #4b2461 38%, #a23f68 72%, #e8706a 100%);
+  --face-radius: 3%;
+  --face-shadow: 0 2vmin 10vmin rgb(30 10 40 / 0.6);
+  --weight-off: 250;
+  --weight-on: 480;
+  --char-off: rgb(255 230 220 / 0.17);
+  --char-on: #fff4e6;
+  --char-glow: 0 0 0.3em rgb(255 170 120 / 0.85), 0 0 0.9em rgb(255 110 110 / 0.4);
+  --dot-off: rgb(255 230 220 / 0.16);
+  --progress-color: rgb(255 210 160 / 0.35);
+}
+
+/* Lazy afternoon at the lagoon: turquoise water, sandy shore. */
+[data-theme='lagoon'] {
+  --page-bg: linear-gradient(#0a4f5c, #0b3a48);
+  --face-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 18 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23ffffff' fill-opacity='.18'/%3E%3Cpath d='M0 52 Q50 36 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%23f4e3c3' fill-opacity='.55'/%3E%3C/svg%3E") bottom / 100% 14% no-repeat,
+    radial-gradient(ellipse at 30% 20%, rgb(255 255 255 / 0.22), transparent 55%),
+    linear-gradient(160deg, #2ec4b6 0%, #14a3a8 45%, #0b7a8c 100%);
+  --face-radius: 4%;
+  --face-shadow: 0 2vmin 10vmin rgb(0 40 50 / 0.5);
+  --weight-off: 300;
+  --weight-on: 560;
+  --char-off: rgb(255 255 255 / 0.22);
+  --char-on: #fffdf5;
+  --char-glow: 0 0 0.35em rgb(255 255 255 / 0.6);
+  --dot-off: rgb(255 255 255 / 0.2);
+  --progress-color: rgb(255 255 255 / 0.4);
+}
+
+/* Evening on the sofa: warm walnut, letters like fairy lights. */
+[data-theme='cozy'] {
+  --page-bg: radial-gradient(ellipse at 50% 40%, #3a2618, #1a110b 75%);
+  --face-bg: radial-gradient(ellipse at 50% 35%, #4a3020 0%, #2b1b11 70%, #22150d 100%);
+  --face-radius: 2.5%;
+  --face-shadow: 0 0 8vmin rgb(255 170 80 / 0.1), 0 2vmin 8vmin rgb(0 0 0 / 0.6);
+  --weight-off: 250;
+  --weight-on: 470;
+  --char-off: rgb(255 225 190 / 0.12);
+  --char-on: #ffd9a0;
+  --char-glow: 0 0 0.3em rgb(255 180 90 / 0.9), 0 0 1em rgb(255 140 60 / 0.35);
+  --dot-off: rgb(255 225 190 / 0.12);
+  --fade: 1400ms;
+  --stagger: 80ms;
+  --progress-color: rgb(255 200 130 / 0.3);
+}
+
+[data-theme='cozy'] {
+  --dot-1: #ff9e6d;
+}
+[data-theme='cozy'] {
+  --dot-2: #ffd27a;
+}
+[data-theme='cozy'] {
+  --dot-3: #e88aa0;
+}
+[data-theme='cozy'] {
+  --dot-4: #9fd3a8;
+}
+
+/* Pastel sunrise over a calm sea. */
+[data-theme='sunrise'] {
+  --page-bg: linear-gradient(#f6e3dc, #ecd3d6);
+  --face-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23a9d8e8'/%3E%3Cpath d='M0 52 Q50 40 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%237fbfd9'/%3E%3C/svg%3E") bottom / 100% 16% no-repeat,
+    radial-gradient(circle at 50% 88%, #fff6d8 0 8%, rgb(255 236 200 / 0.6) 10%, transparent 34%),
+    linear-gradient(#c7d3f0 0%, #e6cde6 35%, #fbc9c4 65%, #ffd9b8 86%);
+  --face-radius: 4%;
+  --face-shadow: 0 2vmin 8vmin rgb(150 100 110 / 0.25);
+  --weight-off: 300;
+  --weight-on: 600;
+  --char-off: rgb(90 42 74 / 0.17);
+  --char-on: #5a2a4a;
+  --char-glow: 0 0 0.4em rgb(255 255 255 / 0.7);
+  --dot-off: rgb(90 42 74 / 0.14);
+  --progress-color: rgb(90 42 74 / 0.3);
+  color-scheme: light;
+}
+
+/* 70s surf poster: cream paper, rainbow arcs rising from the bottom. */
+[data-theme='retro'] {
+  --page-bg: #e8d3b0;
+  --face-deco: radial-gradient(
+      circle at 50% 100%,
+      #c8452c 0 8%,
+      #f4e6cc 8% 9%,
+      #e0782f 9% 12.5%,
+      #f4e6cc 12.5% 13.5%,
+      #eaa83a 13.5% 17%,
+      #f4e6cc 17% 18%,
+      #8a9a4a 18% 21.5%,
+      #f4e6cc 21.5% 22.5%,
+      #3f7f86 22.5% 26%,
+      transparent 26%
+    );
+  --face-bg: #f4e6cc;
+  --face-radius: 3%;
+  --face-shadow: 0 1.5vmin 6vmin rgb(90 50 20 / 0.3);
+  --weight-off: 350;
+  --weight-on: 700;
+  --char-off: rgb(70 38 20 / 0.2);
+  --char-on: #3a1f10;
+  --char-glow: none;
+  --dot-off: rgb(70 38 20 / 0.18);
+  --dot-glow: none;
+  --progress-color: rgb(58 31 16 / 0.35);
+  color-scheme: light;
+}
+
+[data-theme='retro'] {
+  --dot-1: #c8452c;
+}
+[data-theme='retro'] {
+  --dot-2: #e0782f;
+}
+[data-theme='retro'] {
+  --dot-3: #3f7f86;
+}
+[data-theme='retro'] {
+  --dot-4: #8a9a4a;
+}
+
+/* Night session: stars, moon, a glowing crest on dark water. */
+[data-theme='nightsurf'] {
+  --page-bg: linear-gradient(#060d1f, #0b1b33);
+  --face-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23163d63'/%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34' fill='none' stroke='%238fd3ff' stroke-opacity='.35' stroke-width='1.5'/%3E%3Cpath d='M0 52 Q50 40 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%230d2847'/%3E%3C/svg%3E") bottom / 100% 15% no-repeat,
+    radial-gradient(ellipse 3% 7% at 80% 92%, rgb(240 235 200 / 0.3), transparent),
+    radial-gradient(circle at 80% 7%, #f4f0d8 0 2.6%, rgb(244 240 216 / 0.22) 3.4%, transparent 11%),
+    radial-gradient(circle 0.25vmin at 9% 8%, #fff 30%, transparent),
+    radial-gradient(circle 0.18vmin at 22% 5%, #fff 30%, transparent),
+    radial-gradient(circle 0.22vmin at 35% 10%, #fff 30%, transparent),
+    radial-gradient(circle 0.2vmin at 52% 4%, #fff 30%, transparent),
+    radial-gradient(circle 0.15vmin at 64% 9%, #fff 30%, transparent),
+    radial-gradient(circle 0.22vmin at 91% 7%, #fff 30%, transparent),
+    radial-gradient(circle 0.18vmin at 6% 30%, #fff 30%, transparent),
+    radial-gradient(circle 0.2vmin at 95% 34%, #fff 30%, transparent),
+    radial-gradient(circle 0.15vmin at 14% 52%, #fff 30%, transparent),
+    radial-gradient(circle 0.18vmin at 88% 58%, #fff 30%, transparent),
+    radial-gradient(circle 0.12vmin at 44% 6%, #fff 30%, transparent),
+    radial-gradient(circle 0.14vmin at 72% 3%, #fff 30%, transparent),
+    linear-gradient(#0a1530 0%, #12294f 60%, #1b3f69 100%);
+  --face-radius: 3%;
+  --face-shadow: 0 0 8vmin rgb(80 160 255 / 0.12), 0 2vmin 8vmin rgb(0 0 0 / 0.6);
+  --weight-off: 250;
+  --weight-on: 480;
+  --char-off: rgb(190 220 255 / 0.15);
+  --char-on: #e8f6ff;
+  --char-glow: 0 0 0.3em rgb(120 200 255 / 0.9), 0 0 0.9em rgb(80 140 255 / 0.4);
+  --dot-off: rgb(190 220 255 / 0.14);
+  --progress-color: rgb(140 210 255 / 0.35);
+}
+
+[data-theme='nightsurf'] {
+  --dot-1: #ff6fb5;
+}
+[data-theme='nightsurf'] {
+  --dot-2: #5ee7ff;
+}
+[data-theme='nightsurf'] {
+  --dot-3: #b7f36b;
+}
+[data-theme='nightsurf'] {
+  --dot-4: #b28cff;
+}
+
+/* Beach dunes under a turquoise sky. */
+[data-theme='dunes'] {
+  --page-bg: linear-gradient(#5fb6bd, #3d8c93);
+  --face-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 40 C80 10 140 18 220 34 C290 48 340 22 400 26 V80 H0Z' fill='%23f4cf9a'/%3E%3Cpath d='M0 58 C60 40 130 44 190 56 C260 70 330 44 400 48 V80 H0Z' fill='%23e9a86a'/%3E%3Cpath d='M0 72 C90 60 170 66 260 72 C320 76 370 66 400 68 V80 H0Z' fill='%23d27f4f'/%3E%3C/svg%3E") bottom / 100% 24% no-repeat,
+    radial-gradient(circle at 80% 7%, #fffbe8 0 3%, rgb(255 251 232 / 0.4) 4%, transparent 13%),
+    linear-gradient(#6cc7cf 0%, #a6dfdc 55%, #e2f1e4 78%);
+  --face-radius: 3%;
+  --face-shadow: 0 2vmin 8vmin rgb(20 70 75 / 0.35);
+  --weight-off: 300;
+  --weight-on: 640;
+  --char-off: rgb(13 79 87 / 0.2);
+  --char-on: #0b4750;
+  --char-glow: 0 0 0.4em rgb(255 255 255 / 0.45);
+  --dot-off: rgb(13 79 87 / 0.16);
+  --progress-color: rgb(11 71 80 / 0.3);
+  color-scheme: light;
+}
+
+/* ---- Retro variants ------------------------------------------------------ */
+
+/* 70s sunset: striped sun sinking into cream paper. */
+[data-theme='retro-sun'] {
+  --page-bg: #e9cfa6;
+  --face-deco: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 50'%3E%3Cdefs%3E%3ClinearGradient id='g' gradientUnits='userSpaceOnUse' x1='0' y1='2' x2='0' y2='50'%3E%3Cstop offset='0' stop-color='%23f9c74f'/%3E%3Cstop offset='.5' stop-color='%23f3722c'/%3E%3Cstop offset='1' stop-color='%23d1495b'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='48' fill='url(%23g)'/%3E%3Cg fill='%23f6e4c4'%3E%3Crect y='27' width='100' height='1.6'/%3E%3Crect y='33' width='100' height='2.3'/%3E%3Crect y='39' width='100' height='3'/%3E%3Crect y='45' width='100' height='3.6'/%3E%3C/g%3E%3C/svg%3E") bottom / auto 26% no-repeat;
+  --face-bg: #f6e4c4;
+  --face-radius: 3%;
+  --face-shadow: 0 1.5vmin 6vmin rgb(90 50 20 / 0.3);
+  --weight-off: 350;
+  --weight-on: 700;
+  --char-off: rgb(70 38 20 / 0.2);
+  --char-on: #3a1f10;
+  --char-glow: none;
+  --dot-off: rgb(70 38 20 / 0.18);
+  --dot-on: #d1495b;
+  --dot-glow: none;
+  --progress-color: rgb(58 31 16 / 0.35);
+  color-scheme: light;
+}
+
+/* Diagonal racing stripes across the bottom-right corner, like an old camper van. */
+[data-theme='retro-stripes'] {
+  --page-bg: #d9c29c;
+  --face-deco: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M57 100 L63 100 L100 63 L100 57Z' fill='%23efc04a'/%3E%3Cpath d='M64 100 L70 100 L100 70 L100 64Z' fill='%23e8902f'/%3E%3Cpath d='M71 100 L77 100 L100 77 L100 71Z' fill='%23c8552b'/%3E%3Cpath d='M78 100 L84 100 L100 84 L100 78Z' fill='%236b3a1e'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  --face-bg: #f3e6cd;
+  --face-radius: 3%;
+  --face-shadow: 0 1.5vmin 6vmin rgb(90 50 20 / 0.3);
+  --weight-off: 350;
+  --weight-on: 700;
+  --char-off: rgb(70 38 20 / 0.2);
+  --char-on: #3a1f10;
+  --char-glow: none;
+  --dot-off: rgb(58 31 16 / 0.2);
+  --dot-on: #3a1f10;
+  --dot-glow: none;
+  --progress-color: rgb(58 31 16 / 0.35);
+  color-scheme: light;
+}
+
+/* The rainbow after dark: muted arcs on deep brown, letters in warm cream. */
+[data-theme='retro-night'] {
+  --page-bg: #1c120d;
+  --face-deco: radial-gradient(
+      circle at 50% 100%,
+      #a8432e 0 8%,
+      #2a1b13 8% 9%,
+      #b8692f 9% 12.5%,
+      #2a1b13 12.5% 13.5%,
+      #c09038 13.5% 17.0%,
+      #2a1b13 17.0% 18.0%,
+      #71784a 18.0% 21.5%,
+      #2a1b13 21.5% 22.5%,
+      #3c6a6e 22.5% 26.0%,
+      transparent 26.0%
+    );
+  --face-bg: radial-gradient(ellipse at 50% 30%, #35231a, #2a1b13 70%);
+  --face-radius: 3%;
+  --face-shadow: 0 2vmin 8vmin rgb(0 0 0 / 0.5);
+  --weight-off: 300;
+  --weight-on: 600;
+  --char-off: rgb(244 230 204 / 0.13);
+  --char-on: #f6e7cc;
+  --char-glow: 0 0 0.3em rgb(240 170 90 / 0.45);
+  --dot-off: rgb(244 230 204 / 0.12);
+  --progress-color: rgb(246 231 204 / 0.3);
+}
+
+[data-theme='retro-night'] .dot {
+  --dot-glow: 0 0 1vmin var(--dot-on);
+}
+
+/* Boho pastel rainbow on off-white. */
+[data-theme='retro-pastel'] {
+  --page-bg: #efe2d6;
+  --face-deco: radial-gradient(
+      circle at 50% 100%,
+      #f4a6a0 0 6%,
+      #fbf4ec 6% 6.9%,
+      #f8c38c 6.9% 9.9%,
+      #fbf4ec 9.9% 10.8%,
+      #f3df9c 10.8% 13.8%,
+      #fbf4ec 13.8% 14.700000000000001%,
+      #b9d9b5 14.700000000000001% 17.700000000000003%,
+      #fbf4ec 17.700000000000003% 18.6%,
+      #a9c8e8 18.6% 21.6%,
+      #fbf4ec 21.6% 22.5%,
+      #c9b6e2 22.5% 25.5%,
+      transparent 25.5%
+    );
+  --face-bg: #fbf4ec;
+  --face-radius: 4%;
+  --face-shadow: 0 1.5vmin 6vmin rgb(120 90 80 / 0.2);
+  --weight-off: 300;
+  --weight-on: 620;
+  --char-off: rgb(91 74 107 / 0.18);
+  --char-on: #5b4a6b;
+  --char-glow: none;
+  --dot-off: rgb(91 74 107 / 0.15);
+  --dot-glow: none;
+  --progress-color: rgb(91 74 107 / 0.3);
+  color-scheme: light;
+}
+
+[data-theme='retro-night'],
+[data-theme='retro-pastel'] {
+  --dot-1: #e0785f;
+}
+[data-theme='retro-night'],
+[data-theme='retro-pastel'] {
+  --dot-2: #e8a84a;
+}
+[data-theme='retro-night'],
+[data-theme='retro-pastel'] {
+  --dot-3: #7fae8a;
+}
+[data-theme='retro-night'],
+[data-theme='retro-pastel'] {
+  --dot-4: #8fa9d6;
+}
+
+/* ---- Pastel diagonals: top-left to bottom-right, purple / pink / blue ----- */
+
+/* Cotton candy: pink into lilac into baby blue. */
+[data-theme='cotton-candy'] {
+  --page-bg: #e9d3ef;
+  --face-bg: radial-gradient(ellipse at 20% 15%, rgb(255 255 255 / 0.45), transparent 50%),
+    linear-gradient(135deg, #ffc8e2 0%, #e3c6f5 50%, #b9d8ff 100%);
+  --face-radius: 4%;
+  --face-shadow: 0 2vmin 8vmin rgb(120 90 160 / 0.25);
+  --weight-off: 300;
+  --weight-on: 620;
+  --char-off: rgb(120 70 150 / 0.2);
+  --char-on: #6a2c86;
+  --char-glow: 0 0 0.4em rgb(255 255 255 / 0.75);
+  --dot-off: rgb(120 70 150 / 0.15);
+  --progress-color: rgb(120 70 150 / 0.35);
+  color-scheme: light;
+}
+
+[data-theme='cotton-candy'] .dot {
+  --dot-glow: 0 0 1vmin var(--dot-on);
+}
+[data-theme='cotton-candy'] {
+  --dot-1: #ff7eb6;
+}
+[data-theme='cotton-candy'] {
+  --dot-2: #b47cff;
+}
+[data-theme='cotton-candy'] {
+  --dot-3: #6fa8ff;
+}
+[data-theme='cotton-candy'] {
+  --dot-4: #ff9ed2;
+}
+
+/* Lavender field: soft lilac into periwinkle. */
+[data-theme='lavender'] {
+  --page-bg: #d9d3f5;
+  --face-bg: radial-gradient(ellipse at 20% 15%, rgb(255 255 255 / 0.45), transparent 50%),
+    linear-gradient(135deg, #eadcff 0%, #cfc4fb 50%, #aeb8f5 100%);
+  --face-radius: 4%;
+  --face-shadow: 0 2vmin 8vmin rgb(120 90 160 / 0.25);
+  --weight-off: 300;
+  --weight-on: 620;
+  --char-off: rgb(75 58 140 / 0.18);
+  --char-on: #4b3a8c;
+  --char-glow: 0 0 0.4em rgb(255 255 255 / 0.7);
+  --dot-off: rgb(75 58 140 / 0.15);
+  --progress-color: rgb(75 58 140 / 0.35);
+  color-scheme: light;
+}
+
+[data-theme='lavender'] .dot {
+  --dot-glow: 0 0 1vmin var(--dot-on);
+}
+[data-theme='lavender'] {
+  --dot-1: #9b7bff;
+}
+[data-theme='lavender'] {
+  --dot-2: #c18bff;
+}
+[data-theme='lavender'] {
+  --dot-3: #7f9cff;
+}
+[data-theme='lavender'] {
+  --dot-4: #e08bd8;
+}
+
+/* Bubblegum: hot-pink blush into lilac. */
+[data-theme='bubblegum'] {
+  --page-bg: #f3cfe2;
+  --face-bg: radial-gradient(ellipse at 20% 15%, rgb(255 255 255 / 0.45), transparent 50%),
+    linear-gradient(135deg, #ffd0e4 0%, #ffb6d5 45%, #d7b4f3 100%);
+  --face-radius: 4%;
+  --face-shadow: 0 2vmin 8vmin rgb(120 90 160 / 0.25);
+  --weight-off: 300;
+  --weight-on: 620;
+  --char-off: rgb(122 42 99 / 0.18);
+  --char-on: #7a2a63;
+  --char-glow: 0 0 0.4em rgb(255 255 255 / 0.75);
+  --dot-off: rgb(122 42 99 / 0.15);
+  --progress-color: rgb(122 42 99 / 0.35);
+  color-scheme: light;
+}
+
+[data-theme='bubblegum'] .dot {
+  --dot-glow: 0 0 1vmin var(--dot-on);
+}
+[data-theme='bubblegum'] {
+  --dot-1: #ff5fa2;
+}
+[data-theme='bubblegum'] {
+  --dot-2: #ff8fc4;
+}
+[data-theme='bubblegum'] {
+  --dot-3: #b07cf0;
+}
+[data-theme='bubblegum'] {
+  --dot-4: #7fb4ff;
+}
+
+/* Daydream: baby blue into lilac into rose. */
+[data-theme='sky-dream'] {
+  --page-bg: #d3dcf6;
+  --face-bg: radial-gradient(ellipse at 20% 15%, rgb(255 255 255 / 0.45), transparent 50%),
+    linear-gradient(135deg, #bfe3ff 0%, #d2cdfa 50%, #f8c9e6 100%);
+  --face-radius: 4%;
+  --face-shadow: 0 2vmin 8vmin rgb(120 90 160 / 0.25);
+  --weight-off: 300;
+  --weight-on: 620;
+  --char-off: rgb(51 64 122 / 0.18);
+  --char-on: #33407a;
+  --char-glow: 0 0 0.4em rgb(255 255 255 / 0.75);
+  --dot-off: rgb(51 64 122 / 0.15);
+  --progress-color: rgb(51 64 122 / 0.35);
+  color-scheme: light;
+}
+
+[data-theme='sky-dream'] .dot {
+  --dot-glow: 0 0 1vmin var(--dot-on);
+}
+[data-theme='sky-dream'] {
+  --dot-1: #5aa9ff;
+}
+[data-theme='sky-dream'] {
+  --dot-2: #9b8cff;
+}
+[data-theme='sky-dream'] {
+  --dot-3: #ff8cc8;
+}
+[data-theme='sky-dream'] {
+  --dot-4: #7fd6e8;
+}
+
+/* Unicorn: rose, lilac, blue and a hint of mint. */
+[data-theme='unicorn'] {
+  --page-bg: #e2d6f4;
+  --face-bg: radial-gradient(ellipse at 20% 15%, rgb(255 255 255 / 0.45), transparent 50%),
+    linear-gradient(135deg, #ffd1ec 0%, #e1c8fb 35%, #bcd2ff 70%, #c4f1e6 100%);
+  --face-radius: 4%;
+  --face-shadow: 0 2vmin 8vmin rgb(120 90 160 / 0.25);
+  --weight-off: 300;
+  --weight-on: 620;
+  --char-off: rgb(110 80 160 / 0.2);
+  --char-on: #ffffff;
+  --char-glow: 0 0 0.08em rgb(90 50 170 / 0.95), 0 0 0.15em rgb(110 60 190 / 0.8), 0 0 0.7em rgb(160 90 230 / 0.6);
+  --dot-off: rgb(110 80 160 / 0.15);
+  --progress-color: rgb(110 80 160 / 0.35);
+  color-scheme: light;
+}
+
+[data-theme='unicorn'] .dot {
+  --dot-glow: 0 0 1vmin var(--dot-on);
+}
+[data-theme='unicorn'] {
+  --dot-1: #ff8fd1;
+}
+[data-theme='unicorn'] {
+  --dot-2: #b48cff;
+}
+[data-theme='unicorn'] {
+  --dot-3: #7fb2ff;
+}
+[data-theme='unicorn'] {
+  --dot-4: #6fe0c2;
+}
+
+/* ---- Chaos: loud game-lobby look for Henry (green, blue, purple, red, yellow, everything) ---- */
+
+[data-theme='chaos'],
+[data-theme='chaos-burst'],
+[data-theme='chaos-night'] {
+  --page-bg: radial-gradient(ellipse at 50% 40%, #2a1d5c, #120c2b 75%);
+  --face-radius: 6%;
+  --face-shadow: 0 0 0 0.9vmin #1a1033, 0 1.8vmin 0 0.9vmin #1a1033, 0 3vmin 6vmin rgb(0 0 0 / 0.5);
+  --weight-off: 600;
+  --weight-on: 900;
+  --char-scale: 0.66;
+  --char-off: rgb(255 255 255 / 0.22);
+  --char-on: #fff;
+  --char-glow: 0 0.09em 0 #1a1033;
+  --dot-size: 0.3;
+  --dot-off: rgb(26 16 51 / 0.45);
+  --dot-glow: none;
+  --fade: 500ms;
+  --stagger: 35ms;
+  --fx-name: fx-pop;
+  --fx-duration: 1.8s;
+  --fx-step: 90ms;
+  --progress-color: rgb(255 255 255 / 0.4);
+}
+
+/* Chunky outlined letters with a hard drop shadow. */
+[data-theme='chaos'] .char.on,
+[data-theme='chaos-burst'] .char.on,
+[data-theme='chaos-night'] .char.on {
+  -webkit-text-stroke: 0.07em #1a1033;
+  paint-order: stroke fill;
+}
+
+[data-theme='chaos'] .dot,
+[data-theme='chaos-burst'] .dot,
+[data-theme='chaos-night'] .dot {
+  box-shadow: 0 0 0 0.35vmin #1a1033;
+}
+
+[data-theme='chaos'],
+[data-theme='chaos-burst'],
+[data-theme='chaos-night'] {
+  --dot-1: #3ddc4a;
+}
+[data-theme='chaos'],
+[data-theme='chaos-burst'],
+[data-theme='chaos-night'] {
+  --dot-2: #1fa2ff;
+}
+[data-theme='chaos'],
+[data-theme='chaos-burst'],
+[data-theme='chaos-night'] {
+  --dot-3: #ff3b4e;
+}
+[data-theme='chaos'],
+[data-theme='chaos-burst'],
+[data-theme='chaos-night'] {
+  --dot-4: #ffd21f;
+}
+
+/* Diagonal rainbow with faint light rays from the centre. */
+[data-theme='chaos'] {
+  --face-bg: radial-gradient(ellipse at center, transparent 45%, rgb(26 16 51 / 0.35) 100%),
+    repeating-conic-gradient(from 0deg at 50% 50%, rgb(255 255 255 / 0.1) 0 9deg, transparent 9deg 18deg),
+    linear-gradient(135deg, #3ddc4a 0%, #1fa2ff 27%, #8a3cff 50%, #ff3b4e 74%, #ffd21f 100%);
+}
+
+/* A drop bursting open: hot core, rings out to green, rays slowly turning. */
+[data-theme='chaos-burst'] {
+  --face-bg: radial-gradient(
+    circle at 50% 50%,
+    #fff3a0 0,
+    #ffd21f 10%,
+    #ff8a1f 20%,
+    #ff3b4e 32%,
+    #b03cff 48%,
+    #1f7bff 66%,
+    #22c55e 88%
+  );
+  --char-off: rgb(26 16 51 / 0.28);
+}
+
+[data-theme='chaos-burst'] .clock {
+  overflow: hidden;
+}
+
+[data-theme='chaos-burst'] .clock::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: repeating-conic-gradient(from 0deg at 50% 50%, rgb(255 255 255 / 0.16) 0 7deg, transparent 7deg 15deg);
+  animation: chaos-rays 90s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes chaos-rays {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* Dark lobby, every lit letter its own colour. */
+[data-theme='chaos-night'] {
+  --face-bg: radial-gradient(ellipse at 50% 30%, rgb(138 60 255 / 0.35), transparent 60%),
+    linear-gradient(135deg, rgb(61 220 74 / 0.18), rgb(31 162 255 / 0.18) 30%, rgb(255 59 78 / 0.18) 70%, rgb(255 210 31 / 0.18)),
+    #170f33;
+  --char-off: rgb(255 255 255 / 0.1);
+  --progress-color: rgb(255 210 31 / 0.45);
+}
+
+[data-theme='chaos-night'] .char.on {
+  color: hsl(calc(110deg + var(--order) * 47deg) 95% 62%);
+}
+
+@keyframes fx-pop {
+  0%,
+  55%,
+  100% {
+    transform: none;
+  }
+  25% {
+    transform: scale(1.18) rotate(-5deg);
+  }
+  40% {
+    transform: scale(0.96) rotate(2deg);
+  }
+}
+
+/* ---- Autumn for Katja ------------------------------------------------------ */
+
+/* Falling leaves: rust into amber, leaves scattered along the edges. */
+[data-theme='autumn-leaves'] {
+  --page-bg: linear-gradient(135deg, #5a2a1a, #3a1d14);
+  /* Static leaves; they come off the face when the background effect lets them fall (.amb). */
+  --face-deco: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cg transform='translate(16 4) rotate(35) scale(.42)' fill='%23c8552b' stroke='%23c8552b' opacity='0.9'%3E%3Cpath d='M0 -10 C6 -6 7 4 0 10 C-7 4 -6 -6 0 -10Z'/%3E%3Cpath d='M0 -8 V13' stroke-width='.6' fill='none'/%3E%3C/g%3E%3Cg transform='translate(4 24) rotate(-50) scale(.42)' fill='%23e8902f' stroke='%23e8902f' opacity='0.85'%3E%3Cpath d='M0 -10 C6 -6 7 4 0 10 C-7 4 -6 -6 0 -10Z'/%3E%3Cpath d='M0 -8 V13' stroke-width='.6' fill='none'/%3E%3C/g%3E%3Cg transform='translate(30 2) rotate(-15) scale(.42)' fill='%23b33a2a' stroke='%23b33a2a' opacity='0.8'%3E%3Cpath d='M0 -10 C6 -6 7 4 0 10 C-7 4 -6 -6 0 -10Z'/%3E%3Cpath d='M0 -8 V13' stroke-width='.6' fill='none'/%3E%3C/g%3E%3Cg transform='translate(72 3) rotate(60) scale(.42)' fill='%23d9a62e' stroke='%23d9a62e' opacity='0.85'%3E%3Cpath d='M0 -10 C6 -6 7 4 0 10 C-7 4 -6 -6 0 -10Z'/%3E%3Cpath d='M0 -8 V13' stroke-width='.6' fill='none'/%3E%3C/g%3E%3Cg transform='translate(96 26) rotate(120) scale(.42)' fill='%23c8552b' stroke='%23c8552b' opacity='0.8'%3E%3Cpath d='M0 -10 C6 -6 7 4 0 10 C-7 4 -6 -6 0 -10Z'/%3E%3Cpath d='M0 -8 V13' stroke-width='.6' fill='none'/%3E%3C/g%3E%3Cg transform='translate(88 4) rotate(-30) scale(.42)' fill='%23b33a2a' stroke='%23b33a2a' opacity='0.75'%3E%3Cpath d='M0 -10 C6 -6 7 4 0 10 C-7 4 -6 -6 0 -10Z'/%3E%3Cpath d='M0 -8 V13' stroke-width='.6' fill='none'/%3E%3C/g%3E%3Cg transform='translate(3 72) rotate(20) scale(.42)' fill='%23d9a62e' stroke='%23d9a62e' opacity='0.85'%3E%3Cpath d='M0 -10 C6 -6 7 4 0 10 C-7 4 -6 -6 0 -10Z'/%3E%3Cpath d='M0 -8 V13' stroke-width='.6' fill='none'/%3E%3C/g%3E%3Cg transform='translate(18 96) rotate(-70) scale(.42)' fill='%23e8902f' stroke='%23e8902f' opacity='0.9'%3E%3Cpath d='M0 -10 C6 -6 7 4 0 10 C-7 4 -6 -6 0 -10Z'/%3E%3Cpath d='M0 -8 V13' stroke-width='.6' fill='none'/%3E%3C/g%3E%3Cg transform='translate(40 98) rotate(40) scale(.42)' fill='%23c8552b' stroke='%23c8552b' opacity='0.8'%3E%3Cpath d='M0 -10 C6 -6 7 4 0 10 C-7 4 -6 -6 0 -10Z'/%3E%3Cpath d='M0 -8 V13' stroke-width='.6' fill='none'/%3E%3C/g%3E%3Cg transform='translate(64 96) rotate(-20) scale(.42)' fill='%23d9a62e' stroke='%23d9a62e' opacity='0.85'%3E%3Cpath d='M0 -10 C6 -6 7 4 0 10 C-7 4 -6 -6 0 -10Z'/%3E%3Cpath d='M0 -8 V13' stroke-width='.6' fill='none'/%3E%3C/g%3E%3Cg transform='translate(84 95) rotate(75) scale(.42)' fill='%23b33a2a' stroke='%23b33a2a' opacity='0.9'%3E%3Cpath d='M0 -10 C6 -6 7 4 0 10 C-7 4 -6 -6 0 -10Z'/%3E%3Cpath d='M0 -8 V13' stroke-width='.6' fill='none'/%3E%3C/g%3E%3Cg transform='translate(97 70) rotate(-35) scale(.42)' fill='%23e8902f' stroke='%23e8902f' opacity='0.8'%3E%3Cpath d='M0 -10 C6 -6 7 4 0 10 C-7 4 -6 -6 0 -10Z'/%3E%3Cpath d='M0 -8 V13' stroke-width='.6' fill='none'/%3E%3C/g%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  --face-bg: radial-gradient(ellipse at 30% 25%, rgb(255 220 160 / 0.25), transparent 60%),
+    linear-gradient(135deg, #a8452a 0%, #c9682f 45%, #dc9a3c 100%);
+  --face-radius: 3%;
+  --face-shadow: 0 2vmin 8vmin rgb(40 15 5 / 0.5);
+  --weight-off: 300;
+  --weight-on: 600;
+  --char-off: rgb(255 240 215 / 0.2);
+  --char-on: #fff4e2;
+  --char-glow: 0 0 0.3em rgb(255 200 120 / 0.6);
+  --dot-off: rgb(255 240 215 / 0.18);
+  --dot-1: #ffd27a;
+  --dot-2: #ffb56b;
+  --dot-3: #ff9466;
+  --dot-4: #f6e3b4;
+  --fx-name: fx-sway;
+  --fx-duration: 4s;
+  --fx-step: 170ms;
+  --progress-color: rgb(255 240 215 / 0.35);
+}
+
+/* Indian summer: honey light from the top right, soft rays, dark brown letters. */
+[data-theme='golden-hour'] {
+  --page-bg: #e9cfa0;
+  --face-bg: repeating-conic-gradient(from 200deg at 100% 0%, rgb(255 255 255 / 0.12) 0 4deg, transparent 4deg 9deg),
+    radial-gradient(circle at 92% 6%, rgb(255 250 225 / 0.9) 0 5%, rgb(255 230 170 / 0.5) 12%, transparent 45%),
+    linear-gradient(160deg, #fbe9c8 0%, #f5cd88 50%, #e4a160 100%);
+  --face-radius: 4%;
+  --face-shadow: 0 2vmin 8vmin rgb(120 70 20 / 0.3);
+  --weight-off: 300;
+  --weight-on: 640;
+  --char-off: rgb(90 52 22 / 0.18);
+  --char-on: #5a3416;
+  --char-glow: 0 0 0.4em rgb(255 245 220 / 0.7);
+  --dot-off: rgb(90 52 22 / 0.15);
+  --dot-1: #b8642a;
+  --dot-2: #d08a2e;
+  --dot-3: #9a7a3a;
+  --dot-4: #c4553a;
+  --dot-glow: none;
+  --fx-name: fx-shimmer;
+  --fx-duration: 6s;
+  --fx-ease: linear;
+  --fx-step: 90ms;
+  --fx-clip: text;
+  --fx-color: transparent;
+  --fx-shadow: none;
+  --fx-gradient: linear-gradient(90deg, #5a3416 0 35%, #a8642a 45%, #d99a3c 50%, #a8642a 55%, #5a3416 65% 100%);
+  --progress-color: rgb(90 52 22 / 0.3);
+  color-scheme: light;
+}
+
+/* Forest walk in morning mist: sage into warm grey, fir trees fading into fog. */
+[data-theme='forest-mist'] {
+  --page-bg: linear-gradient(#b9c2b4, #8e9a8c);
+  --face-bg: linear-gradient(transparent 72%, rgb(240 238 228 / 0.5) 86%, transparent 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 74 100 27' preserveAspectRatio='none'%3E%3Cpath d='M3 86 L6.36 93.7 H4.890000000000001 L7.83 100 H-1.83 L1.1099999999999999 93.7 H-0.3600000000000003Z' fill='%23a9b8a8'/%3E%3Cpath d='M11 82 L15.32 91.9 H13.43 L17.21 100 H4.790000000000001 L8.57 91.9 H6.680000000000001Z' fill='%23a9b8a8'/%3E%3Cpath d='M19 88 L21.88 94.6 H20.62 L23.14 100 H14.86 L17.38 94.6 H16.12Z' fill='%23a9b8a8'/%3E%3Cpath d='M27 84 L30.84 92.8 H29.16 L32.519999999999996 100 H21.48 L24.84 92.8 H23.16Z' fill='%23a9b8a8'/%3E%3Cpath d='M36 87 L39.12 94.15 H37.755 L40.485 100 H31.515 L34.245 94.15 H32.88Z' fill='%23a9b8a8'/%3E%3Cpath d='M44 81 L48.56 91.45 H46.565 L50.555 100 H37.445 L41.435 91.45 H39.44Z' fill='%23a9b8a8'/%3E%3Cpath d='M52 86 L55.36 93.7 H53.89 L56.83 100 H47.17 L50.11 93.7 H48.64Z' fill='%23a9b8a8'/%3E%3Cpath d='M61 83 L65.08 92.35 H63.295 L66.865 100 H55.135 L58.705 92.35 H56.92Z' fill='%23a9b8a8'/%3E%3Cpath d='M69 88 L71.88 94.6 H70.62 L73.14 100 H64.86 L67.38 94.6 H66.12Z' fill='%23a9b8a8'/%3E%3Cpath d='M77 82 L81.32 91.9 H79.43 L83.21 100 H70.79 L74.57 91.9 H72.68Z' fill='%23a9b8a8'/%3E%3Cpath d='M86 86 L89.36 93.7 H87.89 L90.83 100 H81.17 L84.11 93.7 H82.64Z' fill='%23a9b8a8'/%3E%3Cpath d='M94 83 L98.08 92.35 H96.295 L99.865 100 H88.135 L91.705 92.35 H89.92Z' fill='%23a9b8a8'/%3E%3Cpath d='M101 87 L104.12 94.15 H102.755 L105.485 100 H96.515 L99.245 94.15 H97.88Z' fill='%23a9b8a8'/%3E%3Cpath d='M-1 81 L3.8000000000000007 92.0 H1.7000000000000002 L5.8999999999999995 101 H-7.8999999999999995 L-3.7 92.0 H-5.800000000000001Z' fill='%235d7a63'/%3E%3Cpath d='M8 86 L11.6 94.25 H10.025 L13.175 101 H2.825 L5.975 94.25 H4.4Z' fill='%235d7a63'/%3E%3Cpath d='M15 77 L20.759999999999998 90.2 H18.24 L23.28 101 H6.720000000000001 L11.76 90.2 H9.24Z' fill='%235d7a63'/%3E%3Cpath d='M24 84 L28.08 93.35 H26.295 L29.865 101 H18.135 L21.705 93.35 H19.92Z' fill='%235d7a63'/%3E%3Cpath d='M33 80 L38.04 91.55 H35.835 L40.245 101 H25.755000000000003 L30.165 91.55 H27.96Z' fill='%235d7a63'/%3E%3Cpath d='M41 87 L44.36 94.7 H42.89 L45.83 101 H36.17 L39.11 94.7 H37.64Z' fill='%235d7a63'/%3E%3Cpath d='M49 78 L54.519999999999996 90.65 H52.105 L56.935 101 H41.065 L45.895 90.65 H43.480000000000004Z' fill='%235d7a63'/%3E%3Cpath d='M58 85 L61.84 93.8 H60.16 L63.519999999999996 101 H52.480000000000004 L55.84 93.8 H54.16Z' fill='%235d7a63'/%3E%3Cpath d='M66 79 L71.28 91.1 H68.97 L73.59 101 H58.410000000000004 L63.03 91.1 H60.72Z' fill='%235d7a63'/%3E%3Cpath d='M74 86 L77.6 94.25 H76.025 L79.175 101 H68.825 L71.975 94.25 H70.4Z' fill='%235d7a63'/%3E%3Cpath d='M82 77 L87.76 90.2 H85.24 L90.28 101 H73.72 L78.76 90.2 H76.24Z' fill='%235d7a63'/%3E%3Cpath d='M91 83 L95.32 92.9 H93.43 L97.21 101 H84.79 L88.57 92.9 H86.68Z' fill='%235d7a63'/%3E%3Cpath d='M99 80 L104.04 91.55 H101.835 L106.245 101 H91.755 L96.165 91.55 H93.96Z' fill='%235d7a63'/%3E%3C/svg%3E") bottom / 100% 19% no-repeat,
+    radial-gradient(ellipse at 50% 20%, rgb(255 250 235 / 0.6), transparent 60%),
+    linear-gradient(#dfe3d6 0%, #c9d0c0 55%, #b6beac 100%);
+  --face-radius: 3%;
+  --face-shadow: 0 2vmin 8vmin rgb(50 60 45 / 0.3);
+  --weight-off: 300;
+  --weight-on: 620;
+  --char-off: rgb(47 66 52 / 0.18);
+  --char-on: #2f4234;
+  --char-glow: 0 0 0.4em rgb(255 255 245 / 0.6);
+  --dot-off: rgb(47 66 52 / 0.15);
+  --dot-1: #c8552b;
+  --dot-2: #d9a62e;
+  --dot-3: #5d7a63;
+  --dot-4: #a8452a;
+  --dot-glow: none;
+  --fx-name: fx-breathe;
+  --fx-duration: 6s;
+  --progress-color: rgb(47 66 52 / 0.3);
+  color-scheme: light;
+}
+
+@keyframes fx-sway {
+  50% {
+    transform: translateY(-0.05em) rotate(4deg);
+  }
+}
+
+/* Halloween + Katja's birthday (31.10.1984). */
+[data-theme='katja'] {
+  --page-bg: radial-gradient(circle at 86% 12%, #f6e7b4 0 3vmin, rgb(246 231 180 / 0.2) 3.3vmin, transparent 14vmin),
+    radial-gradient(ellipse at 50% 115%, #3b1050 0%, #150a22 55%, #07040c 100%);
+  --face-bg: radial-gradient(ellipse at 50% 60%, #1d0f2a 0%, #0a0610 75%);
+  --face-radius: 2%;
+  --face-shadow: 0 0 6vmin rgb(255 110 0 / 0.12), 0 2vmin 8vmin rgb(0 0 0 / 0.7);
+  --weight-off: 250;
+  --weight-on: 520;
+  --char-off: rgb(200 170 255 / 0.13);
+  --char-on: #ff8a1c;
+  --char-glow: 0 0 0.25em rgb(255 120 0 / 0.9), 0 0 0.8em rgb(255 80 0 / 0.45);
+  --dot-off: rgb(200 170 255 / 0.13);
+  --dot-on: #ffc04d;
+  --dot-glow: 0 0 1vmin #ff9a1f, 0 0 3vmin rgb(255 100 0 / 0.6);
+  --progress-color: rgb(255 138 28 / 0.4);
+  --fade: 1200ms;
+  --stagger: 70ms;
+  counter-reset: age var(--katja-age, 42);
+}
+
+/* Spider web in the top-left corner of the face. */
+[data-theme='katja'] .clock::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    repeating-conic-gradient(from 90deg at 0 0, rgb(220 200 255 / 0.18) 0 0.35deg, transparent 0.35deg 15deg),
+    repeating-radial-gradient(circle at 0 0, transparent 0 5.6%, rgb(220 200 255 / 0.14) 5.6% 5.9%);
+  mask-image: radial-gradient(circle at 0 0, #000 0, transparent 38%);
+  pointer-events: none;
+}
+
+[data-theme='katja'] .dot.on {
+  animation: candle 2.4s ease-in-out infinite alternate;
+}
+
+[data-theme='katja'] .dot[data-corner='2'].on {
+  animation-delay: -0.7s;
+}
+[data-theme='katja'] .dot[data-corner='3'].on {
+  animation-delay: -1.3s;
+}
+[data-theme='katja'] .dot[data-corner='4'].on {
+  animation-delay: -1.9s;
+}
+
+@keyframes candle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0.75;
+  }
+  55% {
+    opacity: 0.95;
+  }
+  80% {
+    opacity: 0.7;
+  }
+}
+
+[data-theme='katja'] .stage::before {
+  content: '🎃 Alles Gute zum ' counter(age) '., Katja! 🦇';
+  position: fixed;
+  top: max(1.5vmin, env(safe-area-inset-top));
+  left: 16px;
+  right: 16px;
+  text-align: center;
+  font: 700 clamp(22px, 6.5vmin, 72px) / 1.1 'Amatic SC', sans-serif;
+  letter-spacing: 0.04em;
+  color: #ffb14a;
+  text-shadow: 0 0 0.4em rgb(255 110 0 / 0.6);
+  pointer-events: none;
+  z-index: 1;
+  animation: greeting-in 2400ms 1200ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes greeting-in {
+  from {
+    opacity: 0;
+    transform: translateY(-1em);
+  }
+}
+
+/* Spooky decorations (components/Spooky.tsx). Transform/opacity only, so it stays on the compositor. */
+.spooky {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.spider {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.spider .legs path {
+  fill: none;
+  stroke: rgb(225 205 255 / 0.75);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.spider .legs {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  animation: legs 260ms ease-in-out infinite alternate;
+}
+
+.spider .legs-b {
+  animation-direction: alternate-reverse;
+}
+
+.spider .body {
+  fill: #120a1a;
+  stroke: rgb(255 160 60 / 0.6);
+  stroke-width: 0.7;
+}
+
+.spider .eye {
+  fill: #ff8a1c;
+  filter: drop-shadow(0 0 1px #ff6a00);
+}
+
+@keyframes legs {
+  to {
+    transform: rotate(7deg) scale(0.96);
+  }
+}
+
+/* Dangles from the ceiling into the web corner of the face. */
+.spider-drop {
+  --x: calc(50vw - 50vmin * var(--clock-size) + 9vmin);
+  --drop: calc(50dvh - 50vmin * var(--clock-size) + 22vmin);
+  position: absolute;
+  top: 0;
+  left: var(--x);
+  width: 7vmin;
+  height: 7vmin;
+  margin-left: -3.5vmin;
+  transform: translateY(-12vmin);
+  animation: drop 19s cubic-bezier(0.45, 0, 0.3, 1) 3s infinite;
+}
+
+.stretch .spider-drop {
+  --x: 9vmin;
+  --drop: 24vmin;
+}
+
+/* The thread hangs above the spider and travels with it. */
+.spider-drop::before {
+  content: '';
+  position: absolute;
+  bottom: 50%;
+  left: calc(50% - 0.5px);
+  width: 1px;
+  height: 150vh;
+  background: rgb(225 205 255 / 0.4);
+}
+
+.spider-drop .legs {
+  animation-duration: 900ms;
+}
+
+@keyframes drop {
+  0%,
+  100% {
+    transform: translateY(-12vmin);
+  }
+  22% {
+    transform: translateY(var(--drop));
+  }
+  27% {
+    transform: translateY(calc(var(--drop) - 3vmin));
+  }
+  32%,
+  58% {
+    transform: translateY(var(--drop)) rotate(0deg);
+  }
+  45% {
+    transform: translateY(var(--drop)) rotate(12deg);
+  }
+  80% {
+    transform: translateY(-12vmin);
+  }
+}
+
+/* Walks in from the right, stops on the face, then leaves over the top. Off-screen for the rest of the cycle. */
+.spider-walk {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6vmin;
+  height: 6vmin;
+  transform: translate(110vw, 80dvh) rotate(-90deg);
+  animation: walk 42s linear 8s infinite;
+}
+
+.spider-walk .legs {
+  animation-duration: 160ms;
+}
+
+@keyframes walk {
+  0% {
+    transform: translate(110vw, 80dvh) rotate(-90deg);
+  }
+  12% {
+    transform: translate(68vw, 80dvh) rotate(-90deg);
+  }
+  15% {
+    transform: translate(68vw, 80dvh) rotate(-40deg);
+  }
+  19% {
+    transform: translate(68vw, 80dvh) rotate(-40deg);
+  }
+  28% {
+    transform: translate(52vw, 58dvh) rotate(-40deg);
+  }
+  33% {
+    transform: translate(52vw, 58dvh) rotate(-75deg);
+  }
+  36% {
+    transform: translate(52vw, 58dvh) rotate(-5deg);
+  }
+  48% {
+    transform: translate(50vw, 30dvh) rotate(-5deg);
+  }
+  51% {
+    transform: translate(50vw, 30dvh) rotate(20deg);
+  }
+  62% {
+    transform: translate(60vw, -10dvh) rotate(20deg);
+  }
+  100% {
+    transform: translate(60vw, -10dvh) rotate(20deg);
+  }
+}
+
+/* Flies across the sky past the moon now and then. */
+.bat-path {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 9vmin;
+  aspect-ratio: 2;
+  transform: translate(-15vw, 26dvh);
+  animation: bat-fly 27s linear 5s infinite;
+}
+
+.bat {
+  display: block;
+  width: 100%;
+  fill: #06030a;
+  filter: drop-shadow(0 0 0.6vmin rgb(255 200 120 / 0.25));
+  animation: bat-flap 180ms ease-in-out infinite alternate;
+}
+
+@keyframes bat-flap {
+  to {
+    transform: scaleY(0.35) translateY(15%);
+  }
+}
+
+@keyframes bat-fly {
+  0% {
+    transform: translate(-15vw, 26dvh) scale(0.8);
+  }
+  8% {
+    transform: translate(25vw, 14dvh) scale(0.9);
+  }
+  15% {
+    transform: translate(60vw, 20dvh) scale(1);
+  }
+  22% {
+    transform: translate(84vw, 9dvh) scale(1.1);
+  }
+  30%,
+  100% {
+    transform: translate(115vw, 4dvh) scale(1.2);
+  }
+}
+
+/* ---- Letter effects ------------------------------------------------------ */
+
+/*
+ * Idle effect (.fx, key E): lit letters keep moving, offset by reading order so it ripples through the sentence.
+ * Change effect (.tx, key U): newly lit letters come into focus once, new minute dots pop.
+ * fx uses transform/opacity/background-position, tx uses filter, so both can run at the same time.
+ */
+.fx .char.on {
+  animation: var(--fx-name) var(--fx-duration) var(--fx-ease) calc(var(--order) * var(--fx-step) * -1) infinite;
+  background-image: var(--fx-gradient);
+  background-size: 400% 100%;
+  -webkit-background-clip: var(--fx-clip);
+  background-clip: var(--fx-clip);
+  color: var(--fx-color);
+  text-shadow: var(--fx-shadow);
+}
+
+.tx .char.on {
+  animation: tx-focus 1600ms cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--order) * var(--stagger)) both;
+}
+
+.fx.tx .char.on {
+  animation:
+    tx-focus 1600ms cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--order) * var(--stagger)) both,
+    var(--fx-name) var(--fx-duration) var(--fx-ease) calc(var(--order) * var(--fx-step) * -1) infinite;
+}
+
+/* Low specificity so theme dot animations (katja candles) still win. */
+.tx :where(.dot.on) {
+  animation: tx-dot 900ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@keyframes tx-focus {
+  from {
+    filter: blur(0.12em) brightness(1.6);
+  }
+}
+
+@keyframes tx-dot {
+  from {
+    transform: scale(1.7);
+    filter: brightness(1.8);
+  }
+}
+
+@keyframes fx-breathe {
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes fx-wave {
+  50% {
+    transform: translateY(-0.12em);
+  }
+}
+
+@keyframes fx-wobble {
+  25% {
+    transform: rotate(-7deg);
+  }
+  75% {
+    transform: rotate(7deg);
+  }
+}
+
+@keyframes fx-bob {
+  50% {
+    transform: translateY(-0.08em) rotate(-4deg);
+  }
+}
+
+@keyframes fx-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0.72;
+  }
+  23% {
+    opacity: 0.95;
+  }
+  50% {
+    opacity: 0.82;
+  }
+  70% {
+    opacity: 1;
+  }
+  72% {
+    opacity: 0.65;
+  }
+  75% {
+    opacity: 1;
+  }
+}
+
+@keyframes fx-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
+/* Per-theme picks. Shimmer clips a moving gradient to the glyphs. */
+[data-theme='blue'],
+[data-theme='gradient'],
+[data-theme='lagoon'],
+[data-theme='sky-dream'] {
+  --fx-name: fx-wave;
+  --fx-duration: 3.2s;
+  --fx-step: 120ms;
+}
+
+[data-theme='ticktack'] {
+  --fx-name: fx-wobble;
+  --fx-duration: 1s;
+  --fx-step: 0ms;
+}
+
+[data-theme='bubblegum'] {
+  --fx-name: fx-wobble;
+  --fx-duration: 2.2s;
+  --fx-step: 130ms;
+}
+
+[data-theme='retro'],
+[data-theme='retro-sun'],
+[data-theme='retro-stripes'],
+[data-theme='retro-night'],
+[data-theme='retro-pastel'] {
+  --fx-name: fx-bob;
+  --fx-duration: 2.4s;
+  --fx-step: 160ms;
+}
+
+/* Odd steps so neighbouring letters never flicker in sync. */
+[data-theme='katja'] {
+  --fx-name: fx-flicker;
+  --fx-duration: 3s;
+  --fx-step: 370ms;
+}
+
+[data-theme='cozy'] {
+  --fx-name: fx-flicker;
+  --fx-duration: 4.5s;
+  --fx-step: 530ms;
+}
+
+[data-theme='nightsurf'] {
+  --fx-name: fx-flicker;
+  --fx-duration: 5s;
+  --fx-step: 610ms;
+}
+
+[data-theme='metal'],
+[data-theme='sunset'],
+[data-theme='dunes'],
+[data-theme='cotton-candy'],
+[data-theme='unicorn'] {
+  --fx-name: fx-shimmer;
+  --fx-duration: 5s;
+  --fx-ease: linear;
+  --fx-step: 90ms;
+  --fx-clip: text;
+  --fx-color: transparent;
+  /* The shadow paints over a text-clipped background and would wash out the gradient. */
+  --fx-shadow: none;
+}
+
+[data-theme='metal'] {
+  --fx-gradient: linear-gradient(90deg, #444 0 35%, #bbb 45%, #fff 50%, #bbb 55%, #444 65% 100%);
+}
+
+[data-theme='sunset'] {
+  --fx-gradient: linear-gradient(90deg, #fff4e6 0 35%, #ffd09a 44%, #ff9fb0 50%, #ffd09a 56%, #fff4e6 65% 100%);
+}
+
+[data-theme='dunes'] {
+  --fx-gradient: linear-gradient(90deg, #0b4750 0 35%, #2a8b8f 45%, #d27f4f 50%, #2a8b8f 55%, #0b4750 65% 100%);
+}
+
+[data-theme='cotton-candy'] {
+  --fx-gradient: linear-gradient(90deg, #6a2c86 0 30%, #d0489a 42%, #4f7fe0 58%, #6a2c86 70% 100%);
+}
+
+[data-theme='unicorn'] {
+  --fx-gradient: linear-gradient(90deg, #7d45d0 0 20%, #e0569f 35%, #4f86e0 50%, #22a88f 65%, #7d45d0 80% 100%);
+}
+
+/* ---- Background effect (key B) ---------------------------------------------- */
+
+/*
+ * Particles live behind the letters inside the face. Each carries a pseudo-random --x/--d/--t/--s/--r/--w/--c
+ * from Clock.tsx; the theme sets --amb-display: block plus shape, colours, size and keyframes.
+ */
+.amb .clock {
+  --face-deco: none;
+}
+
+.ambient {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.ambient i {
+  display: var(--amb-display);
+  position: absolute;
+  left: var(--x);
+  top: var(--amb-top);
+  width: calc(var(--amb-size) * var(--s));
+  aspect-ratio: var(--amb-ratio);
+  background: var(--c);
+  border-radius: var(--amb-radius);
+  -webkit-mask: var(--amb-shape) center / contain no-repeat;
+  mask: var(--amb-shape) center / contain no-repeat;
+  opacity: var(--amb-opacity);
+  animation: var(--amb-name) calc(var(--amb-duration) * var(--t)) linear var(--d) infinite;
+}
+
+@keyframes amb-fall {
+  from {
+    transform: translate(0, 0) rotate(var(--r));
+  }
+  25% {
+    transform: translate(calc(var(--w) * 2cqw), 30cqh) rotate(calc(var(--r) + 80deg));
+  }
+  50% {
+    transform: translate(calc(var(--w) * -1.5cqw), 60cqh) rotate(calc(var(--r) + 170deg));
+  }
+  75% {
+    transform: translate(calc(var(--w) * 2cqw), 90cqh) rotate(calc(var(--r) + 260deg));
+  }
+  to {
+    transform: translate(0, 118cqh) rotate(calc(var(--r) + 360deg));
+  }
+}
+
+@keyframes amb-rise {
+  from {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 0;
+  }
+  15% {
+    opacity: var(--amb-opacity);
+  }
+  50% {
+    transform: translate(calc(var(--w) * 1.5cqw), -55cqh) scale(1);
+  }
+  85% {
+    opacity: var(--amb-opacity);
+  }
+  to {
+    transform: translate(calc(var(--w) * -1cqw), -115cqh) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes amb-sparkle {
+  from {
+    transform: translate(0, 0) scale(0) rotate(0deg);
+  }
+  30% {
+    transform: translate(calc(var(--w) * 1cqw), -30cqh) scale(1) rotate(90deg);
+  }
+  60% {
+    transform: translate(calc(var(--w) * -1cqw), -60cqh) scale(0.3) rotate(180deg);
+  }
+  80% {
+    transform: translate(0, -80cqh) scale(1) rotate(270deg);
+  }
+  to {
+    transform: translate(calc(var(--w) * 1cqw), -115cqh) scale(0) rotate(360deg);
+  }
+}
+
+@keyframes amb-confetti {
+  from {
+    transform: translate(0, 0) rotate(var(--r)) rotateX(0deg);
+  }
+  to {
+    transform: translate(calc(var(--w) * 3cqw), 118cqh) rotate(calc(var(--r) + 540deg)) rotateX(720deg);
+  }
+}
+
+/* Falling leaves. */
+[data-theme='autumn-leaves'],
+[data-theme='forest-mist'],
+[data-theme='katja'] {
+  --amb-display: block;
+  --amb-name: amb-fall;
+  --amb-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 25'%3E%3Cpath d='M12 1 C19 6 20 15 12 23 C4 15 5 6 12 1Z'/%3E%3Cpath d='M12 4 V24' stroke='%23000' stroke-width='1.2'/%3E%3C/svg%3E");
+  --amb-size: 5cqmin;
+  --amb-duration: 14s;
+  --amb-opacity: 0.85;
+}
+
+[data-theme='autumn-leaves'] {
+  /* Same size as the static leaves they replace. */
+  --amb-size: 7cqmin;
+  --amb-c1: #e8902f;
+  --amb-c2: #b33a2a;
+  --amb-c3: #f0c04a;
+}
+
+[data-theme='forest-mist'] {
+  --amb-c1: #c8552b;
+  --amb-c2: #d9a62e;
+  --amb-c3: #8a6a3a;
+  --amb-opacity: 0.6;
+  --amb-duration: 18s;
+}
+
+[data-theme='katja'] {
+  --amb-c1: #ff8a1c;
+  --amb-c2: #8a3cff;
+  --amb-c3: #c8552b;
+  --amb-opacity: 0.5;
+}
+
+/* Rising bubbles: the lagoon and all of Susanna's themes. */
+[data-theme='lagoon'],
+[data-theme='cotton-candy'],
+[data-theme='lavender'],
+[data-theme='bubblegum'],
+[data-theme='sky-dream'],
+[data-theme='unicorn'] {
+  --amb-display: block;
+  --amb-name: amb-rise;
+  --amb-top: 105%;
+  --amb-size: 2.6cqmin;
+  --amb-radius: 50%;
+  --amb-duration: 12s;
+  --amb-opacity: 0.7;
+  --amb-c1: rgb(255 255 255 / 0.9);
+  --amb-c2: rgb(255 255 255 / 0.7);
+  --amb-c3: rgb(220 245 255 / 0.8);
+}
+
+[data-theme='lagoon'] .ambient i,
+[data-theme='cotton-candy'] .ambient i,
+[data-theme='lavender'] .ambient i,
+[data-theme='bubblegum'] .ambient i,
+[data-theme='sky-dream'] .ambient i,
+[data-theme='unicorn'] .ambient i {
+  background: radial-gradient(circle at 35% 30%, rgb(255 255 255 / 0.9) 0 12%, transparent 30%);
+  box-shadow: inset 0 0 0 max(1px, 0.25cqmin) var(--c);
+}
+
+/* Glowing embers drifting up from the fireplace. */
+[data-theme='cozy'],
+[data-theme='sunset'] {
+  --amb-display: block;
+  --amb-name: amb-rise;
+  --amb-top: 105%;
+  --amb-size: 0.9cqmin;
+  --amb-radius: 50%;
+  --amb-duration: 16s;
+  --amb-opacity: 0.8;
+  --amb-c1: #ffb347;
+  --amb-c2: #ff7a3d;
+  --amb-c3: #ffd27a;
+}
+
+[data-theme='cozy'] .ambient i,
+[data-theme='sunset'] .ambient i {
+  box-shadow: 0 0 1cqmin var(--c);
+}
+
+/* Dust motes in the evening light. */
+[data-theme='golden-hour'],
+[data-theme='sunrise'],
+[data-theme='dunes'] {
+  --amb-display: block;
+  --amb-name: amb-rise;
+  --amb-top: 105%;
+  --amb-size: 0.7cqmin;
+  --amb-radius: 50%;
+  --amb-duration: 26s;
+  --amb-opacity: 0.7;
+  --amb-c1: rgb(255 250 230);
+  --amb-c2: rgb(255 240 200);
+  --amb-c3: rgb(255 255 255);
+}
+
+/* Retro: the rainbow, sun or stripes swell gently, like a slow groove. */
+[data-theme='retro'],
+[data-theme='retro-sun'],
+[data-theme='retro-night'],
+[data-theme='retro-pastel'] {
+  --deco-moving: var(--face-deco);
+  --deco-origin: 50% 100%;
+}
+
+[data-theme='retro-stripes'] {
+  --deco-moving: var(--face-deco);
+  /* From the corner, so the bands swell inwards and back. */
+  --deco-origin: 100% 100%;
+}
+
+[data-theme='retro'] .amb .clock,
+[data-theme='retro-sun'] .amb .clock,
+[data-theme='retro-stripes'] .amb .clock,
+[data-theme='retro-night'] .amb .clock,
+[data-theme='retro-pastel'] .amb .clock {
+  overflow: hidden;
+}
+
+[data-theme='retro'] .amb .clock::before,
+[data-theme='retro-sun'] .amb .clock::before,
+[data-theme='retro-stripes'] .amb .clock::before,
+[data-theme='retro-night'] .amb .clock::before,
+[data-theme='retro-pastel'] .amb .clock::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--deco-moving);
+  transform-origin: var(--deco-origin);
+  animation: deco-groove 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes deco-groove {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+/* Confetti for Henry. */
+[data-theme='chaos'],
+[data-theme='chaos-burst'],
+[data-theme='chaos-night'] {
+  --amb-display: block;
+  --amb-name: amb-confetti;
+  --amb-size: 1.6cqmin;
+  --amb-ratio: 0.5;
+  --amb-radius: 1px;
+  --amb-duration: 7s;
+  --amb-opacity: 1;
+  --amb-c1: #ffd21f;
+  --amb-c2: #3ddc4a;
+  --amb-c3: #ff3b4e;
+}
+
+/* Starry nights: a few slow rising sparks. */
+[data-theme='nightsurf'] {
+  --amb-display: block;
+  --amb-name: amb-sparkle;
+  --amb-top: 105%;
+  --amb-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 0 C13 8 16 11 24 12 C16 13 13 16 12 24 C11 16 8 13 0 12 C8 11 11 8 12 0Z'/%3E%3C/svg%3E");
+  --amb-size: 1.8cqmin;
+  --amb-duration: 22s;
+  --amb-opacity: 0.7;
+  --amb-c1: #e8f6ff;
+  --amb-c2: #8fd3ff;
+  --amb-c3: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --stagger: 0ms;
+  }
+  .clock,
+  [data-theme='ticktack'] .clock,
+  [data-theme='katja'] .dot.on,
+  [data-theme='katja'] .stage::before,
+  [data-theme='chaos-burst'] .clock::before {
+    animation: none;
+  }
+  .spooky,
+  .ambient {
+    display: none;
+  }
+  .amb .clock::before {
+    animation: none;
+  }
+  .fx .char.on,
+  .tx .char.on,
+  .tx :where(.dot.on) {
+    animation: none;
+  }
+}
