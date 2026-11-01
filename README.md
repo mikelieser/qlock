@@ -95,8 +95,9 @@ Theme und allen Schaltern (Datum, Effekte, Hintergrund, Sekundenrahmen …).
 - Der Bildschirmschoner zeigt die Uhr als Standbild ohne Animationen (`?still`): macOS meldet die Seite im
   Bildschirmschoner-Prozess als unsichtbar, WebKit friert dann alle CSS-Animationen mitten im Ablauf ein
   (verschwommene oder unsichtbare Uhr). Buchstaben-, Übergangs- und Hintergrund-Effekte fehlen deshalb im Dialog.
-- Seit macOS Sonoma hält der Systemprozess alte Bildschirmschoner gern am Leben; der Bildschirmschoner beendet
-  sich deshalb selbst, wenn er ausgeblendet wird.
+- Seit macOS Sonoma hält der Systemprozess alte Bildschirmschoner gern am Leben; QLOCK gibt seine Webansicht
+  deshalb ein paar Sekunden nach dem Ausblenden frei. Den Prozess selbst zu beenden führt dagegen zu weißen
+  Bildschirmen, weil macOS ihn beim Ausblenden sofort neu startet.
 
 ## Sprachen
 
