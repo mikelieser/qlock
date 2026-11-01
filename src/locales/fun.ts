@@ -171,7 +171,13 @@ export const nerd = fun({
       ['ist', 'IST'],
     ],
   ],
-  after: [[['eof', 'EOF']]],
+  // EOF closes the bottom-right corner, after the commands it ends.
+  after: [
+    [
+      ['tools', 'VIMGIT42'],
+      ['eof', 'EOF'],
+    ],
+  ],
   filler: '42BUGNULLVIMGIT',
   intro: ['sudo', 'es', 'ist'],
   outro: ['eof'],
@@ -197,4 +203,25 @@ export const digga = fun({
   filler: 'AURASUSBRO67LOWKEY',
   intro: ['digga', 'es', 'ist'],
   outro: ['no', 'cap'],
+});
+
+/** The Hitchhiker's Guide: "Keine Panik", the towel and the answer to everything. */
+export const anhalter = fun({
+  id: 'anhalter',
+  name: 'Anhalter',
+  before: [
+    [
+      ['keine', 'KEINE'],
+      ['panik', 'PANIK'],
+    ],
+  ],
+  after: [
+    [
+      ['tuch', 'HANDTUCH'],
+      ['answer', '42'],
+    ],
+  ],
+  filler: 'BABELFISCHDNTARTHUR',
+  intro: ['keine', 'panik'],
+  outro: ['answer'],
 });

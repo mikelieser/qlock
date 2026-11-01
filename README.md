@@ -163,7 +163,8 @@ meist nur ein paar Wörter in einer Liste.
 | `kids` Kinderuhr | GUCK MAL ES IST VIERTEL NACH DREI JUHU (Eis, Keks, Teddy in den Füllbuchstaben) |
 | `digga` Digga | DIGGA ES IST FÜNF NACH HALB SIEBEN NO CAP (Aura, sus, Bro, 67, lowkey) |
 | `boerse` Börse | ZEIT IST GELD ZEHN VOR HALB DREI BULLISH (DAX, Bulle, Bär) |
-| `nerd` Nerd | SUDO ES IST VIERTEL VOR ZWEI EOF (42, Bug, Null, Vim, Git) |
+| `nerd` Nerd | SUDO ES IST VIERTEL VOR ZWEI EOF (42, Bug, Null, Vim, Git; EOF unten rechts) |
+| `anhalter` Anhalter | KEINE PANIK VIERTEL VOR ZWEI 42 (Handtuch, Babelfisch, Arthur) |
 | `zen` Zen | JETZT IST NEUN OM (Atme, Liebe, Sein, Ruhe) |
 | `derb` Derb | SCHEISSE ES IST SCHON FÜNF VOR ZWÖLF ALTER (Mist, Manno) |
 
