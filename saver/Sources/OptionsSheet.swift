@@ -187,7 +187,8 @@ final class OptionsSheet: NSObject {
   // MARK: Themes
 
   private func showGroup(_ index: Int) {
-    groupNote.stringValue = Options.shared.themes[index].note ?? ""
+    groupControl.selectedSegment = index
+    updateGroupNote()
     tileGrid.arrangedSubviews.forEach { $0.removeFromSuperview() }
     tiles = [:]
     let items = Options.shared.themes[index].items
@@ -199,6 +200,7 @@ final class OptionsSheet: NSObject {
       for item in items[start..<min(start + perRow, items.count)] {
         let tile = ThemeTile(id: item.id, label: item.label, width: tileWidth, target: self, action: #selector(themeChosen(_:)))
         tile.isSelected = item.id == draft["theme"] as? String
+        tile.badge = badge(for: item.id)
         tiles[item.id] = tile
         line.addArrangedSubview(tile)
         loadThumbnail(for: tile)
@@ -271,6 +273,30 @@ final class OptionsSheet: NSObject {
     guard let sw = checkboxes.first(where: { $0.1 === sender })?.0 else { return }
     draft[sw.key] = sender.state == .on
     changed()
+    if sw.key == "daylight" || sw.key == "festive" {
+      for (id, tile) in tiles { tile.badge = badge(for: id) }
+      updateGroupNote()
+    }
+  }
+
+  /// Themes that "Tageslauf" or "Feste automatisch" pick by themselves get a small label on their tile.
+  private func badge(for id: String) -> String? {
+    let daylight = ["sunrise": "Morgen", "lagoon": "Tag", "sunset": "Abend", "nightsurf": "Nacht"]
+    let festive = ["neujahr": "1.–6. Jan.", "karneval": "Karneval", "ostern": "Ostern", "halloween": "24.–31. Okt.",
+                   "weihnachten": "ab Advent", "silvester": "27.–31. Dez."]
+    if draft["daylight"] as? Bool == true, let label = daylight[id] { return "☀︎ " + label }
+    if draft["festive"] as? Bool == true, let label = festive[id] { return "✦ " + label }
+    return nil
+  }
+
+  private func updateGroupNote() {
+    var note = Options.shared.themes[groupControl.selectedSegment].note ?? ""
+    if draft["daylight"] as? Bool == true {
+      note += "  ·  ☀︎ Tageslauf wählt Sunrise, Lagoon, Sunset und Nightsurf selbst"
+    } else if draft["festive"] as? Bool == true {
+      note += "  ·  ✦ Zu Festen übernimmt das Fest-Theme"
+    }
+    groupNote.stringValue = note
   }
 
   @objc private func showMinuteChange() {
@@ -320,6 +346,15 @@ final class ThemeTile: NSControl {
   let id: String
   private let imageView = NSImageView()
   private let caption: NSTextField
+  private let badgeLabel = NSTextField(labelWithString: "")
+
+  /// Small label on the thumbnail, e.g. when "Tageslauf" picks this theme in the evening.
+  var badge: String? {
+    didSet {
+      badgeLabel.stringValue = badge.map { " \($0) " } ?? ""
+      badgeLabel.isHidden = badge == nil
+    }
+  }
   let imageSize: NSSize
 
   static func height(width: CGFloat) -> CGFloat { (width * 0.62).rounded() + 20 }
@@ -352,10 +387,20 @@ final class ThemeTile: NSControl {
     caption.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
     caption.alignment = .center
     caption.lineBreakMode = .byTruncatingTail
-    for v in [imageView, caption] {
+    badgeLabel.font = .systemFont(ofSize: 9, weight: .semibold)
+    badgeLabel.textColor = .white
+    badgeLabel.wantsLayer = true
+    badgeLabel.layer?.backgroundColor = NSColor.black.withAlphaComponent(0.55).cgColor
+    badgeLabel.layer?.cornerRadius = 3
+    badgeLabel.isHidden = true
+    for v in [imageView, caption, badgeLabel] {
       v.translatesAutoresizingMaskIntoConstraints = false
       addSubview(v)
     }
+    NSLayoutConstraint.activate([
+      badgeLabel.leadingAnchor.constraint(equalTo: imageView.leadingAnchor, constant: 4),
+      badgeLabel.bottomAnchor.constraint(equalTo: imageView.bottomAnchor, constant: -4),
+    ])
     NSLayoutConstraint.activate([
       widthAnchor.constraint(equalToConstant: width),
       heightAnchor.constraint(equalToConstant: Self.height(width: width)),
