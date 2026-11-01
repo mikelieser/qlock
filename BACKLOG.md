@@ -83,7 +83,6 @@
   Browser, Token im Schlüsselbund, Themes und Blätter per API holen und offline zwischenspeichern).
 - Server: Next.js mit Turso (SQLite, Developer-Plan vorhanden) als Datenbank, Magic-Link-Mails und Newsletter über Brevo (vorhanden; Newsletter-Anmeldung zählt als bestätigt,
   sobald die E-Mail über den Magic Link bestätigt ist), Stripe-Webhook für
-  Lizenzen, MCP-Endpunkt und KI-Proxy im selben Projekt. Achtung: Vercel Hobby ist nur nicht-kommerziell; für den
-  Verkauf Vercel Pro oder ein anderer Hoster.
+  Lizenzen, MCP-Endpunkt und KI-Proxy im selben Projekt. Hosting auf Vercel Pro (vorhanden, kommerziell erlaubt).
 - Store: Themes nur als Daten (geprüfte CSS-Teilmenge, keine eigenen Skripte), Moderation, Melde-Funktion,
   Rechte an hochgeladenen Bildern, Impressum und Datenschutz.
