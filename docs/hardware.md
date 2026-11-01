@@ -172,7 +172,7 @@ native/render   qlock-render   Sprites einmal rastern (tiny-skia + Inter), pro F
   Bereichen.
 - **Themes aus dem CSS:** `native/export-themes.ts` exportiert die CSS-Variablen aller Themes; Rust versteht
   die benutzten CSS-Werte (lineare, radiale und konische Verläufe samt Größen und Wiederholung, SVG-Deko per
-  resvg, Bilder, Schatten, Farben). Damit sind alle 42 Themes, alle acht Buchstaben-Effekte, Übergang,
+  resvg, Bilder, Schatten, Farben). Damit sind alle 54 Themes, alle acht Buchstaben-Effekte, Übergang,
   Hintergrund-Teilchen und Sekundenrahmen da. Was CSS über eigene Selektoren macht (Katjas Spinnen, Fledermaus,
   Kerzen, Netz; Chaos-Konturen und -Strahlen; Retro-Groove) steht in `special.rs`.
 - **Aufbau bei 5K:** 120–225 ms (Hintergrund und Buchstaben parallel, weiche Schatten in Viertelauflösung).

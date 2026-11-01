@@ -284,7 +284,7 @@ impl Theme {
                 extras.dot_ring = Some((0.0035, ink));
             }
             "retro" | "retro-sun" | "retro-stripes" | "retro-night" | "retro-pastel" => extras.groove = true,
-            "cozy" => extras.particle_glow = 0.01,
+            "cozy" | "sommernacht" => extras.particle_glow = 0.01,
             "lagoon" | "cotton-candy" | "lavender" | "bubblegum" | "sky-dream" | "unicorn" => extras.bubbles = true,
             _ => {}
         }
