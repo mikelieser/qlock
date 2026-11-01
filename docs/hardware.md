@@ -206,6 +206,25 @@ eine E-Ink-Fassung (Typografie, Muster, Graustufen-Raster). Die Themes aus der W
 Der Hub wandelt alles in ein gerätefertiges Format um, die Geräte bleiben einfach. Adressierung wie bei Quak
 (Raum, Person, Gruppe).
 
+### Umgebung und Wetter
+
+Idee vom 01.11.2026: Die Uhr zeigt nicht nur Tageszeit und Datum, sondern so genau wie möglich, wie es draußen
+gerade ist. Umsetzung später, über Home Assistant.
+
+- **Ohne Sensoren, offline berechnet:** Sonnenstand (Dämmerung, Sonnenaufgang, Mittag, Untergang), Mondphase
+  und Mondstand für den eigenen Ort. Steuert Farben und Licht des Themes, nachts der Mond in der richtigen Phase.
+- **Aus Home Assistant:** eigene Wetterstation und Regensensor (Niederschlag in mm/h), Wind und Böen,
+  Helligkeit draußen, Temperatur, Luftfeuchte/Nebel; dazu Wetterdienst-Daten (Wolken, Gewitter, Schnee) und
+  amtliche Warnungen (DWD) als Ergänzung, wo es keine Sensoren gibt.
+- **Darstellung im Renderer:** Wetter ist ein zweiter Satz Eingaben neben der Uhrzeit, kein eigenes Theme.
+  Jedes Theme bestimmt, wie es darauf reagiert: Teilchen-Effekte (Regen, Schnee, Blätter) mit Dichte und
+  Fallwinkel aus Niederschlag und Wind, Wolken und Nebel als Ebenen, Helligkeit und Sättigung nach Lichtlage.
+  Stärke stufenlos, damit leichter Niesel anders aussieht als Starkregen.
+- **Warnungen** (Sturm, Unwetter, Glätte) überlagern jedes Theme deutlich, aber ruhig; nicht blinkend.
+- **Datenweg:** Home Assistant → Hub → MQTT an alle Uhren und den Mac-Bildschirmschoner; ohne Daten fällt die
+  Uhr auf „klares Wetter“ zurück. Der Renderer bekommt nur Zahlen (z. B. `rain_mm_h`, `wind_ms`, `cloud`,
+  `warning`), die Animation rechnet er selbst – auf Mac und ESP32 gleich.
+
 ### Zeit und Synchronität
 
 Jede Uhr gleicht ihre Zeit per NTP ab (im Heimnetz typischerweise wenige Millisekunden genau). Termine

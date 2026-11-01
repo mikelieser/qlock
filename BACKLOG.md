@@ -24,6 +24,10 @@
 - [ ] Profile pro Person (`?profile=henry`): Lieblings-Themes, Sprache, Tagesplan.
 - [ ] Theme nach Sonnenstand: Morgen, Tag, Abend, Nacht für den eigenen Ort offline berechnen,
       z. B. `sunrise` → `lagoon` → `sunset` → `nightsurf`; weich überblenden.
+- [ ] Uhr als Abbild der Wetterlage draußen, so genau wie möglich (Idee 01.11.2026, über Home Assistant):
+      Sonnenstand und Mondphase (offline berechenbar), Regen und wie stark, Schnee, Wind/Sturm, Wolken,
+      Gewitter, Nebel, Temperatur; Unwetterwarnungen deutlich sichtbar. Details in
+      [docs/hardware.md](docs/hardware.md#umgebung-und-wetter).
 - [ ] Erinnerungen mit Textanzeige („Aufwachen", „Auf geht's zur Schule"), gekoppelt mit Quak-Ansagen.
 - [ ] Dialekte von Leuten aus der Gegend gegenlesen lassen (v. a. Koblenz, Pfalz, Ostfriesland, Schweiz).
 
