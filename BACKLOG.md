@@ -2,11 +2,12 @@
 
 ## Bildschirmschoner (Hauptziel)
 
-- [ ] Weg festlegen: macOS-`.saver` mit `WKWebView`, der den `dist/`-Build lädt, oder ein fertiger
-      Web-Screensaver-Wrapper (z. B. WebViewScreenSaver). Erst Wrapper testen, dann ggf. eigenes Bundle.
-- [ ] Build als einzelne Datei (`vite-plugin-singlefile` o. ä.): `type="module"`-Skripte laden nicht
-      von `file://`, ein `.saver` braucht aber lokale Dateien.
-- [ ] Optionen ohne Tastatur: Einstellungsdialog des Screensavers → URL-Parameter.
+- [x] Eigenes `QLOCK.saver` (Swift + `WKWebView`), kein GitHub Pages, kein WebViewScreenSaver.
+- [x] Build als einzelne Datei (`vite build --mode saver` mit `vite-plugin-singlefile`).
+- [x] Optionsdialog in den Systemeinstellungen → URL-Parameter, Listen automatisch aus der Web-App.
+- [ ] Im echten Betrieb testen: Systemeinstellungen, Sperrbildschirm, Aufwachen.
+- [ ] Pro Bildschirm eigenes Theme oder „zufällig".
+- [ ] Theme `auto` nach Tageszeit / Sonnenstand (passt gut, weil man den Bildschirmschoner nicht bedient).
 - [ ] Mehrere Bildschirme / Retina prüfen, CPU-Last messen (Ziel: praktisch 0 im Leerlauf).
 - [ ] Burn-in-Schutz: Uhr langsam ein paar Pixel wandern lassen (für OLED ein Muss).
 - [ ] CPU-Last der Effekte messen (Schimmer, Flackern, Teilchen).

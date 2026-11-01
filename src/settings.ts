@@ -67,7 +67,7 @@ export interface Settings {
   ambient: boolean;
 }
 
-const DEFAULTS: Settings = {
+export const DEFAULTS: Settings = {
   locale: 'de',
   theme: 'formrausch',
   mode: 'live',

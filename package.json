@@ -7,6 +7,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "saver": "sh saver/build.sh",
+    "saver:install": "sh saver/build.sh --install",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -20,6 +22,7 @@
   "devDependencies": {
     "typescript": "^7.0.2",
     "vite": "^8.3.5",
+    "vite-plugin-singlefile": "2.3.3",
     "vite-plugin-solid": "^2.11.15",
     "vitest": "^5.0.5"
   },

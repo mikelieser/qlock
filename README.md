@@ -36,6 +36,7 @@ bun dev            # http://localhost:5173 mit Hot Reload
 bun run test       # Uhrenlogik aller Sprachen (Vitest)
 bun run build      # Typecheck + Build nach dist/
 bun run preview    # gebauten Stand ansehen
+bun run saver:install  # Mac-Bildschirmschoner bauen und installieren
 ```
 
 Paketmanager ist [Bun](https://bun.sh). Achtung: `bun test` (ohne `run`) startet Buns eigenen Test-Runner
@@ -77,6 +78,22 @@ Alle Einstellungen lassen sich per URL setzen und gehen dem Gespeicherten vor, z
 | `theme` | Theme-Name, siehe unten |
 | `mode` | `live`, `demo`, `all` |
 | `intro`, `dots`, `stretch`, `progress`, `date`, `effect`, `transition`, `ambient` | `1` / `0` |
+
+## Mac-Bildschirmschoner
+
+`bun run saver:install` baut `QLOCK.saver` und legt ihn nach `~/Library/Screen Savers`. Danach in den
+Systemeinstellungen unter **Bildschirmschoner** „QLOCK" wählen; **Optionen …** öffnet einen Dialog mit Sprache,
+Theme und allen Schaltern (Datum, Effekte, Hintergrund, Sekundenrahmen …).
+
+- Der Bildschirmschoner ist eine schlanke Swift-Hülle (`saver/Sources`) um einen `WKWebView`. Die Uhr steckt als
+  eine einzige HTML-Datei im Bundle (`vite build --mode saver`), läuft also offline.
+- Der Dialog übergibt die Auswahl als URL-Parameter, die Uhrenlogik bleibt komplett in der Web-App.
+- Sprach- und Theme-Listen erzeugt `saver/options.ts` beim Bauen aus `LOCALE_GROUPS` und `THEME_GROUPS`: neue
+  Themes und Dialekte erscheinen ohne Swift-Änderung im Dialog.
+- Ad-hoc signiert, für den eigenen Mac reicht das. Auf einem anderen Mac einmal per Rechtsklick → Öffnen
+  freigeben oder `xattr -dr com.apple.quarantine QLOCK.saver`.
+- Seit macOS Sonoma hält der Systemprozess alte Bildschirmschoner gern am Leben; der Bildschirmschoner beendet
+  sich deshalb selbst, wenn er ausgeblendet wird.
 
 ## Sprachen
 
@@ -162,6 +179,10 @@ src/
   components/Spooky.tsx   Spinnen und Fledermaus fürs Katja-Theme
   App.tsx               Einstellungen, Tastatur, Timer, Vollbild
   settings.ts           Defaults, Theme-Gruppen, localStorage, URL-Parameter
+saver/
+  Sources/*.swift       Bildschirmschoner: WKWebView-Hülle und Optionsdialog
+  options.ts            Sprach-/Theme-Listen für den Optionsdialog
+  build.sh              baut QLOCK.saver (universal, ad-hoc signiert), --install installiert
 docs/
   hardware.md           Konzept für eigene Hardware-Uhren
   sprachen.md           Welche Sprachen auf eine Wortuhr passen und warum

@@ -7,5 +7,6 @@
 - Sprachgruppen stehen in `src/locales/index.ts`, Theme-Gruppen in `src/settings.ts`; beide bestimmen auch die Reihenfolge der Pfeiltasten.
 - Bedienung nur über Tastatur, keine sichtbaren Buttons auf der Uhr.
 - Themes nur über Custom Properties in `src/styles.css`; keine Laufzeit-Abhängigkeiten ohne guten Grund.
+- Mac-Bildschirmschoner in `saver/` (Swift-Hülle, `bun run saver:install`); er nutzt nur URL-Parameter, die Uhrenlogik bleibt in der Web-App.
 - Offene Ideen stehen in `BACKLOG.md`, erledigte Punkte dort abhaken. Hardware-Konzept in `docs/hardware.md`, Sprachanalyse in `docs/sprachen.md`.
 - Privates Familienprojekt; eigene Raster statt QLOCKTWO-Raster (außer `de`/`en` aus 2014).
