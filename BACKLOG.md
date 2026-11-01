@@ -81,7 +81,8 @@
   eigenes Häkchen (Double-Opt-in). Kaufkunden: MCP-Zugang für Themes und Buchstabenblätter, KI-Budget für den
   Theme-Assistenten. Gebaut wird nur im Web; Bildschirmschoner sind reine Konsumenten (Anmeldung per Code im
   Browser, Token im Schlüsselbund, Themes und Blätter per API holen und offline zwischenspeichern).
-- Server: Next.js mit Turso (SQLite) als Datenbank, Magic-Link-Mails über einen Mail-Dienst, Stripe-Webhook für
+- Server: Next.js mit Turso (SQLite) als Datenbank, Magic-Link-Mails und Newsletter über Brevo (vorhanden; Newsletter-Anmeldung zählt als bestätigt,
+  sobald die E-Mail über den Magic Link bestätigt ist), Stripe-Webhook für
   Lizenzen, MCP-Endpunkt und KI-Proxy im selben Projekt. Achtung: Vercel Hobby ist nur nicht-kommerziell; für den
   Verkauf Vercel Pro oder ein anderer Hoster.
 - Store: Themes nur als Daten (geprüfte CSS-Teilmenge, keine eigenen Skripte), Moderation, Melde-Funktion,
