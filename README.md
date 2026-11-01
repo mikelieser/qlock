@@ -161,6 +161,7 @@ meist nur ein paar Wörter in einer Liste.
 | | Beispiel |
 |---|---|
 | `kids` Kinderuhr | GUCK MAL ES IST VIERTEL NACH DREI JUHU (Eis, Keks, Teddy in den Füllbuchstaben) |
+| `digga` Digga | DIGGA ES IST FÜNF NACH HALB SIEBEN NO CAP (Aura, sus, Bro, 67, lowkey) |
 | `boerse` Börse | ZEIT IST GELD ZEHN VOR HALB DREI BULLISH (DAX, Bulle, Bär) |
 | `nerd` Nerd | SUDO ES IST VIERTEL VOR ZWEI EOF (42, Bug, Null, Vim, Git) |
 | `zen` Zen | JETZT IST NEUN OM (Atme, Liebe, Sein, Ruhe) |

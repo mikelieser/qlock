@@ -176,3 +176,25 @@ export const nerd = fun({
   intro: ['sudo', 'es', 'ist'],
   outro: ['eof'],
 });
+
+/** Youth slang 2025/26: "Digga, es ist … no cap", aura, sus, bro and 67 in the filler letters. */
+export const digga = fun({
+  id: 'digga',
+  name: 'Digga',
+  before: [
+    [
+      ['digga', 'DIGGA'],
+      ['es', 'ES'],
+      ['ist', 'IST'],
+    ],
+  ],
+  after: [
+    [
+      ['no', 'NO'],
+      ['cap', 'CAP'],
+    ],
+  ],
+  filler: 'AURASUSBRO67LOWKEY',
+  intro: ['digga', 'es', 'ist'],
+  outro: ['no', 'cap'],
+});

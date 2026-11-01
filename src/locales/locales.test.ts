@@ -15,7 +15,7 @@ import { nl } from './nl';
 import { sv } from './sv';
 import type { Locale } from '../core/locale';
 import { LOCALES } from '.';
-import { boerse, derb, kids, nerd, zen } from './fun';
+import { boerse, derb, digga, kids, nerd, zen } from './fun';
 
 const at = (time: string, seconds = 0) => {
   const [h, m] = time.split(':').map(Number);
@@ -284,6 +284,7 @@ describe('all locales', () => {
 describe('fun faces', () => {
   it('kids', () => expect(say(kids, '15:15')).toBe('GUCK MAL ES IST VIERTEL NACH DREI JUHU'));
   it('banker', () => expect(say(boerse, '14:20')).toBe('ZEIT IST GELD ZEHN VOR HALB DREI BULLISH'));
+  it('youth slang', () => expect(say(digga, '18:35')).toBe('DIGGA ES IST FÜNF NACH HALB SIEBEN NO CAP'));
   it('nerd', () => expect(say(nerd, '13:45')).toBe('SUDO ES IST VIERTEL VOR ZWEI EOF'));
   it('zen', () => expect(say(zen, '9:00')).toBe('JETZT IST NEUN OM'));
   it('rude', () => expect(say(derb, '23:55')).toBe('SCHEISSE ES IST SCHON FÜNF VOR ZWÖLF ALTER'));

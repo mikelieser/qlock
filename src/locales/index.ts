@@ -8,7 +8,7 @@ import { en } from './en';
 import { es } from './es';
 import { formrauschLocale } from './formrausch';
 import { fr } from './fr';
-import { boerse, derb, kids, nerd, zen } from './fun';
+import { boerse, derb, digga, kids, nerd, zen } from './fun';
 import { it } from './it';
 import { ja } from './ja';
 import { nl } from './nl';
@@ -39,7 +39,7 @@ export const LOCALE_GROUPS: readonly { name: string; note: string; locales: read
       saarland,
     ],
   },
-  { name: 'Spaß', note: 'Augenzwinkernde Blätter auf Deutsch', locales: [kids, boerse, nerd, zen, derb] },
+  { name: 'Spaß', note: 'Augenzwinkernde Blätter auf Deutsch', locales: [kids, digga, boerse, nerd, zen, derb] },
   { name: 'Europa', note: 'Eigene Raster', locales: [en, nl, da, sv, fr, es, it, el] },
   { name: 'Asien', note: 'Quadratische Schriftzeichen', locales: [ja] },
 ];
