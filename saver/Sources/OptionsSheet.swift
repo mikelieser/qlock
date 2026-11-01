@@ -9,6 +9,7 @@ final class OptionsSheet: NSObject {
   private var draft: [String: Any] = [:]
   private let localePopup = NSPopUpButton()
   private let groupControl = NSSegmentedControl()
+  private let groupNote = NSTextField(labelWithString: "")
   private let tileGrid = NSStackView()
   private var tiles: [String: ThemeTile] = [:]
   private var checkboxes: [(Options.Switch, NSButton)] = []
@@ -51,6 +52,10 @@ final class OptionsSheet: NSObject {
     groupControl.target = self
     groupControl.action = #selector(groupChanged)
     content.addArrangedSubview(groupControl)
+    groupNote.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
+    groupNote.textColor = .secondaryLabelColor
+    content.addArrangedSubview(groupNote)
+    content.setCustomSpacing(6, after: groupControl)
     tileGrid.orientation = .vertical
     tileGrid.alignment = .leading
     tileGrid.spacing = 10
@@ -59,22 +64,29 @@ final class OptionsSheet: NSObject {
     groupControl.selectedSegment = options.themes.firstIndex { $0.items.contains { $0.id == current } } ?? 0
     showGroup(groupControl.selectedSegment)
 
-    for group in ["Anzeige", "Bewegung"] {
-      content.addArrangedSubview(heading(group))
+    let sections = [
+      ("Anzeige", "Was auf der Uhr zu sehen ist."),
+      ("Bewegung", "Was sich bewegt – jedes Theme hat dafür seine eigene Art."),
+    ]
+    for (group, note) in sections {
+      content.addArrangedSubview(heading(group, note: note))
       let boxes = options.switches.filter { $0.group == group }.map { sw -> NSButton in
         let box = NSButton(checkboxWithTitle: sw.label, target: self, action: #selector(switchChanged(_:)))
         box.state = (draft[sw.key] as? Bool ?? sw.default) ? .on : .off
+        box.toolTip = sw.hint
         checkboxes.append((sw, box))
         return box
       }
       content.addArrangedSubview(columns(boxes, perRow: 3))
     }
 
+    let reset = NSButton(title: "Standard", target: self, action: #selector(resetToDefaults))
+    reset.toolTip = "Alle Einstellungen auf den Anfangszustand, Sprache bleibt."
     let cancel = NSButton(title: "Abbrechen", target: self, action: #selector(close))
     cancel.keyEquivalent = "\u{1b}"
     let ok = NSButton(title: "OK", target: self, action: #selector(save))
     ok.keyEquivalent = "\r"
-    let buttons = NSStackView(views: [NSView(), cancel, ok])
+    let buttons = NSStackView(views: [reset, NSView(), cancel, ok])
     content.addArrangedSubview(buttons)
     buttons.widthAnchor.constraint(equalToConstant: width).isActive = true
 
@@ -103,13 +115,31 @@ final class OptionsSheet: NSObject {
       view.startAnimation()
       preview = view
     }
+    // Watch the words change without waiting for the next minute.
+    let replay = NSButton(title: "Minutenwechsel zeigen", target: self, action: #selector(showMinuteChange))
+    replay.bezelStyle = .accessoryBarAction
+    replay.controlSize = .small
+    replay.toolTip = "Spielt den nächsten Minutenwechsel in der Vorschau sofort ab."
+    replay.translatesAutoresizingMaskIntoConstraints = false
+    box.addSubview(replay)
+    NSLayoutConstraint.activate([
+      replay.centerXAnchor.constraint(equalTo: box.centerXAnchor),
+      replay.bottomAnchor.constraint(equalTo: box.bottomAnchor, constant: -10),
+    ])
     return box
   }
 
-  private func heading(_ text: String) -> NSTextField {
+  private func heading(_ text: String, note: String? = nil) -> NSView {
     let label = NSTextField(labelWithString: text)
     label.font = .boldSystemFont(ofSize: NSFont.systemFontSize)
-    return label
+    guard let note else { return label }
+    let detail = NSTextField(labelWithString: note)
+    detail.font = .systemFont(ofSize: NSFont.smallSystemFontSize)
+    detail.textColor = .secondaryLabelColor
+    let row = NSStackView(views: [label, detail])
+    row.spacing = 8
+    row.alignment = .firstBaseline
+    return row
   }
 
   private func row(label text: String, _ control: NSView) -> NSView {
@@ -157,6 +187,7 @@ final class OptionsSheet: NSObject {
   // MARK: Themes
 
   private func showGroup(_ index: Int) {
+    groupNote.stringValue = Options.shared.themes[index].note ?? ""
     tileGrid.arrangedSubviews.forEach { $0.removeFromSuperview() }
     tiles = [:]
     let items = Options.shared.themes[index].items
@@ -239,6 +270,23 @@ final class OptionsSheet: NSObject {
   @objc private func switchChanged(_ sender: NSButton) {
     guard let sw = checkboxes.first(where: { $0.1 === sender })?.0 else { return }
     draft[sw.key] = sender.state == .on
+    changed()
+  }
+
+  @objc private func showMinuteChange() {
+    preview?.showMinuteChange()
+  }
+
+  @objc private func resetToDefaults() {
+    let options = Options.shared
+    draft["theme"] = options.defaults["theme"] ?? "formrausch"
+    for (sw, box) in checkboxes {
+      draft[sw.key] = sw.default
+      box.state = sw.default ? .on : .off
+    }
+    let current = draft["theme"] as? String ?? ""
+    groupControl.selectedSegment = options.themes.firstIndex { $0.items.contains { $0.id == current } } ?? 0
+    showGroup(groupControl.selectedSegment)
     changed()
   }
 

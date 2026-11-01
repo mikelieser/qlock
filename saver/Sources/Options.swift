@@ -4,8 +4,8 @@ import ScreenSaver
 /// Option lists generated from the web app by `saver/options.ts`.
 struct Options: Decodable {
   struct Item: Decodable { let id: String; let label: String; let lang: String? }
-  struct Group: Decodable { let group: String; let items: [Item] }
-  struct Switch: Decodable { let key: String; let label: String; let group: String; let `default`: Bool }
+  struct Group: Decodable { let group: String; let note: String?; let items: [Item] }
+  struct Switch: Decodable { let key: String; let label: String; let group: String; let hint: String?; let `default`: Bool }
 
   let locales: [Group]
   let themes: [Group]

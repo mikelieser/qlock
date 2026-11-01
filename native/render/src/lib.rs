@@ -82,6 +82,7 @@ impl Instance {
     }
 }
 
+#[derive(Clone)]
 pub(crate) struct Layout {
     pub face: [f32; 4],
     pub radius: (f32, f32),
@@ -204,7 +205,11 @@ pub struct Engine {
     options: Options,
     layout: Layout,
     sprites: Vec<Sprite>,
+    /// The page around the face (not in full-screen mode).
+    page: Option<u32>,
+    /// The face with its shadow; `face_origin` is the sprite's top left on screen.
     background: u32,
+    face_origin: (f32, f32),
     /// Per distinct letter, and per cell the index into `letters`.
     letters: Vec<LetterSprites>,
     cell_letter: Vec<usize>,
@@ -247,7 +252,9 @@ impl Engine {
             options,
             layout,
             sprites: Vec::new(),
+            page: None,
             background: 0,
+            face_origin: (0.0, 0.0),
             letters: Vec::new(),
             cell_letter: Vec::new(),
             hued: HashMap::new(),
@@ -299,25 +306,43 @@ impl Engine {
     fn build(&mut self, width: u32, height: u32, caption: Option<&str>) {
         let theme = self.theme.clone();
         let u = self.units();
-        let l = &self.layout;
+        let l = &self.layout.clone();
 
-        // Page, face shadow, face, decoration. With particles on, CSS drops the static decoration.
-        let mut bg = FloatCanvas::new(width, height);
-        bg.paint_css(&theme.page_bg, [0.0, 0.0, width as f32, height as f32], None, &u);
+        // The page and the clock face are separate sprites, so the face can spring in on its own (CSS
+        // clock-in). In full-screen mode the face covers the page, which is then left out.
+        if !self.options.stretch {
+            let mut page = FloatCanvas::new(width, height);
+            page.paint_css(&theme.page_bg, [0.0, 0.0, width as f32, height as f32], None, &u);
+            let page = page.into_pixmap();
+            self.page = Some(self.push(page));
+        }
+        // Face with its shadow, decoration and extras, on a canvas just big enough for the shadow.
+        let reach = if self.options.stretch {
+            0.0
+        } else {
+            let base = l.face[2].min(l.face[3]);
+            theme.face_shadow.iter().map(|s| s.x.px(&u, base).abs().max(s.y.px(&u, base).abs()) + s.blur.px(&u, base) + s.spread.px(&u, base).max(0.0)).fold(0.0, f32::max)
+        };
+        let m = reach.ceil();
+        let mut fl = l.clone();
+        fl.face = [m, m, l.face[2], l.face[3]];
+        let (cw, ch) = ((l.face[2] + 2.0 * m).ceil() as u32, (l.face[3] + 2.0 * m).ceil() as u32);
+        let mut bg = FloatCanvas::new(cw, ch);
         if !self.options.stretch {
             for shadow in theme.face_shadow.iter().rev() {
-                special::face_shadow(&mut bg, l, shadow, &u);
+                special::face_shadow(&mut bg, &fl, shadow, &u);
             }
         }
-        let mask = rounded_rect_mask_xy(width, height, l.face, l.radius.0, l.radius.1);
-        bg.paint_css(&theme.face_bg, l.face, mask.as_ref(), &u);
+        let mask = rounded_rect_mask_xy(cw, ch, fl.face, fl.radius.0, fl.radius.1);
+        bg.paint_css(&theme.face_bg, fl.face, mask.as_ref(), &u);
         let deco_moves = theme.extras.groove && self.options.ambient;
         if theme.face_deco != "none" && !self.options.ambient {
-            bg.paint_css(&theme.face_deco, l.face, mask.as_ref(), &u);
+            bg.paint_css(&theme.face_deco, fl.face, mask.as_ref(), &u);
         }
-        special::static_decoration(&mut bg, &theme, l, mask.as_ref(), &u);
+        special::static_decoration(&mut bg, &theme, &fl, mask.as_ref(), &u);
         let bg = bg.into_pixmap();
         self.background = self.push(bg);
+        self.face_origin = (l.face[0] - m, l.face[1] - m);
         if deco_moves {
             self.special.groove = special::groove_sprite(self, width, height);
         }
@@ -719,8 +744,12 @@ impl Engine {
 
         let mut out = std::mem::take(&mut self.instances);
         out.clear();
+        let (vw, vh) = self.layout.view;
+        // Always an entry for the page, so the list keeps its length; invisible in full-screen mode.
+        out.push(Instance::at(self.page.unwrap_or(self.background), 0, vw / 2.0, vh / 2.0, if self.page.is_some() { 1.0 } else { 0.0 }));
+        let clock_from = out.len();
         let bg = &self.sprites[self.background as usize];
-        out.push(Instance::at(self.background, 0, bg.width as f32 / 2.0, bg.height as f32 / 2.0, 1.0));
+        out.push(Instance::at(self.background, 0, self.face_origin.0 + bg.width as f32 / 2.0, self.face_origin.1 + bg.height as f32 / 2.0, 1.0));
 
         special::before_particles(self, &mut out, t);
         self.push_particles(&mut out, t);
@@ -734,10 +763,35 @@ impl Engine {
 
         self.push_dots(&mut out, t);
         self.push_letters(&mut out, t);
+        self.clock_in(&mut out[clock_from..], since_start);
         special::after_letters(self, &mut out, t, since_start);
 
         self.instances = out;
         &self.instances
+    }
+
+    /// The clock appearing at the start (CSS `clock-in`: fade in from 94 %; TickTack's `ticktack-in`:
+    /// springs from a squashed quarter size). Scales every clock instance about the face centre.
+    fn clock_in(&self, list: &mut [Instance], since: f64) {
+        let [fx, fy, fw, fh] = self.layout.face;
+        let (cx, cy) = (fx + fw / 2.0, fy + fh / 2.0);
+        let (sx, sy, opacity) = if self.theme.extras.spring_in {
+            let k = bezier([0.34, 1.8, 0.5, 1.0], (since / 1.6) as f32);
+            (0.25 + 0.75 * k, 0.5 + 0.5 * k, 1.0)
+        } else {
+            let k = bezier([0.16, 1.0, 0.3, 1.0], (since / 1.4) as f32);
+            (0.94 + 0.06 * k, 0.94 + 0.06 * k, k)
+        };
+        if (sx - 1.0).abs() < 1e-4 && (sy - 1.0).abs() < 1e-4 && opacity >= 1.0 {
+            return;
+        }
+        for inst in list {
+            inst.x = cx + (inst.x - cx) * sx;
+            inst.y = cy + (inst.y - cy) * sy;
+            inst.scale *= sx;
+            inst.scale_y *= sy / sx;
+            inst.opacity *= opacity;
+        }
     }
 
     fn push_particles(&self, out: &mut Vec<Instance>, t: f64) {

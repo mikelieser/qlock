@@ -60,6 +60,15 @@ final class QlockView: ScreenSaverView {
     built = nil
   }
 
+  /// For the options sheet: restart the clock a few seconds before the next full minute, so the
+  /// change of words can be watched right away.
+  @objc public func showMinuteChange() {
+    let now = Date().timeIntervalSince1970
+    let next = (now / 60).rounded(.down) * 60 + 60
+    clockOffset = next - 3.0 - now
+    built = nil
+  }
+
   /// (Re)creates the engine when size, settings or the date line change.
   private func ensureEngine() {
     let size = bounds.size
