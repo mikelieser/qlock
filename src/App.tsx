@@ -22,6 +22,9 @@ function ageOn(date: Date, birthday: Date): number {
   return date.getFullYear() - birthday.getFullYear() - (hadBirthday ? 0 : 1);
 }
 const EMPTY: Frame = { words: [], dots: 0 };
+// The macOS screensaver host shows the page while WebKit treats it as hidden, which freezes CSS
+// animations mid-way (blurred, half-faded clock). `?still` renders the end state instead.
+const STILL = new URLSearchParams(location.search).has('still');
 
 export function App() {
   const [settings, setSettings] = createStore(loadSettings());
@@ -215,6 +218,7 @@ export function App() {
       class="stage"
       classList={{
         idle: idle() && !helpOpen() && !pickerOpen() && !langOpen(),
+        still: STILL,
         stretch: settings.stretch,
         seconds: showSeconds(),
         fx: settings.effect,

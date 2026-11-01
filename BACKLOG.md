@@ -5,6 +5,8 @@
 - [x] Eigenes `QLOCK.saver` (Swift + `WKWebView`), kein GitHub Pages, kein WebViewScreenSaver.
 - [x] Build als einzelne Datei (`vite build --mode saver` mit `vite-plugin-singlefile`).
 - [x] Optionsdialog in den Systemeinstellungen → URL-Parameter, Listen automatisch aus der Web-App.
+- [ ] Animationen im Bildschirmschoner: WebKit hält die Seite dort für unsichtbar (kein Fenster) und friert
+      CSS-Animationen ein; deshalb läuft er mit `?still`. Ideen: Effekte per JS-Timer statt CSS, eigenes Fenster.
 - [ ] Im echten Betrieb testen: Systemeinstellungen, Sperrbildschirm, Aufwachen.
 - [ ] Pro Bildschirm eigenes Theme oder „zufällig".
 - [ ] Theme `auto` nach Tageszeit / Sonnenstand (passt gut, weil man den Bildschirmschoner nicht bedient).

@@ -2138,3 +2138,15 @@ body {
     animation: none;
   }
 }
+
+/* Screensaver: no motion at all, see STILL in App.tsx. */
+.still *,
+.still *::before,
+.still *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+.still .ambient {
+  display: none;
+}

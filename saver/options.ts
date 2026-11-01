@@ -6,11 +6,10 @@ import { DEFAULTS, THEME_GROUPS, themeLabel, type Settings } from '../src/settin
 
 type Switch = { [K in keyof Settings]: Settings[K] extends boolean ? K : never }[keyof Settings];
 
+// Effects, transition and background particles are left out: the screensaver host freezes all
+// animation (see STILL in src/App.tsx).
 const SWITCHES: { key: Switch; label: string }[] = [
   { key: 'date', label: 'Wochentag und Datum' },
-  { key: 'effect', label: 'Buchstaben-Effekt' },
-  { key: 'transition', label: 'Übergang beim Zeitwechsel' },
-  { key: 'ambient', label: 'Hintergrund-Effekt' },
   { key: 'progress', label: 'Sekundenrahmen' },
   { key: 'dots', label: 'Minutenpunkte' },
   { key: 'intro', label: '„Es ist“ anzeigen' },

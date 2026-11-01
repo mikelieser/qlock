@@ -45,6 +45,11 @@ enum Preferences {
       URLQueryItem(name: "locale", value: string("locale")),
       URLQueryItem(name: "theme", value: string("theme")),
       URLQueryItem(name: "mode", value: "live"),
+      URLQueryItem(name: "still", value: "1"),
+      // Animated extras stay off; the web app would otherwise restore them from its own storage.
+      URLQueryItem(name: "effect", value: "0"),
+      URLQueryItem(name: "transition", value: "0"),
+      URLQueryItem(name: "ambient", value: "0"),
     ]
     for sw in Options.shared.switches {
       items.append(URLQueryItem(name: sw.key, value: bool(sw) ? "1" : "0"))

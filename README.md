@@ -82,7 +82,7 @@ Alle Einstellungen lassen sich per URL setzen und gehen dem Gespeicherten vor, z
 ## Mac-Bildschirmschoner
 
 `bun run saver:install` baut `QLOCK.saver` und legt ihn nach `~/Library/Screen Savers`. Danach in den
-Systemeinstellungen unter **Bildschirmschoner** „QLOCK" wählen; **Optionen …** öffnet einen Dialog mit Sprache,
+Systemeinstellungen unter **Hintergrundbild → Bildschirmschoner …** „QLOCK" wählen (einen eigenen Bereich „Bildschirmschoner" gibt es nicht mehr; wann er startet, steht unter **Sperrbildschirm**); **Optionen …** öffnet einen Dialog mit Sprache,
 Theme und allen Schaltern (Datum, Effekte, Hintergrund, Sekundenrahmen …).
 
 - Der Bildschirmschoner ist eine schlanke Swift-Hülle (`saver/Sources`) um einen `WKWebView`. Die Uhr steckt als
@@ -92,6 +92,9 @@ Theme und allen Schaltern (Datum, Effekte, Hintergrund, Sekundenrahmen …).
   Themes und Dialekte erscheinen ohne Swift-Änderung im Dialog.
 - Ad-hoc signiert, für den eigenen Mac reicht das. Auf einem anderen Mac einmal per Rechtsklick → Öffnen
   freigeben oder `xattr -dr com.apple.quarantine QLOCK.saver`.
+- Der Bildschirmschoner zeigt die Uhr als Standbild ohne Animationen (`?still`): macOS meldet die Seite im
+  Bildschirmschoner-Prozess als unsichtbar, WebKit friert dann alle CSS-Animationen mitten im Ablauf ein
+  (verschwommene oder unsichtbare Uhr). Buchstaben-, Übergangs- und Hintergrund-Effekte fehlen deshalb im Dialog.
 - Seit macOS Sonoma hält der Systemprozess alte Bildschirmschoner gern am Leben; der Bildschirmschoner beendet
   sich deshalb selbst, wenn er ausgeblendet wird.
 
