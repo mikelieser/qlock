@@ -68,7 +68,7 @@
   Code-Signatur.
 - Vertrieb (zu prüfen): Mac App Store nimmt keine reinen Bildschirmschoner (.saver) an, nur sandboxed Apps →
   Bildschirmschoner direkt verkaufen, App Store höchstens für eine Uhr-App. Microsoft Store nimmt klassische
-  Installer (EXE/MSI) an, darüber ginge die .scr. Zahlung beim Direktverkauf über einen Merchant of Record:
-  Stripe Managed Payments (Stripe hat Lemon Squeezy übernommen) oder Paddle.
+  Installer (EXE/MSI) an, darüber ginge die .scr. Zahlung beim Direktverkauf: Stripe Managed Payments
+  (Merchant of Record, Stripe hat Lemon Squeezy übernommen) – entschieden 01.11.2026, kein Paddle.
 - Store: Themes nur als Daten (geprüfte CSS-Teilmenge, keine eigenen Skripte), Moderation, Melde-Funktion,
   Rechte an hochgeladenen Bildern, Impressum und Datenschutz.
