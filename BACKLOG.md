@@ -76,5 +76,13 @@
   inklusive StandBy (Nachttischuhr am Ladekabel; Widgets aktualisieren je Minute, kaum Animation). Apple TV nur für
   Anlässe, bei denen die Uhrzeit im Mittelpunkt steht (z. B. Silvester-Countdown, Weihnachten). Wallpaper Engine,
   Smartwatches, Android TV vorerst nein.
+- Konten (01.11.2026): Anschauen, Blättern, Einstellungen im Web für alle ohne Konto. Für mehr (eigene Themes und
+  Buchstabenblätter speichern, veröffentlichen, abstimmen) Anmeldung per E-Mail mit Magic Link, Newsletter als
+  eigenes Häkchen (Double-Opt-in). Kaufkunden: MCP-Zugang für Themes und Buchstabenblätter, KI-Budget für den
+  Theme-Assistenten. Gebaut wird nur im Web; Bildschirmschoner sind reine Konsumenten (Anmeldung per Code im
+  Browser, Token im Schlüsselbund, Themes und Blätter per API holen und offline zwischenspeichern).
+- Server: Next.js mit Turso (SQLite) als Datenbank, Magic-Link-Mails über einen Mail-Dienst, Stripe-Webhook für
+  Lizenzen, MCP-Endpunkt und KI-Proxy im selben Projekt. Achtung: Vercel Hobby ist nur nicht-kommerziell; für den
+  Verkauf Vercel Pro oder ein anderer Hoster.
 - Store: Themes nur als Daten (geprüfte CSS-Teilmenge, keine eigenen Skripte), Moderation, Melde-Funktion,
   Rechte an hochgeladenen Bildern, Impressum und Datenschutz.
