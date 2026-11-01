@@ -55,6 +55,7 @@ Alles läuft über die Tastatur, `?` zeigt die Kürzel. Es gibt bewusst keine Bu
 | `E` | Buchstaben-Effekt ein/aus |
 | `U` | Übergangseffekt beim Zeitwechsel ein/aus |
 | `B` | Hintergrund-Effekt ein/aus |
+| `A` | Tageslauf: Theme nach Sonnenstand |
 | `K` | Feste automatisch: Karneval, Ostern, Halloween, Advent, Silvester, Neujahr |
 | `R` | Sekundenrahmen ein/aus |
 | Leertaste / Klick auf die Uhr | Sekunden groß im Raster, nochmal oder `Esc` zurück |
@@ -78,7 +79,7 @@ Alle Einstellungen lassen sich per URL setzen und gehen dem Gespeicherten vor, z
 | `locale` | Sprachkürzel, siehe unten |
 | `theme` | Theme-Name, siehe unten |
 | `mode` | `live`, `demo`, `all` |
-| `intro`, `dots`, `stretch`, `progress`, `date`, `effect`, `transition`, `ambient`, `festive` | `1` / `0` |
+| `intro`, `dots`, `stretch`, `progress`, `date`, `effect`, `transition`, `ambient`, `festive`, `daylight` | `1` / `0` |
 
 ## Mac-Bildschirmschoner
 
@@ -185,6 +186,10 @@ Welche weiteren Sprachen gut oder schlecht auf eine Wortuhr passen (Arabisch und
 Mit „Feste automatisch“ (`K`) übernimmt das Fest-Theme zur passenden Zeit: Neujahr 1.–6. Januar, Karneval
 Weiberfastnacht bis Veilchendienstag, Ostern Palmsonntag bis Ostermontag, Halloween 24.–31. Oktober, Weihnachten
 1. Advent bis 26. Dezember, Silvester 27.–31. Dezember. Sonst gilt das gewählte Theme.
+
+Mit „Tageslauf“ (`A`) folgt das Theme der Sonne über Koblenz: Sunrise in der Morgendämmerung, Lagoon am Tag,
+Sunset am Abend, Nightsurf nachts (Grenzen: −6° und 8° Sonnenhöhe). Ein Fest-Theme geht vor. Rechnung in
+`src/core/daylight.ts` und `native/core`, gegen dieselben Zeitpunkte getestet.
 
 Ein Theme ist ein Block Custom Properties in `src/styles.css` unter `[data-theme='…']`: Hintergrund,
 Buchstabenfarben, Eckpunkt-Farben (`--dot-1` … `--dot-4`), Buchstaben-Effekt (`--fx-*`) und

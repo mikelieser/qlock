@@ -8,6 +8,7 @@ description = "Word clock logic: which cells light up when. Data-driven, no_std,
 
 [dependencies]
 serde = { workspace = true }
+libm = "0.2"
 
 [dev-dependencies]
 serde_json = { workspace = true }

@@ -23,8 +23,8 @@
 
 - [ ] Profile pro Person (`?profile=henry`): Lieblings-Themes, Sprache, Tagesplan.
 - [x] Fest-Themes automatisch zum Datum (Taste `K`, im Bildschirmschoner „Feste automatisch“).
-- [ ] Theme nach Sonnenstand: Morgen, Tag, Abend, Nacht für den eigenen Ort offline berechnen,
-      z. B. `sunrise` → `lagoon` → `sunset` → `nightsurf`; weich überblenden.
+- [x] Theme nach Sonnenstand (Taste `A`, „Tageslauf“), fest für Koblenz. Offen: Ort vom Hub, weiche Überblendung,
+      eigene Zuordnung pro Person.
 - [ ] Uhr als Abbild der Wetterlage draußen, so genau wie möglich (Idee 01.11.2026, über Home Assistant):
       Sonnenstand und Mondphase (offline berechenbar), Regen und wie stark, Schnee, Wind/Sturm, Wolken,
       Gewitter, Nebel, Temperatur; Unwetterwarnungen deutlich sichtbar. Themes werden nach und nach

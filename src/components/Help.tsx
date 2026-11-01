@@ -3,6 +3,7 @@ import { For } from 'solid-js';
 const KEYS: [string, string][] = [
   ['T', 'Alle Themes zur Auswahl'],
   ['← →', 'Theme zurück / weiter'],
+  ['A', 'Tageslauf: Theme nach Sonnenstand (Sunrise, Lagoon, Sunset, Nightsurf)'],
   ['K', 'Feste automatisch: Karneval, Ostern, Halloween, Advent, Silvester, Neujahr'],
   ['L', 'Alle Sprachen zur Auswahl'],
   ['↑ ↓', 'Sprache zurück / weiter'],

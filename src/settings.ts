@@ -75,6 +75,8 @@ export interface Settings {
   ambient: boolean;
   /** Switch to the festive theme around Karneval, Ostern, Halloween, Advent, Silvester and Neujahr. */
   festive: boolean;
+  /** Theme follows the sun: sunrise, lagoon, sunset, nightsurf. */
+  daylight: boolean;
 }
 
 export const DEFAULTS: Settings = {
@@ -90,6 +92,7 @@ export const DEFAULTS: Settings = {
   transition: false,
   ambient: false,
   festive: false,
+  daylight: false,
 };
 const STORAGE_KEY = 'qlock:settings';
 
@@ -120,6 +123,7 @@ function sanitize(raw: Record<string, unknown>): Partial<Settings> {
     transition: bool(raw.transition),
     ambient: bool(raw.ambient),
     festive: bool(raw.festive),
+    daylight: bool(raw.daylight),
   };
   return Object.fromEntries(Object.entries(parsed).filter(([, v]) => v !== undefined));
 }

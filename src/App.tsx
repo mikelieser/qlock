@@ -8,6 +8,7 @@ import { Spooky } from './components/Spooky';
 import { frameText, sameFrame, type Frame } from './core/locale';
 import { formatDate } from './core/date';
 import { festival } from './core/festival';
+import { daylight } from './core/daylight';
 import { secondsFrame } from './core/seconds';
 import { createNow } from './now';
 import { LOCALES, localeById } from './locales';
@@ -50,8 +51,10 @@ export function App() {
   const caption = createMemo(() => (settings.date ? formatDate(now(), locale().lang) : undefined));
 
   createEffect(() => saveSettings({ ...settings }));
-  // With "Feste automatisch" the festive theme of the day wins over the chosen one.
-  const theme = createMemo(() => (settings.festive && festival(now())) || settings.theme);
+  // Festive theme of the day first ("Feste automatisch"), then the sun ("Tageslauf"), then the chosen one.
+  const theme = createMemo(
+    () => (settings.festive && festival(now())) || (settings.daylight && daylight(now())) || settings.theme,
+  );
   createEffect(() => (document.documentElement.dataset.theme = theme()));
   createEffect(() => {
     if (ready()) document.title = text() || 'QLOCK';
@@ -152,6 +155,10 @@ export function App() {
       case 'u':
         setSettings('transition', (v) => !v);
         notify(settings.transition ? 'Übergangseffekt an' : 'Übergangseffekt aus');
+        break;
+      case 'a':
+        setSettings('daylight', (v) => !v);
+        notify(settings.daylight ? `Tageslauf an (${daylight(now())})` : 'Tageslauf aus');
         break;
       case 'k':
         setSettings('festive', (v) => !v);

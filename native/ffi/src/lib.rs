@@ -170,3 +170,15 @@ pub extern "C" fn qlock_festival(year: i32, month: u32, day: u32) -> *const c_ch
         _ => std::ptr::null(),
     }
 }
+
+/// The theme for the sun at a Unix time at home (sunrise, lagoon, sunset, nightsurf). Static string.
+#[unsafe(no_mangle)]
+pub extern "C" fn qlock_daylight(unix: f64) -> *const c_char {
+    let (lat, lon) = qlock_core::HOME;
+    match qlock_core::daylight(unix, lat, lon) {
+        "sunrise" => c"sunrise".as_ptr(),
+        "lagoon" => c"lagoon".as_ptr(),
+        "sunset" => c"sunset".as_ptr(),
+        _ => c"nightsurf".as_ptr(),
+    }
+}

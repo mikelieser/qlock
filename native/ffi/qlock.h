@@ -36,3 +36,4 @@ void qlock_release_pixels(QlockEngine *engine);
 bool qlock_snapshot(const char *locale, const char *theme, uint32_t width, uint32_t height, uint32_t flags,
                     uint32_t hour, uint32_t minute, uint8_t *out);
 const char *qlock_festival(int32_t year, uint32_t month, uint32_t day);
+const char *qlock_daylight(double unix);

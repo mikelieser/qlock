@@ -76,6 +76,9 @@ final class QlockView: ScreenSaverView {
     let flags = Preferences.flags()
     let locale = Preferences.string("locale")
     var theme = Preferences.string("theme")
+    if Preferences.flag("daylight") {
+      theme = String(cString: qlock_daylight(Date().timeIntervalSince1970 + clockOffset))
+    }
     if Preferences.flag("festive") {
       let today = Calendar.current.dateComponents([.year, .month, .day], from: Date())
       if let id = qlock_festival(Int32(today.year ?? 2026), UInt32(today.month ?? 1), UInt32(today.day ?? 1)) {

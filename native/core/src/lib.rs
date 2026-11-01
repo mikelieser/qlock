@@ -236,3 +236,96 @@ mod festival_tests {
         }
     }
 }
+
+/// Home for now: Koblenz. Later the hub sends the place.
+pub const HOME: (f64, f64) = (50.36, 7.59);
+
+/// Sun elevation in degrees at a Unix time for a place, as `sunElevation` in src/core/daylight.ts.
+pub fn sun_elevation(unix: f64, lat: f64, lon: f64) -> f64 {
+    let rad = core::f64::consts::PI / 180.0;
+    let day = libm_floor(unix / 86_400.0) as i64;
+    // Day of the year (1-based) and hours since midnight UTC.
+    let (y, _, _) = civil(day);
+    let day_of_year = (day - days(y, 1, 1) + 1) as f64;
+    let hours = (unix - day as f64 * 86_400.0) / 3600.0;
+    let g = 2.0 * core::f64::consts::PI / 365.0 * (day_of_year - 1.0 + (hours - 12.0) / 24.0);
+    let eq_time = 229.18
+        * (0.000075 + 0.001868 * cos(g) - 0.032077 * sin(g) - 0.014615 * cos(2.0 * g) - 0.040849 * sin(2.0 * g));
+    let decl = 0.006918 - 0.399912 * cos(g) + 0.070257 * sin(g) - 0.006758 * cos(2.0 * g) + 0.000907 * sin(2.0 * g)
+        - 0.002697 * cos(3.0 * g)
+        + 0.00148 * sin(3.0 * g);
+    let solar_minutes = hours * 60.0 + eq_time + 4.0 * lon;
+    let hour_angle = (solar_minutes / 4.0 - 180.0) * rad;
+    let cos_zenith = sin(lat * rad) * sin(decl) + cos(lat * rad) * cos(decl) * cos(hour_angle);
+    90.0 - acos(cos_zenith.clamp(-1.0, 1.0)) / rad
+}
+
+/// Theme by the sun, as `daylight` in src/core/daylight.ts: night below −6°, sunrise/sunset while the
+/// sun is below 8° in the morning/evening, the lagoon in between.
+pub fn daylight(unix: f64, lat: f64, lon: f64) -> &'static str {
+    let e = sun_elevation(unix, lat, lon);
+    if e < -6.0 {
+        "nightsurf"
+    } else if e >= 8.0 {
+        "lagoon"
+    } else if sun_elevation(unix + 600.0, lat, lon) > e {
+        "sunrise"
+    } else {
+        "sunset"
+    }
+}
+
+fn civil(days_since_epoch: i64) -> (i32, u32, u32) {
+    let z = days_since_epoch + 719_468;
+    let era = z.div_euclid(146_097);
+    let doe = z - era * 146_097;
+    let yoe = (doe - doe / 1460 + doe / 36_524 - doe / 146_096) / 365;
+    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+    let mp = (5 * doy + 2) / 153;
+    let d = (doy - (153 * mp + 2) / 5 + 1) as u32;
+    let m = if mp < 10 { mp + 3 } else { mp - 9 } as u32;
+    ((yoe + era * 400 + i64::from(m <= 2)) as i32, m, d)
+}
+
+// no_std: float functions from libm.
+fn libm_floor(x: f64) -> f64 {
+    let t = x as i64 as f64;
+    if t > x { t - 1.0 } else { t }
+}
+fn sin(x: f64) -> f64 {
+    libm::sin(x)
+}
+fn cos(x: f64) -> f64 {
+    libm::cos(x)
+}
+fn acos(x: f64) -> f64 {
+    libm::acos(x)
+}
+
+#[cfg(test)]
+mod daylight_tests {
+    use super::*;
+
+    fn unix(y: i32, mo: u32, d: u32, h: u32, mi: u32) -> f64 {
+        (days(y, mo, d) * 86_400 + i64::from(h) * 3600 + i64::from(mi) * 60) as f64
+    }
+
+    #[test]
+    fn same_answers_as_the_web() {
+        let (lat, lon) = HOME;
+        assert!(sun_elevation(unix(2026, 6, 21, 11, 30), lat, lon) > 60.0);
+        assert!(sun_elevation(unix(2026, 12, 21, 11, 30), lat, lon) < 18.0);
+        let cases = [
+            (unix(2026, 11, 1, 2, 0), "nightsurf"),
+            (unix(2026, 11, 1, 6, 30), "sunrise"),
+            (unix(2026, 11, 1, 11, 0), "lagoon"),
+            (unix(2026, 11, 1, 15, 45), "sunset"),
+            (unix(2026, 6, 21, 3, 30), "sunrise"),
+            (unix(2026, 6, 21, 19, 30), "sunset"),
+            (unix(2026, 6, 21, 21, 0), "nightsurf"),
+        ];
+        for (t, expected) in cases {
+            assert_eq!(daylight(t, lat, lon), expected, "{t}");
+        }
+    }
+}
