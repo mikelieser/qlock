@@ -84,7 +84,8 @@ Alle Einstellungen lassen sich per URL setzen und gehen dem Gespeicherten vor, z
 `bun run saver:install` baut `QLOCK.saver` und legt ihn nach `~/Library/Screen Savers`. Danach in den
 Systemeinstellungen unter **Hintergrundbild → Bildschirmschoner …** „QLOCK" wählen (einen eigenen Bereich
 „Bildschirmschoner" gibt es nicht mehr; wann er startet, steht unter **Sperrbildschirm**). **Optionen …** öffnet
-einen Dialog mit Sprache, Theme und Schaltern (Datum, Effekte, Hintergrund, Punkte …).
+einen Dialog mit Live-Vorschau, Sprache, allen Themes als Vorschaubilder nach Gruppen und den Schaltern für
+„Anzeige“ und „Bewegung“. Änderungen zeigt die Vorschau sofort; gespeichert wird mit OK.
 
 - Der Bildschirmschoner zeichnet **nativ**: Swift-Hülle (`saver/Sources`) um den Rust-Renderer aus `native/`,
   zusammengesetzt mit Core Animation. Animationen laufen flüssig, ohne WebKit.

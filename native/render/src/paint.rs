@@ -194,13 +194,16 @@ impl FloatCanvas {
             let Some(tile) = picture.render(tw.round().max(1.0) as u32, th.round().max(1.0) as u32) else { return };
             let (tw_i, th_i) = (tile.width() as i64, tile.height() as i64);
             let data = tile.data();
-            let repeat = layer.repeat;
+            let (repeat_x, repeat_y) = (layer.repeat, layer.repeat_y);
             self.shade(b, mask, |x, y| {
                 let (mut lx, mut ly) = (x as i64 - tx.round() as i64, y as i64 - ty.round() as i64);
-                if repeat {
+                if repeat_x {
                     lx = lx.rem_euclid(tw_i);
+                }
+                if repeat_y {
                     ly = ly.rem_euclid(th_i);
-                } else if lx < 0 || ly < 0 || lx >= tw_i || ly >= th_i {
+                }
+                if lx < 0 || ly < 0 || lx >= tw_i || ly >= th_i {
                     return None;
                 }
                 let k = ((ly * tw_i + lx) * 4) as usize;

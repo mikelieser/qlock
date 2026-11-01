@@ -18,7 +18,7 @@ pub struct Special {
     pub rays: Option<(u32, f32)>,
     pub spooky: Option<Spooky>,
     /// The sea: wave bands, each two tiles wide so they can drift seamlessly; top band first.
-    pub waves: Vec<(u32, f32)>,
+    pub waves: Vec<(u32, f32)>,  // (sprite, band height without the extra water)
 }
 
 pub struct Spooky {
@@ -105,12 +105,20 @@ pub fn wave_sprites(e: &mut Engine) -> Vec<(u32, f32)> {
         };
         let (w, h) = (fw.round() as u32, th.round().max(1.0) as u32);
         let Some(tile) = picture.render(w, h) else { continue };
-        let mut strip = Pixmap::new(w * 2, h).unwrap();
+        // Extra water below the band: the swell lifts it, and the face edge must stay covered.
+        let below = (fh * 0.02).ceil() as u32 + 2;
+        let mut strip = Pixmap::new(w * 2, h + below).unwrap();
         for k in 0..2 {
             strip.draw_pixmap((k * w) as i32, 0, tile.as_ref(), &PixmapPaint::default(), Transform::identity(), None);
         }
+        let row = (w * 2 * 4) as usize;
+        let data = strip.data_mut();
+        let last = data[(h as usize - 1) * row..h as usize * row].to_vec();
+        for y in h..h + below {
+            data[y as usize * row..(y as usize + 1) * row].copy_from_slice(&last);
+        }
         let id = e.push(strip);
-        out.push((id, th));
+        out.push((id, h as f32));
     }
     out
 }
@@ -203,7 +211,10 @@ pub fn before_particles(e: &Engine, out: &mut Vec<Instance>, t: f64) {
     for (k, &(id, th)) in waves.iter().enumerate().rev() {
         // CSS lists the top band first; the first moves left, the second right.
         let left = if k % 2 == 0 { x - drift } else { x - w + drift };
-        out.push(Instance::at(id, 1, left + w, y + h - th / 2.0 + swell, 1.0));
+        // The band's top sits where CSS puts it (tile at the bottom); the extra water hangs below the face.
+        let sprite_h = e.sprites()[id as usize].height as f32;
+        let top = y + h - th;
+        out.push(Instance::at(id, 1, left + w, top + sprite_h / 2.0 + swell, 1.0));
     }
     if let Some((id, (ox, oy))) = e.special().groove {
         let phase = ((t / 5.0).rem_euclid(1.0)) as f32;

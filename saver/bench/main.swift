@@ -36,7 +36,7 @@ let cls = bundle.principalClass as! ScreenSaverView.Type
 let size = opt["size"]!.split(separator: "x").map { CGFloat(Double($0)!) }
 let scale: CGFloat = NSScreen.main?.backingScaleFactor ?? 2
 let rect = NSRect(x: 0, y: 0, width: size[0], height: size[1])
-let view = cls.init(frame: rect, isPreview: false)!
+let view = cls.init(frame: rect, isPreview: opt["preview"] == "1")!
 let root = view.layer!
 
 let fps = Double(opt["fps"]!)!

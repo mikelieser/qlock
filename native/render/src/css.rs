@@ -276,7 +276,9 @@ pub struct Layer {
     pub image: Image,
     pub pos: (Len, Len),
     pub size: Size,
+    /// Tiled horizontally / vertically (CSS `repeat`, `repeat-x`, `repeat-y`, `no-repeat`).
     pub repeat: bool,
+    pub repeat_y: bool,
 }
 
 /// Parses a `background` shorthand list. Returns the layers top to bottom plus the background colour.
@@ -300,9 +302,13 @@ pub fn parse_background(s: &str) -> (Vec<Layer>, Option<Color>) {
             if let Some(img) = parse_image(t) {
                 image = Some(img);
             } else if t == "no-repeat" {
-                repeat = Some(false);
+                repeat = Some((false, false));
             } else if t == "repeat" {
-                repeat = Some(true);
+                repeat = Some((true, true));
+            } else if t == "repeat-x" {
+                repeat = Some((true, false));
+            } else if t == "repeat-y" {
+                repeat = Some((false, true));
             } else if let Some(c) = parse_color(t) {
                 color = Some(c);
             } else if after_slash {
@@ -329,7 +335,8 @@ pub fn parse_background(s: &str) -> (Vec<Layer>, Option<Color>) {
             [a, b, ..] => Size::Explicit(parse_len(a), parse_len(b)),
         };
         let is_gradient = !matches!(image, Image::Url(_));
-        layers.push(Layer { image, pos: parse_position(&pos_tokens), size, repeat: repeat.unwrap_or(!is_gradient) });
+        let (rx, ry) = repeat.unwrap_or((!is_gradient, !is_gradient));
+        layers.push(Layer { image, pos: parse_position(&pos_tokens), size, repeat: rx, repeat_y: ry });
     }
     (layers, color)
 }
@@ -555,7 +562,9 @@ mod tests {
         }
         let (layers, color) = parse_background("#111 url('./assets/themes/formrausch/pattern.jpg')");
         assert_eq!(layers.len(), 1);
-        assert!(color.is_some() && layers[0].repeat);
+        assert!(color.is_some() && layers[0].repeat && layers[0].repeat_y);
+        let (layers, _) = parse_background("url(\"data:image/svg+xml,%3Csvg%3E\") bottom / 100% 16% repeat-x");
+        assert!(layers[0].repeat && !layers[0].repeat_y);
         match &parse_background("radial-gradient(ellipse 3% 7% at 80% 92%, rgb(240 235 200 / 0.3), transparent)").0[0].image {
             Image::Radial { size: RadialSize::Ellipse(..), .. } => {}
             other => panic!("{other:?}"),

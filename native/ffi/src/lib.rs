@@ -58,6 +58,41 @@ pub unsafe extern "C" fn qlock_engine_new(
     Box::into_raw(Box::new(Engine::new(locale, theme, options, width.max(1), height.max(1), caption)))
 }
 
+/// Renders one still frame at `hour:minute` into `out` (`width`×`height`×4 bytes, premultiplied RGBA),
+/// with the letters fully lit. For theme thumbnails in the options sheet. Returns false on failure.
+///
+/// # Safety
+/// String pointers as for `qlock_engine_new`; `out` must hold `width * height * 4` bytes.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn qlock_snapshot(
+    locale: *const c_char,
+    theme: *const c_char,
+    width: u32,
+    height: u32,
+    flags: u32,
+    hour: u32,
+    minute: u32,
+    out: *mut u8,
+) -> bool {
+    if out.is_null() || width == 0 || height == 0 {
+        return false;
+    }
+    let engine = unsafe { qlock_engine_new(locale, theme, width, height, flags, std::ptr::null()) };
+    let e = unsafe { &mut *engine };
+    let mut t = 0.0;
+    while t < 6.0 {
+        e.update(hour, minute, 0.0, t);
+        t += 0.5;
+    }
+    let list = e.update(hour, minute, 0.0, t).to_vec();
+    let image = e.compose(&list, width, height);
+    unsafe {
+        std::ptr::copy_nonoverlapping(image.data().as_ptr(), out, (width * height * 4) as usize);
+        qlock_engine_free(engine);
+    }
+    true
+}
+
 /// # Safety
 /// `engine` must come from `qlock_engine_new` and not be used afterwards.
 #[unsafe(no_mangle)]

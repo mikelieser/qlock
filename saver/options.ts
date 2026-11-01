@@ -6,15 +6,16 @@ import { DEFAULTS, THEME_GROUPS, themeLabel, type Settings } from '../src/settin
 
 type Switch = { [K in keyof Settings]: Settings[K] extends boolean ? K : never }[keyof Settings];
 
-const SWITCHES: { key: Switch; label: string }[] = [
-  { key: 'date', label: 'Wochentag und Datum' },
-  { key: 'effect', label: 'Buchstaben-Effekt' },
-  { key: 'transition', label: 'Übergang beim Zeitwechsel' },
-  { key: 'ambient', label: 'Hintergrund-Effekt' },
-  { key: 'progress', label: 'Sekundenrahmen' },
-  { key: 'dots', label: 'Minutenpunkte' },
-  { key: 'intro', label: '„Es ist“ anzeigen' },
-  { key: 'stretch', label: 'Ganzen Bildschirm füllen' },
+// Grouped for the options sheet: what is shown, and what moves.
+const SWITCHES: { key: Switch; label: string; group: 'Anzeige' | 'Bewegung' }[] = [
+  { key: 'intro', label: '„Es ist“', group: 'Anzeige' },
+  { key: 'dots', label: 'Minutenpunkte', group: 'Anzeige' },
+  { key: 'date', label: 'Wochentag und Datum', group: 'Anzeige' },
+  { key: 'progress', label: 'Sekundenrahmen', group: 'Anzeige' },
+  { key: 'stretch', label: 'Ganzer Bildschirm', group: 'Anzeige' },
+  { key: 'effect', label: 'Buchstaben', group: 'Bewegung' },
+  { key: 'transition', label: 'Zeitwechsel', group: 'Bewegung' },
+  { key: 'ambient', label: 'Hintergrund', group: 'Bewegung' },
 ];
 
 const options = {

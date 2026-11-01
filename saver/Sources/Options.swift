@@ -5,7 +5,7 @@ import ScreenSaver
 struct Options: Decodable {
   struct Item: Decodable { let id: String; let label: String; let lang: String? }
   struct Group: Decodable { let group: String; let items: [Item] }
-  struct Switch: Decodable { let key: String; let label: String; let `default`: Bool }
+  struct Switch: Decodable { let key: String; let label: String; let group: String; let `default`: Bool }
 
   let locales: [Group]
   let themes: [Group]
@@ -35,12 +35,16 @@ enum Preferences {
       ?? .standard
   }
 
+  /// Unsaved choices while the options sheet is open; every clock in the process (the sheet's own
+  /// preview and the small one in System Settings) shows them right away.
+  static var draft: [String: Any]?
+
   static func string(_ key: String) -> String {
-    store.string(forKey: key) ?? Options.shared.defaults[key] ?? ""
+    draft?[key] as? String ?? store.string(forKey: key) ?? Options.shared.defaults[key] ?? ""
   }
 
   static func bool(_ sw: Options.Switch) -> Bool {
-    store.object(forKey: sw.key) as? Bool ?? sw.default
+    draft?[sw.key] as? Bool ?? store.object(forKey: sw.key) as? Bool ?? sw.default
   }
 
   static func flag(_ key: String) -> Bool {
