@@ -177,10 +177,10 @@ Welche weiteren Sprachen gut oder schlecht auf eine Wortuhr passen (Arabisch und
 | Gruppe | Themes |
 |---|---|
 | Standard | `standard`, `formrausch`, `ticktack`, `metal`, `blue`, `red`, `gradient`, `timeonly` |
-| Mike – Strand, Sonne, Retro | `sunset`, `lagoon`, `cozy`, `sunrise`, `nightsurf`, `dunes`, `retro`, `retro-sun`, `retro-stripes`, `retro-night`, `retro-pastel` |
+| Mike – Strand, Sonne, Retro | `sunrise`, `lagoon`, `sunset`, `nightsurf`, `dunes`, `retro`, `retro-sun`, `retro-stripes`, `retro-night`, `retro-pastel` |
 | Susanna – Pastell | `cotton-candy`, `lavender`, `bubblegum`, `sky-dream`, `unicorn` |
 | Henry – Chaos | `chaos`, `chaos-burst`, `chaos-night` |
-| Katja – Herbst | `autumn-leaves`, `golden-hour`, `forest-mist` |
+| Katja – Herbst | `autumn-leaves`, `golden-hour`, `forest-mist`, `cozy` |
 | Feste – Motto-Themes durchs Jahr | `neujahr`, `karneval`, `ostern`, `halloween` (Spinnen, Fledermaus, Kerzen), `weihnachten`, `silvester` |
 
 Mit „Feste automatisch“ (`K`) übernimmt das Fest-Theme zur passenden Zeit: Neujahr 1.–6. Januar, Karneval

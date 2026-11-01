@@ -11,10 +11,10 @@ export const THEME_GROUPS = [
     name: 'Mike',
     note: 'Strand, Sonne, Retro',
     themes: [
-      'sunset',
-      'lagoon',
-      'cozy',
+      // Morning, day, evening, night: the order "Tageslauf" goes through.
       'sunrise',
+      'lagoon',
+      'sunset',
       'nightsurf',
       'dunes',
       'retro',
@@ -36,8 +36,8 @@ export const THEME_GROUPS = [
   },
   {
     name: 'Katja',
-    note: 'Herbst',
-    themes: ['autumn-leaves', 'golden-hour', 'forest-mist'],
+    note: 'Herbst und gemütliche Abende',
+    themes: ['autumn-leaves', 'golden-hour', 'forest-mist', 'cozy'],
   },
   {
     name: 'Feste',
