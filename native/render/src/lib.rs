@@ -231,6 +231,8 @@ const START_DELAY: f64 = 0.6;
 const FOCUS: f64 = 1.6;
 const PARTICLES: usize = 14;
 const SHIMMER_TINTS: usize = 9;
+/// Pieces of the seconds frame: ten per second.
+const PROGRESS_PIECES: usize = 600;
 
 impl Engine {
     /// `width`/`height` in pixels. `caption` is the date line, already formatted for the locale.
@@ -541,7 +543,8 @@ impl Engine {
         }
     }
 
-    /// Seconds frame: the line through the corner dots, cut into 60 pieces, one per second.
+    /// Seconds frame: the line through the corner dots, cut into [`PROGRESS_PIECES`] pieces (a few per second,
+    /// so the line can grow smoothly instead of jumping).
     ///
     /// The whole line is drawn once and every pixel is then given to exactly one piece (by its position
     /// along the line), so the pieces add up to the unbroken line: no seams or darker dots where they meet.
@@ -584,7 +587,7 @@ impl Engine {
         let fade = w * 0.25;
         let start_x = x0 + w / 2.0;
         let data = line.data();
-        let mut pieces: Vec<Vec<(u32, u32, [u8; 4])>> = vec![Vec::new(); 60];
+        let mut pieces: Vec<Vec<(u32, u32, [u8; 4])>> = vec![Vec::new(); PROGRESS_PIECES];
         for py in 0..bh {
             for px in 0..bw {
                 let i = ((py * bw + px) * 4) as usize;
@@ -593,7 +596,7 @@ impl Engine {
                 }
                 let (ax, ay) = (ox + px as f32 + 0.5, oy + py as f32 + 0.5);
                 let d = along(ax, ay);
-                let piece = ((d / perimeter * 60.0) as usize).min(59);
+                let piece = ((d / perimeter * PROGRESS_PIECES as f32) as usize).min(PROGRESS_PIECES - 1);
                 let mut c = [data[i], data[i + 1], data[i + 2], data[i + 3]];
                 // The start fades in over the first quarter of the top edge (the web's SVG mask).
                 if (ay - y0).abs() < m && ax >= start_x - 1.0 && ax < start_x + fade {
@@ -803,17 +806,14 @@ impl Engine {
     }
 
     fn push_progress(&self, out: &mut Vec<Instance>, second: f32) {
+        // Like the web's stroke-dashoffset with a 400 ms ease-out transition: at second s the line grows
+        // from s−1 to s sixtieths; at :00 it empties at once.
         let whole = second.floor() as usize % 60;
-        let frac = second - second.floor();
-        for (s, &(id, x, y)) in self.progress.iter().enumerate() {
-            // Each second's piece draws in over 400 ms ease-out (the web's stroke transition); at :00 all reset.
-            let opacity = if s < whole {
-                1.0
-            } else if s == whole && whole > 0 {
-                bezier(EASE_OUT, frac / 0.4)
-            } else {
-                0.0
-            };
+        let grown = if whole == 0 { 0.0 } else { (whole - 1) as f32 + bezier(EASE_OUT, (second - second.floor()) / 0.4) };
+        let per = (PROGRESS_PIECES / 60) as f32;
+        for (i, &(id, x, y)) in self.progress.iter().enumerate() {
+            // Each small piece fades in as the front passes it, so the end of the line moves smoothly.
+            let opacity = (grown * per - i as f32).clamp(0.0, 1.0);
             out.push(Instance::at(id, 0, x, y, opacity));
         }
     }
@@ -986,7 +986,7 @@ mod tests {
     #[test]
     fn instance_list_is_stable() {
         let options = Options { dots: true, ambient: true, transition: true, effect: true, progress: true, ..Options::default() };
-        for theme in ["sunset", "katja", "chaos-burst", "retro", "formrausch", "chaos-night"] {
+        for theme in ["sunset", "halloween", "chaos-burst", "retro", "formrausch", "chaos-night", "weihnachten", "silvester", "ostern", "karneval", "neujahr"] {
             let mut e = engine(theme, options);
             let a = e.update(15, 15, 1.0, 0.0).len();
             let b = e.update(15, 15, 5.0, 5.0).len();

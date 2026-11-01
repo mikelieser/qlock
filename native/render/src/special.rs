@@ -1,14 +1,14 @@
 //! What the web themes do with extra CSS selectors and components rather than custom properties:
-//! face shadows, Katja's spider web, candles, greeting, spiders and bat, Chaos Burst's turning rays,
+//! face shadows, Halloween's spider web, candles, spiders and bat, Chaos Burst's turning rays,
 //! the retro "groove", soap bubbles. Positions and timings follow `src/styles.css`.
 
 use tiny_skia::{Mask, Pixmap, PixmapPaint, Transform};
 
 use crate::css::{Shadow, Units};
 use crate::paint::{FloatCanvas, Picture};
-use crate::raster::{Coverage, Face, fill_circle, paint_coverage, rounded_rect_path};
+use crate::raster::{Coverage, fill_circle, paint_coverage, rounded_rect_path};
 use crate::theme::{Color, Theme};
-use crate::{AMATIC_BOLD, EASE_IN_OUT, Engine, Instance, LINEAR, Layout, bezier, keyframes};
+use crate::{EASE_IN_OUT, Engine, Instance, LINEAR, Layout, bezier, keyframes};
 
 #[derive(Default)]
 pub struct Special {
@@ -25,7 +25,6 @@ pub struct Spooky {
     walk: [u32; 2],
     thread: u32,
     bat: u32,
-    greeting: Option<u32>,
 }
 
 /// CSS box-shadow outside the face.
@@ -50,7 +49,7 @@ pub(crate) fn static_decoration(bg: &mut FloatCanvas, theme: &Theme, l: &Layout,
     if !theme.extras.spooky {
         return;
     }
-    // Katja: spider web in the top-left corner, faded out by a radial mask (CSS .clock::before).
+    // Halloween: spider web in the top-left corner, faded out by a radial mask (CSS .clock::before).
     let [x, y, w, h] = l.face;
     let reach = w.hypot(h) * 0.38;
     let Some(mut mask) = Mask::new(bg.w as u32, bg.h as u32) else { return };
@@ -152,7 +151,7 @@ pub fn blur_pixmap(src: &Pixmap, sigma: f32) -> Pixmap {
     out
 }
 
-/// Katja's candles: lit dots flicker (CSS `candle`, 2.4 s alternate, staggered per corner).
+/// Halloween candles: lit dots flicker (CSS `candle`, 2.4 s alternate, staggered per corner).
 pub fn candle(e: &Engine, corner: usize, t: f64) -> f32 {
     if !e.theme().extras.spooky {
         return 1.0;
@@ -226,42 +225,10 @@ pub fn build_spooky(e: &mut Engine) {
     }
     let bat = e.push(bat);
 
-    // "Alles Gute zum 42., Katja!" in Amatic, warm glow (CSS .stage::before; emoji left out).
-    let greeting = Face::new(AMATIC_BOLD, 700.0).and_then(|face| {
-        let px = (6.5 * vmin).min(144.0).max(44.0);
-        let text = format!("Alles Gute zum {}., Katja!", katja_age());
-        let (cov, _, _, _) = face.text(&text, px, px * 0.04);
-        if cov.w == 0 {
-            return None;
-        }
-        let pad = (px * 0.6) as usize;
-        let mut p = Pixmap::new((cov.w + 2 * pad) as u32, (cov.h + 2 * pad) as u32).unwrap();
-        let glow = cov.padded(pad).blurred(px * 0.2);
-        paint_coverage(&mut p, &glow, 0, 0, Color { r: 1.0, g: 110.0 / 255.0, b: 0.0, a: 0.6 });
-        paint_coverage(&mut p, &cov, pad as i32, pad as i32, Color::parse("#ffb14a").unwrap());
-        Some(p)
-    });
-    let greeting = greeting.map(|p| e.push(p));
-    e.special_mut().spooky = Some(Spooky { drop, walk, thread, bat, greeting });
+    e.special_mut().spooky = Some(Spooky { drop, walk, thread, bat });
 }
 
-/// Katja, born 31.10.1984, by the system clock (UTC is close enough for a birthday line).
-fn katja_age() -> i64 {
-    let days = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs() / 86_400).unwrap_or(0) as i64;
-    // Civil date from days since 1970 (Howard Hinnant's algorithm).
-    let z = days + 719_468;
-    let era = z.div_euclid(146_097);
-    let doe = z - era * 146_097;
-    let yoe = (doe - doe / 1460 + doe / 36_524 - doe / 146_096) / 365;
-    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
-    let mp = (5 * doy + 2) / 153;
-    let month = if mp < 10 { mp + 3 } else { mp - 9 };
-    let day = doy - (153 * mp + 2) / 5 + 1;
-    let year = yoe + era * 400 + i64::from(month <= 2);
-    year - 1984 - i64::from((month, day) < (10, 31))
-}
-
-/// Halloween extras on top of everything: greeting, the dangling and the walking spider, the bat.
+/// Halloween extras on top of everything: the dangling and the walking spider, the bat.
 pub fn after_letters(e: &Engine, out: &mut Vec<Instance>, _t: f64, since: f64) {
     let Some(s) = e.special().spooky.as_ref() else { return };
     let l = e.layout();
@@ -270,15 +237,6 @@ pub fn after_letters(e: &Engine, out: &mut Vec<Instance>, _t: f64, since: f64) {
     let stretch = e.options().stretch;
     let clock = e.theme().clock_size;
     let sprite_h = |id: u32| e.sprites()[id as usize].height as f32;
-
-    // Greeting: fades and slides in after 1.2 s (greeting-in, 2.4 s).
-    if let Some(id) = s.greeting {
-        let k = bezier([0.16, 1.0, 0.3, 1.0], ((since - 1.2) / 2.4) as f32);
-        let y = (1.5 * vmin).max(0.0) + sprite_h(id) / 2.0 - (1.0 - k) * 6.5 * vmin;
-        out.push(Instance::at(id, 0, vw / 2.0, y, k));
-    } else {
-        out.push(Instance::at(0, 0, 0.0, 0.0, 0.0));
-    }
 
     // Legs: two poses crossfaded (CSS legs, alternate).
     let legs = |period: f64| -> f32 {

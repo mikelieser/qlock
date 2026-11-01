@@ -36,10 +36,18 @@ export const THEME_GROUPS = [
   },
   {
     name: 'Katja',
-    note: 'Herbst, dazu Halloween zum Geburtstag',
-    themes: ['autumn-leaves', 'golden-hour', 'forest-mist', 'katja'],
+    note: 'Herbst',
+    themes: ['autumn-leaves', 'golden-hour', 'forest-mist'],
+  },
+  {
+    name: 'Feste',
+    note: 'Motto-Themes durchs Jahr',
+    themes: ['neujahr', 'karneval', 'ostern', 'halloween', 'weihnachten', 'silvester'],
   },
 ] as const;
+
+/** Themes that were renamed; saved settings and old links still work. */
+const RENAMED: Record<string, Theme> = { katja: 'halloween' };
 
 export type Theme = (typeof THEME_GROUPS)[number]['themes'][number];
 export const THEMES: readonly Theme[] = THEME_GROUPS.flatMap((group) => group.themes);
@@ -98,7 +106,7 @@ function sanitize(raw: Record<string, unknown>): Partial<Settings> {
       LOCALES.map((l) => l.id),
       raw.locale,
     ),
-    theme: oneOf(THEMES, raw.theme),
+    theme: oneOf(THEMES, typeof raw.theme === 'string' ? (RENAMED[raw.theme] ?? raw.theme) : raw.theme),
     mode: oneOf(MODES, raw.mode),
     intro: bool(raw.intro),
     dots: bool(raw.dots),

@@ -134,7 +134,7 @@ pub struct Extras {
     pub groove: bool,
     /// Rotating light rays over the face (Chaos Burst).
     pub rays: bool,
-    /// Halloween: web, candles, greeting, spiders, bat.
+    /// Halloween: web, candles, spiders, bat.
     pub spooky: bool,
     /// The clock springs in on start (TickTack).
     pub spring_in: bool,
@@ -279,7 +279,12 @@ impl Theme {
                 }
                 extras.rays = id == "chaos-burst";
             }
-            "katja" => extras.spooky = true,
+            "halloween" => extras.spooky = true,
+            "karneval" => {
+                let ink = Color::parse("#7a0f12").unwrap();
+                extras.letter_stroke = Some((0.06, ink));
+                extras.dot_ring = Some((0.0035, ink));
+            }
             "retro" | "retro-sun" | "retro-stripes" | "retro-night" | "retro-pastel" => extras.groove = true,
             "cozy" | "sunset" => extras.particle_glow = 0.01,
             "lagoon" | "cotton-candy" | "lavender" | "bubblegum" | "sky-dream" | "unicorn" => extras.bubbles = true,

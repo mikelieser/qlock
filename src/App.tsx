@@ -13,14 +13,6 @@ import { LOCALES, localeById } from './locales';
 import { cycle, loadSettings, MODES, saveSettings, THEMES } from './settings';
 
 const IDLE_MS = 2500;
-const KATJA_BIRTHDAY = new Date(1984, 9, 31);
-
-function ageOn(date: Date, birthday: Date): number {
-  const hadBirthday =
-    date.getMonth() > birthday.getMonth() ||
-    (date.getMonth() === birthday.getMonth() && date.getDate() >= birthday.getDate());
-  return date.getFullYear() - birthday.getFullYear() - (hadBirthday ? 0 : 1);
-}
 const EMPTY: Frame = { words: [], dots: 0 };
 // The macOS screensaver host shows the page while WebKit treats it as hidden, which freezes CSS
 // animations mid-way (blurred, half-faded clock). `?still` renders the end state instead.
@@ -58,8 +50,6 @@ export function App() {
 
   createEffect(() => saveSettings({ ...settings }));
   createEffect(() => (document.documentElement.dataset.theme = settings.theme));
-  // CSS can't do date math; the 'katja' theme prints this via counter().
-  document.documentElement.style.setProperty('--katja-age', String(ageOn(new Date(), KATJA_BIRTHDAY)));
   createEffect(() => {
     if (ready()) document.title = text() || 'QLOCK';
   });
@@ -238,7 +228,7 @@ export function App() {
         caption={caption()}
         ambient={settings.ambient}
       />
-      <Show when={settings.theme === 'katja'}>
+      <Show when={settings.theme === 'halloween'}>
         <Spooky />
       </Show>
       <div class="toast" classList={{ visible: toast() !== '' }} role="status">

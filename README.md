@@ -8,7 +8,7 @@ Eine Wortuhr für den Browser – und bald für die Wand. Die Uhr zeigt die Zeit
 Biegert & Funk; ein privates, nicht-kommerzielles Familienprojekt.
 
 Angefangen 2014 als CoffeeScript-Spielerei, 2026 neu gebaut mit Vite, Solid und TypeScript – und dabei
-ordentlich gewachsen: 26 Sprachen und Dialekte, 32 Themes für jedes Familienmitglied, Effekte, Sekunden,
+ordentlich gewachsen: 26 Sprachen und Dialekte, 36 Themes für jedes Familienmitglied und jedes Fest, Effekte, Sekunden,
 Datum und ein Konzept für eigene Hardware.
 
 ## Was die Uhr kann
@@ -16,7 +16,7 @@ Datum und ein Konzept für eigene Hardware.
 - **26 Sprachen und Dialekte** – Hochdeutsch, 16 deutsche Dialekte von Schwäbisch bis Ostfriesisch, acht
   europäische Sprachen und Japanisch im Kanji-Raster. Jede Sprache bringt ihre Eigenheiten mit: „viertel
   vier" im Schwäbischen, „fem i halv tre" im Schwedischen, „MIDI" und „MINUIT" im Französischen.
-- **32 Themes**, gruppiert nach Familienmitglied: Klassiker, Strand und Retro, Pastell, Chaos, Herbst.
+- **36 Themes**, gruppiert nach Familienmitglied: Klassiker, Strand und Retro, Pastell, Chaos, Herbst, dazu Motto-Themes von Neujahr bis Silvester.
 - **Drei Effekt-Ebenen**, einzeln schaltbar: Buchstaben bewegen sich (wellen, wackeln, flackern,
   schimmern), Zeitwechsel werden sichtbar (neue Wörter stellen sich scharf), der Hintergrund lebt (fallende
   Blätter, Blubberblasen, Glut, Konfetti, pulsierender Regenbogen).
@@ -92,7 +92,7 @@ einen Dialog mit Sprache, Theme und Schaltern (Datum, Effekte, Hintergrund, Punk
   die Seite dann für unsichtbar, friert Animationen ein und verwirft nach ein paar Sekunden die Darstellung.
 - Sprachen und Themes kommen als Daten aus der Web-App: `native/export-locales.ts` (jede Minute jeder Sprache)
   und `native/export-themes.ts` (alle CSS-Variablen jedes Themes, Kaskade und `var()` aufgelöst). Der Rust-Renderer
-  liest Verläufe, SVG-Deko, Schatten, Schriften und Effekte direkt aus diesen CSS-Werten; alle 31 Themes, alle
+  liest Verläufe, SVG-Deko, Schatten, Schriften und Effekte direkt aus diesen CSS-Werten; alle 36 Themes, alle
   Buchstaben-Effekte, Übergang, Hintergrund-Teilchen und Sekundenrahmen. Was CSS mit eigenen Selektoren macht
   (Spinnen, Fledermaus, Kerzen, Strahlen, Konturen) steht in `native/render/src/special.rs`.
 - Vergleich Web gegen nativ: `native/tools/compare.sh <ordner> [themes…]` (braucht `bunx vite preview --port 4173`)
@@ -177,7 +177,8 @@ Welche weiteren Sprachen gut oder schlecht auf eine Wortuhr passen (Arabisch und
 | Mike – Strand, Sonne, Retro | `sunset`, `lagoon`, `cozy`, `sunrise`, `nightsurf`, `dunes`, `retro`, `retro-sun`, `retro-stripes`, `retro-night`, `retro-pastel` |
 | Susanna – Pastell | `cotton-candy`, `lavender`, `bubblegum`, `sky-dream`, `unicorn` |
 | Henry – Chaos | `chaos`, `chaos-burst`, `chaos-night` |
-| Katja – Herbst | `autumn-leaves`, `golden-hour`, `forest-mist`, `katja` (Halloween und Geburtstag am 31.10.) |
+| Katja – Herbst | `autumn-leaves`, `golden-hour`, `forest-mist` |
+| Feste – Motto-Themes durchs Jahr | `neujahr`, `karneval`, `ostern`, `halloween` (Spinnen, Fledermaus, Kerzen), `weihnachten`, `silvester` |
 
 Ein Theme ist ein Block Custom Properties in `src/styles.css` unter `[data-theme='…']`: Hintergrund,
 Buchstabenfarben, Eckpunkt-Farben (`--dot-1` … `--dot-4`), Buchstaben-Effekt (`--fx-*`) und
@@ -237,7 +238,7 @@ Sonos-Boxen. Größen, Pixeldichten, LCD vs. OLED vs. E-Ink, Strom, Kosten und o
 | | QLOCKTWO | qlock |
 |---|---|---|
 | Sprachen pro Uhr | eine (Frontplatte tauschen) | 26, per Taste |
-| Optik | Frontplatte aus Material | 32 Themes, jederzeit änderbar |
+| Optik | Frontplatte aus Material | 36 Themes, jederzeit änderbar |
 | Effekte | – | drei Ebenen, pro Theme eigene |
 | Sekunden | große Ziffern | große Ziffern oder Sekundenrahmen |
 | Datum | – | ja |

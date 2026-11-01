@@ -40,7 +40,9 @@ pub unsafe extern "C" fn qlock_engine_new(
     let lib = library();
     let locale = unsafe { text(locale) }.and_then(|id| lib.locale(id)).or_else(|| lib.locale("de")).unwrap().clone();
     let all = themes();
-    let theme_id = unsafe { text(theme) }.filter(|id| all.themes.contains_key(*id)).unwrap_or("formrausch");
+    // Renamed themes keep working from old settings.
+    let requested = unsafe { text(theme) }.map(|id| if id == "katja" { "halloween" } else { id });
+    let theme_id = requested.filter(|id| all.themes.contains_key(*id)).unwrap_or("formrausch");
     let theme = Theme::from_export(theme_id, &all.themes[theme_id]);
     let options = Options {
         intro: flags & 1 != 0,

@@ -1,4 +1,4 @@
-// Decorations for the 'katja' theme: a dangling spider, one crawling across the face, a bat past the moon.
+// Decorations for the Halloween theme: a dangling spider, one crawling across the face, a bat past the moon.
 
 function Spider() {
   return (

@@ -22,6 +22,7 @@
 ## Familie und Alltag
 
 - [ ] Profile pro Person (`?profile=henry`): Lieblings-Themes, Sprache, Tagesplan.
+- [ ] Fest-Themes automatisch zum Datum (Karneval, Ostern, Halloween, Advent/Weihnachten, Silvester, Neujahr).
 - [ ] Theme nach Sonnenstand: Morgen, Tag, Abend, Nacht für den eigenen Ort offline berechnen,
       z. B. `sunrise` → `lagoon` → `sunset` → `nightsurf`; weich überblenden.
 - [ ] Uhr als Abbild der Wetterlage draußen, so genau wie möglich (Idee 01.11.2026, über Home Assistant):
