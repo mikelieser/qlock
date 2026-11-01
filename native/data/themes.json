@@ -475,9 +475,9 @@
   "sunset": {
    "vars": {
     "page-bg": "linear-gradient(#1b1733, #3a1f45 55%, #6b2c4f)",
-    "face-bg": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 18 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%231d7a83'/%3E%3Cpath d='M0 52 Q50 36 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%230c4a5e'/%3E%3C/svg%3E\") bottom / 100% 16% no-repeat, radial-gradient(circle at 50% 92%, #ffd27a 0 7%, rgb(255 160 90 / 0.55) 9%, transparent 30%), linear-gradient(#211c42 0%, #4b2461 38%, #a23f68 72%, #e8706a 100%)",
+    "face-bg": "radial-gradient(circle at 50% 92%, #ffd27a 0 7%, rgb(255 160 90 / 0.55) 9%, transparent 30%), linear-gradient(#211c42 0%, #4b2461 38%, #a23f68 72%, #e8706a 100%)",
     "face-radius": "3%",
-    "face-deco": "none",
+    "face-deco": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 52 Q50 36 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%230c4a5e'/%3E%3C/svg%3E\") bottom / 100% 16% repeat-x, url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 18 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%231d7a83'/%3E%3C/svg%3E\") bottom / 100% 16% repeat-x",
     "face-shadow": "0 2vmin 10vmin rgb(30 10 40 / 0.6)",
     "clock-size": "0.8",
     "pad": "0.14",
@@ -512,20 +512,21 @@
     "fx-clip": "text",
     "fx-color": "transparent",
     "fx-shadow": "none",
-    "amb-display": "block",
-    "amb-name": "amb-rise",
-    "amb-top": "105%",
-    "amb-size": "0.9cqmin",
+    "amb-display": "none",
+    "amb-name": "amb-fall",
+    "amb-top": "-8%",
+    "amb-size": "4cqmin",
     "amb-ratio": "1",
-    "amb-radius": "50%",
+    "amb-radius": "0",
     "amb-shape": "none",
-    "amb-duration": "16s",
+    "amb-duration": "14s",
     "amb-opacity": "0.8",
-    "amb-c1": "#ffb347",
-    "amb-c2": "#ff7a3d",
-    "amb-c3": "#ffd27a",
+    "amb-c1": "#fff",
+    "amb-c2": "#fff",
+    "amb-c3": "#fff",
     "fade": "900ms",
-    "stagger": "45ms"
+    "stagger": "45ms",
+    "deco-moving": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 52 Q50 36 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%230c4a5e'/%3E%3C/svg%3E\") bottom / 100% 16% repeat-x, url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 18 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%231d7a83'/%3E%3C/svg%3E\") bottom / 100% 16% repeat-x"
    },
    "dot": {
     "dot-glow": "0 0 1.2vmin currentcolor, 0 0 3vmin currentcolor"
@@ -534,9 +535,9 @@
   "lagoon": {
    "vars": {
     "page-bg": "linear-gradient(#0a4f5c, #0b3a48)",
-    "face-bg": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 18 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23ffffff' fill-opacity='.18'/%3E%3Cpath d='M0 52 Q50 36 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%23f4e3c3' fill-opacity='.55'/%3E%3C/svg%3E\") bottom / 100% 14% no-repeat, radial-gradient(ellipse at 30% 20%, rgb(255 255 255 / 0.22), transparent 55%), linear-gradient(160deg, #2ec4b6 0%, #14a3a8 45%, #0b7a8c 100%)",
+    "face-bg": "radial-gradient(ellipse at 30% 20%, rgb(255 255 255 / 0.22), transparent 55%), linear-gradient(160deg, #2ec4b6 0%, #14a3a8 45%, #0b7a8c 100%)",
     "face-radius": "4%",
-    "face-deco": "none",
+    "face-deco": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 52 Q50 36 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%23f4e3c3' fill-opacity='.55'/%3E%3C/svg%3E\") bottom / 100% 14% repeat-x, url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 18 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23ffffff' fill-opacity='.18'/%3E%3C/svg%3E\") bottom / 100% 14% repeat-x",
     "face-shadow": "0 2vmin 10vmin rgb(0 40 50 / 0.5)",
     "clock-size": "0.8",
     "pad": "0.14",
@@ -584,7 +585,8 @@
     "amb-c2": "rgb(255 255 255 / 0.7)",
     "amb-c3": "rgb(220 245 255 / 0.8)",
     "fade": "900ms",
-    "stagger": "45ms"
+    "stagger": "45ms",
+    "deco-moving": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 52 Q50 36 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%23f4e3c3' fill-opacity='.55'/%3E%3C/svg%3E\") bottom / 100% 14% repeat-x, url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 18 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23ffffff' fill-opacity='.18'/%3E%3C/svg%3E\") bottom / 100% 14% repeat-x"
    },
    "dot": {
     "dot-glow": "0 0 1.2vmin currentcolor, 0 0 3vmin currentcolor"
@@ -652,9 +654,9 @@
   "sunrise": {
    "vars": {
     "page-bg": "linear-gradient(#f6e3dc, #ecd3d6)",
-    "face-bg": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23a9d8e8'/%3E%3Cpath d='M0 52 Q50 40 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%237fbfd9'/%3E%3C/svg%3E\") bottom / 100% 16% no-repeat, radial-gradient(circle at 50% 88%, #fff6d8 0 8%, rgb(255 236 200 / 0.6) 10%, transparent 34%), linear-gradient(#c7d3f0 0%, #e6cde6 35%, #fbc9c4 65%, #ffd9b8 86%)",
+    "face-bg": "radial-gradient(circle at 50% 88%, #fff6d8 0 8%, rgb(255 236 200 / 0.6) 10%, transparent 34%), linear-gradient(#c7d3f0 0%, #e6cde6 35%, #fbc9c4 65%, #ffd9b8 86%)",
     "face-radius": "4%",
-    "face-deco": "none",
+    "face-deco": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 52 Q50 40 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%237fbfd9'/%3E%3C/svg%3E\") bottom / 100% 16% repeat-x, url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23a9d8e8'/%3E%3C/svg%3E\") bottom / 100% 16% repeat-x",
     "face-shadow": "0 2vmin 8vmin rgb(150 100 110 / 0.25)",
     "clock-size": "0.8",
     "pad": "0.14",
@@ -702,7 +704,8 @@
     "amb-c2": "rgb(255 240 200)",
     "amb-c3": "rgb(255 255 255)",
     "fade": "900ms",
-    "stagger": "45ms"
+    "stagger": "45ms",
+    "deco-moving": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 52 Q50 40 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%237fbfd9'/%3E%3C/svg%3E\") bottom / 100% 16% repeat-x, url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23a9d8e8'/%3E%3C/svg%3E\") bottom / 100% 16% repeat-x"
    },
    "dot": {
     "dot-glow": "0 0 1.2vmin currentcolor, 0 0 3vmin currentcolor"
@@ -711,9 +714,9 @@
   "nightsurf": {
    "vars": {
     "page-bg": "linear-gradient(#060d1f, #0b1b33)",
-    "face-bg": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23163d63'/%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34' fill='none' stroke='%238fd3ff' stroke-opacity='.35' stroke-width='1.5'/%3E%3Cpath d='M0 52 Q50 40 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%230d2847'/%3E%3C/svg%3E\") bottom / 100% 15% no-repeat, radial-gradient(ellipse 3% 7% at 80% 92%, rgb(240 235 200 / 0.3), transparent), radial-gradient(circle at 80% 7%, #f4f0d8 0 2.6%, rgb(244 240 216 / 0.22) 3.4%, transparent 11%), radial-gradient(circle 0.25vmin at 9% 8%, #fff 30%, transparent), radial-gradient(circle 0.18vmin at 22% 5%, #fff 30%, transparent), radial-gradient(circle 0.22vmin at 35% 10%, #fff 30%, transparent), radial-gradient(circle 0.2vmin at 52% 4%, #fff 30%, transparent), radial-gradient(circle 0.15vmin at 64% 9%, #fff 30%, transparent), radial-gradient(circle 0.22vmin at 91% 7%, #fff 30%, transparent), radial-gradient(circle 0.18vmin at 6% 30%, #fff 30%, transparent), radial-gradient(circle 0.2vmin at 95% 34%, #fff 30%, transparent), radial-gradient(circle 0.15vmin at 14% 52%, #fff 30%, transparent), radial-gradient(circle 0.18vmin at 88% 58%, #fff 30%, transparent), radial-gradient(circle 0.12vmin at 44% 6%, #fff 30%, transparent), radial-gradient(circle 0.14vmin at 72% 3%, #fff 30%, transparent), linear-gradient(#0a1530 0%, #12294f 60%, #1b3f69 100%)",
+    "face-bg": "radial-gradient(ellipse 3% 7% at 80% 92%, rgb(240 235 200 / 0.3), transparent), radial-gradient(circle at 80% 7%, #f4f0d8 0 2.6%, rgb(244 240 216 / 0.22) 3.4%, transparent 11%), radial-gradient(circle 0.25vmin at 9% 8%, #fff 30%, transparent), radial-gradient(circle 0.18vmin at 22% 5%, #fff 30%, transparent), radial-gradient(circle 0.22vmin at 35% 10%, #fff 30%, transparent), radial-gradient(circle 0.2vmin at 52% 4%, #fff 30%, transparent), radial-gradient(circle 0.15vmin at 64% 9%, #fff 30%, transparent), radial-gradient(circle 0.22vmin at 91% 7%, #fff 30%, transparent), radial-gradient(circle 0.18vmin at 6% 30%, #fff 30%, transparent), radial-gradient(circle 0.2vmin at 95% 34%, #fff 30%, transparent), radial-gradient(circle 0.15vmin at 14% 52%, #fff 30%, transparent), radial-gradient(circle 0.18vmin at 88% 58%, #fff 30%, transparent), radial-gradient(circle 0.12vmin at 44% 6%, #fff 30%, transparent), radial-gradient(circle 0.14vmin at 72% 3%, #fff 30%, transparent), linear-gradient(#0a1530 0%, #12294f 60%, #1b3f69 100%)",
     "face-radius": "3%",
-    "face-deco": "none",
+    "face-deco": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 52 Q50 40 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%230d2847'/%3E%3C/svg%3E\") bottom / 100% 15% repeat-x, url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23163d63'/%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34' fill='none' stroke='%238fd3ff' stroke-opacity='.35' stroke-width='1.5'/%3E%3C/svg%3E\") bottom / 100% 15% repeat-x",
     "face-shadow": "0 0 8vmin rgb(80 160 255 / 0.12), 0 2vmin 8vmin rgb(0 0 0 / 0.6)",
     "clock-size": "0.8",
     "pad": "0.14",
@@ -761,7 +764,8 @@
     "amb-c2": "#8fd3ff",
     "amb-c3": "#ffffff",
     "fade": "900ms",
-    "stagger": "45ms"
+    "stagger": "45ms",
+    "deco-moving": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 52 Q50 40 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%230d2847'/%3E%3C/svg%3E\") bottom / 100% 15% repeat-x, url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23163d63'/%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34' fill='none' stroke='%238fd3ff' stroke-opacity='.35' stroke-width='1.5'/%3E%3C/svg%3E\") bottom / 100% 15% repeat-x"
    },
    "dot": {
     "dot-glow": "0 0 1.2vmin currentcolor, 0 0 3vmin currentcolor"

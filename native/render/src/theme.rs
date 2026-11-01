@@ -132,6 +132,8 @@ pub struct Extras {
     pub bubbles: bool,
     /// The face decoration swells when particles are on (retro `deco-groove`).
     pub groove: bool,
+    /// The sea: the wave decoration drifts and swells when particles are on (sunset, lagoon …).
+    pub waves: bool,
     /// Rotating light rays over the face (Chaos Burst).
     pub rays: bool,
     /// Halloween: web, candles, spiders, bat.
@@ -286,10 +288,11 @@ impl Theme {
                 extras.dot_ring = Some((0.0035, ink));
             }
             "retro" | "retro-sun" | "retro-stripes" | "retro-night" | "retro-pastel" => extras.groove = true,
-            "cozy" | "sunset" => extras.particle_glow = 0.01,
+            "cozy" => extras.particle_glow = 0.01,
             "lagoon" | "cotton-candy" | "lavender" | "bubblegum" | "sky-dream" | "unicorn" => extras.bubbles = true,
             _ => {}
         }
+        extras.waves = matches!(id, "sunset" | "lagoon" | "sunrise" | "nightsurf");
 
         Theme {
             id: id.to_string(),
@@ -380,7 +383,9 @@ mod tests {
         let sunset = Theme::from_export("sunset", &file.themes["sunset"]);
         assert_eq!(sunset.fx.kind, FxKind::Shimmer);
         assert!(!sunset.fx.gradient.is_empty());
-        assert_eq!(sunset.ambient.as_ref().unwrap().motion, Motion::Rise);
+        assert!(sunset.ambient.is_none() && sunset.extras.waves);
+        let lagoon = Theme::from_export("lagoon", &file.themes["lagoon"]);
+        assert_eq!(lagoon.ambient.as_ref().unwrap().motion, Motion::Rise);
         assert!(sunset.dot_glow[0].color.is_current());
     }
 }

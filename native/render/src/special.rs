@@ -17,6 +17,8 @@ pub struct Special {
     /// Chaos Burst: the ray disc (drawn at half size) and its scale.
     pub rays: Option<(u32, f32)>,
     pub spooky: Option<Spooky>,
+    /// The sea: wave bands, each two tiles wide so they can drift seamlessly; top band first.
+    pub waves: Vec<(u32, f32)>,
 }
 
 pub struct Spooky {
@@ -86,6 +88,31 @@ pub fn groove_sprite(e: &mut Engine, width: u32, height: u32) -> Option<(u32, (f
     let _ = (width, height);
     let id = e.push(canvas.into_pixmap());
     Some((id, origin))
+}
+
+/// The sea: each wave layer of the decoration as a strip two faces wide (it tiles), drawn once.
+pub fn wave_sprites(e: &mut Engine) -> Vec<(u32, f32)> {
+    let theme = e.theme().clone();
+    let [_, _, fw, fh] = e.layout().face;
+    let u = e.units();
+    let mut out = Vec::new();
+    for layer in crate::css::parse_background(&theme.face_deco).0 {
+        let crate::css::Image::Url(url) = &layer.image else { continue };
+        let Some(picture) = Picture::load(url) else { continue };
+        let th = match layer.size {
+            crate::css::Size::Explicit(_, Some(h)) => h.px(&u, fh),
+            _ => fh * 0.16,
+        };
+        let (w, h) = (fw.round() as u32, th.round().max(1.0) as u32);
+        let Some(tile) = picture.render(w, h) else { continue };
+        let mut strip = Pixmap::new(w * 2, h).unwrap();
+        for k in 0..2 {
+            strip.draw_pixmap((k * w) as i32, 0, tile.as_ref(), &PixmapPaint::default(), Transform::identity(), None);
+        }
+        let id = e.push(strip);
+        out.push((id, th));
+    }
+    out
 }
 
 /// Chaos Burst: a disc of light rays covering the face when turned, drawn at half resolution.
@@ -168,6 +195,15 @@ pub fn before_particles(e: &Engine, out: &mut Vec<Instance>, t: f64) {
     if let Some((id, scale)) = e.special().rays {
         let turn = ((t / 90.0).rem_euclid(1.0) * std::f64::consts::TAU) as f32;
         out.push(Instance { scale, rotation: turn, ..Instance::at(id, 1, x + w / 2.0, y + h / 2.0, 1.0) });
+    }
+    // The sea (CSS waves-drift 48 s, waves-swell 7 s): bands drift in opposite directions, all bob together.
+    let waves = &e.special().waves;
+    let drift = ((t / 48.0).rem_euclid(1.0)) as f32 * w;
+    let swell = keyframes(&[(0.0, 0.0), (0.5, -0.006 * h), (1.0, 0.0)], ((t / 7.0).rem_euclid(1.0)) as f32, EASE_IN_OUT);
+    for (k, &(id, th)) in waves.iter().enumerate().rev() {
+        // CSS lists the top band first; the first moves left, the second right.
+        let left = if k % 2 == 0 { x - drift } else { x - w + drift };
+        out.push(Instance::at(id, 1, left + w, y + h - th / 2.0 + swell, 1.0));
     }
     if let Some((id, (ox, oy))) = e.special().groove {
         let phase = ((t / 5.0).rem_euclid(1.0)) as f32;

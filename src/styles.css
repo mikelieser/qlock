@@ -668,8 +668,7 @@ body {
 /* Dusk at the beach: purple sky into coral, sun sinking behind the waves. */
 [data-theme='sunset'] {
   --page-bg: linear-gradient(#1b1733, #3a1f45 55%, #6b2c4f);
-  --face-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 18 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%231d7a83'/%3E%3Cpath d='M0 52 Q50 36 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%230c4a5e'/%3E%3C/svg%3E") bottom / 100% 16% no-repeat,
-    radial-gradient(circle at 50% 92%, #ffd27a 0 7%, rgb(255 160 90 / 0.55) 9%, transparent 30%),
+  --face-bg: radial-gradient(circle at 50% 92%, #ffd27a 0 7%, rgb(255 160 90 / 0.55) 9%, transparent 30%),
     linear-gradient(#211c42 0%, #4b2461 38%, #a23f68 72%, #e8706a 100%);
   --face-radius: 3%;
   --face-shadow: 0 2vmin 10vmin rgb(30 10 40 / 0.6);
@@ -680,13 +679,14 @@ body {
   --char-glow: 0 0 0.3em rgb(255 170 120 / 0.85), 0 0 0.9em rgb(255 110 110 / 0.4);
   --dot-off: rgb(255 230 220 / 0.16);
   --progress-color: rgb(255 210 160 / 0.35);
+  --face-deco: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 52 Q50 36 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%230c4a5e'/%3E%3C/svg%3E") bottom / 100% 16% repeat-x,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 18 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%231d7a83'/%3E%3C/svg%3E") bottom / 100% 16% repeat-x;
 }
 
 /* Lazy afternoon at the lagoon: turquoise water, sandy shore. */
 [data-theme='lagoon'] {
   --page-bg: linear-gradient(#0a4f5c, #0b3a48);
-  --face-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 18 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23ffffff' fill-opacity='.18'/%3E%3Cpath d='M0 52 Q50 36 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%23f4e3c3' fill-opacity='.55'/%3E%3C/svg%3E") bottom / 100% 14% no-repeat,
-    radial-gradient(ellipse at 30% 20%, rgb(255 255 255 / 0.22), transparent 55%),
+  --face-bg: radial-gradient(ellipse at 30% 20%, rgb(255 255 255 / 0.22), transparent 55%),
     linear-gradient(160deg, #2ec4b6 0%, #14a3a8 45%, #0b7a8c 100%);
   --face-radius: 4%;
   --face-shadow: 0 2vmin 10vmin rgb(0 40 50 / 0.5);
@@ -697,6 +697,8 @@ body {
   --char-glow: 0 0 0.35em rgb(255 255 255 / 0.6);
   --dot-off: rgb(255 255 255 / 0.2);
   --progress-color: rgb(255 255 255 / 0.4);
+  --face-deco: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 52 Q50 36 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%23f4e3c3' fill-opacity='.55'/%3E%3C/svg%3E") bottom / 100% 14% repeat-x,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 18 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23ffffff' fill-opacity='.18'/%3E%3C/svg%3E") bottom / 100% 14% repeat-x;
 }
 
 /* Evening on the sofa: warm walnut, letters like fairy lights. */
@@ -732,8 +734,7 @@ body {
 /* Pastel sunrise over a calm sea. */
 [data-theme='sunrise'] {
   --page-bg: linear-gradient(#f6e3dc, #ecd3d6);
-  --face-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23a9d8e8'/%3E%3Cpath d='M0 52 Q50 40 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%237fbfd9'/%3E%3C/svg%3E") bottom / 100% 16% no-repeat,
-    radial-gradient(circle at 50% 88%, #fff6d8 0 8%, rgb(255 236 200 / 0.6) 10%, transparent 34%),
+  --face-bg: radial-gradient(circle at 50% 88%, #fff6d8 0 8%, rgb(255 236 200 / 0.6) 10%, transparent 34%),
     linear-gradient(#c7d3f0 0%, #e6cde6 35%, #fbc9c4 65%, #ffd9b8 86%);
   --face-radius: 4%;
   --face-shadow: 0 2vmin 8vmin rgb(150 100 110 / 0.25);
@@ -745,6 +746,8 @@ body {
   --dot-off: rgb(90 42 74 / 0.14);
   --progress-color: rgb(90 42 74 / 0.3);
   color-scheme: light;
+  --face-deco: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 52 Q50 40 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%237fbfd9'/%3E%3C/svg%3E") bottom / 100% 16% repeat-x,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23a9d8e8'/%3E%3C/svg%3E") bottom / 100% 16% repeat-x;
 }
 
 /* 70s surf poster: cream paper, rainbow arcs rising from the bottom. */
@@ -793,8 +796,7 @@ body {
 /* Night session: stars, moon, a glowing crest on dark water. */
 [data-theme='nightsurf'] {
   --page-bg: linear-gradient(#060d1f, #0b1b33);
-  --face-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23163d63'/%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34' fill='none' stroke='%238fd3ff' stroke-opacity='.35' stroke-width='1.5'/%3E%3Cpath d='M0 52 Q50 40 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%230d2847'/%3E%3C/svg%3E") bottom / 100% 15% no-repeat,
-    radial-gradient(ellipse 3% 7% at 80% 92%, rgb(240 235 200 / 0.3), transparent),
+  --face-bg: radial-gradient(ellipse 3% 7% at 80% 92%, rgb(240 235 200 / 0.3), transparent),
     radial-gradient(circle at 80% 7%, #f4f0d8 0 2.6%, rgb(244 240 216 / 0.22) 3.4%, transparent 11%),
     radial-gradient(circle 0.25vmin at 9% 8%, #fff 30%, transparent),
     radial-gradient(circle 0.18vmin at 22% 5%, #fff 30%, transparent),
@@ -818,6 +820,8 @@ body {
   --char-glow: 0 0 0.3em rgb(120 200 255 / 0.9), 0 0 0.9em rgb(80 140 255 / 0.4);
   --dot-off: rgb(190 220 255 / 0.14);
   --progress-color: rgb(140 210 255 / 0.35);
+  --face-deco: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 52 Q50 40 100 52 T200 52 T300 52 T400 52 V80 H0Z' fill='%230d2847'/%3E%3C/svg%3E") bottom / 100% 15% repeat-x,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 80' preserveAspectRatio='none'%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34 V80 H0Z' fill='%23163d63'/%3E%3Cpath d='M0 34 Q50 20 100 34 T200 34 T300 34 T400 34' fill='none' stroke='%238fd3ff' stroke-opacity='.35' stroke-width='1.5'/%3E%3C/svg%3E") bottom / 100% 15% repeat-x;
 }
 
 [data-theme='nightsurf'] {
@@ -2184,8 +2188,7 @@ body {
 }
 
 /* Glowing embers drifting up from the fireplace. */
-[data-theme='cozy'],
-[data-theme='sunset'] {
+[data-theme='cozy'] {
   --amb-display: block;
   --amb-name: amb-rise;
   --amb-top: 105%;
@@ -2198,8 +2201,7 @@ body {
   --amb-c3: #ffd27a;
 }
 
-[data-theme='cozy'] .ambient i,
-[data-theme='sunset'] .ambient i {
+[data-theme='cozy'] .ambient i {
   box-shadow: 0 0 1cqmin var(--c);
 }
 
@@ -2263,6 +2265,50 @@ body {
   }
   50% {
     transform: scale(1.12);
+  }
+}
+
+/* The sea: both wave bands drift slowly in opposite directions and the water rises and falls a little. */
+[data-theme='sunset'],
+[data-theme='lagoon'],
+[data-theme='sunrise'],
+[data-theme='nightsurf'] {
+  --deco-moving: var(--face-deco);
+}
+
+[data-theme='sunset'] .amb .clock,
+[data-theme='lagoon'] .amb .clock,
+[data-theme='sunrise'] .amb .clock,
+[data-theme='nightsurf'] .amb .clock {
+  overflow: hidden;
+}
+
+[data-theme='sunset'] .amb .clock::before,
+[data-theme='lagoon'] .amb .clock::before,
+[data-theme='sunrise'] .amb .clock::before,
+[data-theme='nightsurf'] .amb .clock::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 -1cqh;
+  background: var(--deco-moving);
+  animation:
+    waves-drift 48s linear infinite,
+    waves-swell 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes waves-drift {
+  from {
+    background-position: 0 100%, 0 100%;
+  }
+  to {
+    background-position: -100cqw 100%, 100cqw 100%;
+  }
+}
+
+@keyframes waves-swell {
+  50% {
+    transform: translateY(-0.6cqh);
   }
 }
 

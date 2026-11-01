@@ -321,6 +321,9 @@ impl Engine {
         if deco_moves {
             self.special.groove = special::groove_sprite(self, width, height);
         }
+        if theme.extras.waves && self.options.ambient {
+            self.special.waves = special::wave_sprites(self);
+        }
 
         // Letters: one set of sprites per distinct letter, drawn in parallel.
         let mut chars: Vec<String> = Vec::new();
@@ -1009,7 +1012,7 @@ mod tests {
     fn particles_move_every_frame_at_large_host_times() {
         let base = 345_600.0;
         let options = Options { ambient: true, ..Options::default() };
-        let mut e = engine("sunset", options);
+        let mut e = engine("lagoon", options);
         let particle = |e: &mut Engine, t: f64| e.update(15, 15, 0.0, t).iter().find(|i| i.group == 1).copied().unwrap();
         let mut last = particle(&mut e, base);
         for k in 1..120 {
