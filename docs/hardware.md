@@ -167,11 +167,15 @@ native/render   qlock-render   Sprites einmal rastern (tiny-skia + Inter), pro F
 - **Mac-Ruckeln:** Jeden Frame Ebenen setzen ruckelte sichtbar (der Bildschirmschoner-Prozess reicht seinen
   Ebenenbaum nur stockend an den Bildschirm weiter). Deshalb Spuren statt Einzelbilder: ein Commit alle
   paar Sekunden, die Bewegung selbst rechnet der Render-Server.
-- **Gemessen:** Engine-Aufbau 20–100 ms (einmal pro Sprache/Theme/Größe), Update pro Frame ca. 30 µs.
+- **Gemessen:** Update pro Frame ca. 30–80 µs, Zeichnen per Core Animation 2–3 ms bei 5K.
   Volle Software-Zusammensetzung 1600×1200 ca. 40 ms auf dem Mac, für den ESP32 also nur mit geänderten
   Bereichen.
-- **Portiert:** Formrausch und Sunset, Effekte Atmen, Übergang (Fokus und Punkte) und aufsteigende Funken.
-  Offen: übrige 30 Themes, Schimmer und andere Buchstaben-Effekte, Sekundenrahmen, Bild-Locale-Details.
+- **Themes aus dem CSS:** `native/export-themes.ts` exportiert die CSS-Variablen aller Themes; Rust versteht
+  die benutzten CSS-Werte (lineare, radiale und konische Verläufe samt Größen und Wiederholung, SVG-Deko per
+  resvg, Bilder, Schatten, Farben). Damit sind alle 31 Themes, alle acht Buchstaben-Effekte, Übergang,
+  Hintergrund-Teilchen und Sekundenrahmen da. Was CSS über eigene Selektoren macht (Katjas Spinnen, Fledermaus,
+  Kerzen, Netz; Chaos-Konturen und -Strahlen; Retro-Groove) steht in `special.rs`.
+- **Aufbau bei 5K:** 120–225 ms (Hintergrund und Buchstaben parallel, weiche Schatten in Viertelauflösung).
 - **Später:** derselbe Kern als WebAssembly im Browser, dann zeigen Web, Mac und Uhr pixelgleich dasselbe.
 
 ### Zentrale: Elixir-Hub

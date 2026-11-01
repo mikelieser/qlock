@@ -133,18 +133,20 @@ final class QlockView: ScreenSaverView {
     let started = CACurrentMediaTime()
     let steps = Int(Self.window * Self.rate)
     let wallStart = Date().addingTimeInterval(clockOffset + start - CACurrentMediaTime())
-    // Track values of the previous window's last sample; this window must continue from exactly there.
     var samples: [[QlockInstance]] = []
     samples.reserveCapacity(steps + 1)
     for step in 0...steps {
       let dt = Double(step) / Self.rate
-      let parts = Calendar.current.dateComponents([.hour, .minute], from: wallStart.addingTimeInterval(dt))
+      let wall = wallStart.addingTimeInterval(dt)
+      let parts = Calendar.current.dateComponents([.hour, .minute, .second, .nanosecond], from: wall)
+      let second = Float(parts.second ?? 0) + Float(parts.nanosecond ?? 0) / 1e9
       var list: UnsafePointer<QlockInstance>?
-      let count = Int(qlock_update(engine, UInt32(parts.hour ?? 0), UInt32(parts.minute ?? 0), start + dt, &list))
+      let count = Int(qlock_update(engine, UInt32(parts.hour ?? 0), UInt32(parts.minute ?? 0), second, start + dt, &list))
       guard let list else { return }
       samples.append(Array(UnsafeBufferPointer(start: list, count: count)))
     }
     let count = samples[0].count
+    addNewSprites()
 
     CATransaction.begin()
     CATransaction.setDisableActions(true)
@@ -176,22 +178,55 @@ final class QlockView: ScreenSaverView {
         anim.fillMode = .removed
         layer.add(anim, forKey: path + key)
       }
-      let last = track[track.count - 1]
-      if track.contains(where: { $0.opacity != last.opacity }) { animate("opacity", track.map { $0.opacity }) }
-      if track.contains(where: { $0.x != last.x || $0.y != last.y }) {
+      let first = track[0]
+      if track.contains(where: { $0.opacity != first.opacity }) { animate("opacity", track.map { $0.opacity }) }
+      if track.contains(where: { $0.x != first.x || $0.y != first.y }) {
         animate("position", track.map { NSValue(point: point($0)) })
       }
-      if track.contains(where: { $0.scale != last.scale }) { animate("transform.scale", track.map { CGFloat($0.scale) }) }
+      if track.contains(where: { $0.scale != first.scale || $0.scale_y != first.scale_y || $0.rotation != first.rotation }) {
+        animate("transform", track.map { NSValue(caTransform3D: Self.transform($0)) })
+      }
+      if track.contains(where: { $0.sprite != first.sprite }) {
+        // Shimmer tints, per-letter colours: the picture itself changes, without blending.
+        let anim = CAKeyframeAnimation(keyPath: "contents")
+        anim.values = track.map { images[Int($0.sprite)] }
+        anim.keyTimes = keyTimes
+        anim.beginTime = begin
+        anim.duration = Self.window
+        anim.calculationMode = .discrete
+        anim.fillMode = .removed
+        layer.add(anim, forKey: "contents" + key)
+      }
       // Model values: the window's first sample. Before `begin` they only show where the previous window
       // had no track, i.e. where the value didn't change and already equals this first sample.
-      let first = track[0]
       layer.opacity = first.opacity
       layer.position = point(first)
-      layer.setValue(CGFloat(first.scale), forKeyPath: "transform.scale")
+      layer.transform = Self.transform(first)
+      layer.contents = images[Int(first.sprite)]
     }
     CATransaction.commit()
     windowEnd = start + Self.window
     log.debug("window \(count) layers in \(CACurrentMediaTime() - started, privacy: .public)s")
+  }
+
+  private static func transform(_ inst: QlockInstance) -> CATransform3D {
+    var t = CATransform3DMakeRotation(CGFloat(inst.rotation), 0, 0, 1)
+    t = CATransform3DScale(t, CGFloat(inst.scale), CGFloat(inst.scale * inst.scale_y), 1)
+    return t
+  }
+
+  /// Sprites the engine made while sampling (per-letter colours) become images too.
+  private func addNewSprites() {
+    guard let engine else { return }
+    let total = Int(qlock_sprite_count(engine))
+    guard total > images.count else { return }
+    for i in images.count..<total {
+      var w: UInt32 = 0
+      var h: UInt32 = 0
+      let pixels = qlock_sprite(engine, UInt32(i), &w, &h)!
+      images.append(Self.image(pixels, width: Int(w), height: Int(h)))
+    }
+    qlock_release_pixels(engine)
   }
 
   private func createLayers(_ list: UnsafePointer<QlockInstance>, _ count: Int) {

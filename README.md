@@ -90,8 +90,13 @@ einen Dialog mit Sprache, Theme und Schaltern (Datum, Effekte, Hintergrund, Punk
   zusammengesetzt mit Core Animation. Animationen laufen flüssig, ohne WebKit.
 - Warum nicht die Web-App: macOS hängt die Ansicht im Bildschirmschoner-Prozess aus ihrem Fenster. WebKit hält
   die Seite dann für unsichtbar, friert Animationen ein und verwirft nach ein paar Sekunden die Darstellung.
-- Sprachen kommen als Daten aus der Web-App (`native/export-locales.ts`), alle Sprachen sind dabei. Themes
-  müssen nach `native/themes/*.toml` portiert werden; der Dialog zeigt nur portierte (bisher Formrausch, Sunset).
+- Sprachen und Themes kommen als Daten aus der Web-App: `native/export-locales.ts` (jede Minute jeder Sprache)
+  und `native/export-themes.ts` (alle CSS-Variablen jedes Themes, Kaskade und `var()` aufgelöst). Der Rust-Renderer
+  liest Verläufe, SVG-Deko, Schatten, Schriften und Effekte direkt aus diesen CSS-Werten; alle 31 Themes, alle
+  Buchstaben-Effekte, Übergang, Hintergrund-Teilchen und Sekundenrahmen. Was CSS mit eigenen Selektoren macht
+  (Spinnen, Fledermaus, Kerzen, Strahlen, Konturen) steht in `native/render/src/special.rs`.
+- Vergleich Web gegen nativ: `native/tools/compare.sh <ordner> [themes…]` (braucht `bunx vite preview --port 4173`)
+  legt für jedes Theme ein Bild „links Web, rechts nativ“ ab.
 - Braucht Rust (`cargo`), gebaut wird für Apple Silicon. Ad-hoc signiert, für den eigenen Mac reicht das.
 - Seit macOS Sonoma hält der Systemprozess alte Instanzen am Leben und ruft Start/Stopp unzuverlässig auf.
   QLOCK beendet den Prozess deshalb erst, wenn 10 Sekunden nach dem Ausblenden keine neue Instanz entstanden ist.

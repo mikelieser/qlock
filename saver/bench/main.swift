@@ -27,7 +27,7 @@ let bundle = Bundle(path: args[1])!
 let defaults = ScreenSaverDefaults(forModuleWithName: bundle.bundleIdentifier!)!
 defaults.set(opt["theme"], forKey: "theme")
 defaults.set(opt["locale"], forKey: "locale")
-for key in ["date", "effect", "transition", "ambient", "dots", "intro"] { defaults.set(true, forKey: key) }
+for key in ["date", "effect", "transition", "ambient", "dots", "intro", "progress"] { defaults.set(true, forKey: key) }
 defaults.set(opt["stretch"] == "1", forKey: "stretch")
 defaults.synchronize()
 

@@ -10,8 +10,9 @@ rm -rf "$OUT"
 mkdir -p "$BUNDLE/Contents/MacOS" "$BUNDLE/Contents/Resources"
 
 bun native/export-locales.ts >/dev/null
+bun native/export-themes.ts >/dev/null
 bun saver/options.ts "$OUT/options.json"
-cargo build --release --quiet --manifest-path native/Cargo.toml -p qlock-ffi
+MACOSX_DEPLOYMENT_TARGET=13.0 cargo build --release --quiet --manifest-path native/Cargo.toml -p qlock-ffi
 
 swiftc -O -swift-version 5 -target arm64-apple-macos13.0 -module-name Qlock -emit-library \
   -import-objc-header native/ffi/qlock.h -Lnative/target/release -lqlock_ffi \

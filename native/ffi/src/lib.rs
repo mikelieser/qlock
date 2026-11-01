@@ -5,26 +5,26 @@ use std::ffi::{CStr, c_char};
 use std::sync::OnceLock;
 
 use qlock_core::Library;
-use qlock_render::{Engine, Instance, Options, theme::Theme};
+use qlock_render::{Engine, Instance, Options, theme::{Theme, ThemeFile}};
 
 static LIBRARY: OnceLock<Library> = OnceLock::new();
+static THEMES: OnceLock<ThemeFile> = OnceLock::new();
 
 fn library() -> &'static Library {
     LIBRARY.get_or_init(|| serde_json::from_str(include_str!("../../data/locales.json")).expect("bundled locales"))
 }
 
-/// Themes ported to the native renderer so far.
-pub const THEMES: &[(&str, &str)] = &[
-    ("formrausch", include_str!("../../themes/formrausch.toml")),
-    ("sunset", include_str!("../../themes/sunset.toml")),
-];
+fn themes() -> &'static ThemeFile {
+    THEMES.get_or_init(|| serde_json::from_str(include_str!("../../data/themes.json")).expect("bundled themes"))
+}
 
 unsafe fn text<'a>(ptr: *const c_char) -> Option<&'a str> {
     if ptr.is_null() { None } else { unsafe { CStr::from_ptr(ptr) }.to_str().ok() }
 }
 
 /// Creates a clock. Unknown locales fall back to German, unknown themes to Formrausch.
-/// `flags`: 1 intro, 2 dots, 4 stretch, 8 letter effect, 16 transition, 32 background particles.
+/// `flags`: 1 intro, 2 dots, 4 stretch, 8 letter effect, 16 transition, 32 background particles,
+/// 64 seconds frame, 128 all words.
 ///
 /// # Safety
 /// String pointers must be null or valid NUL-terminated UTF-8.
@@ -39,9 +39,9 @@ pub unsafe extern "C" fn qlock_engine_new(
 ) -> *mut Engine {
     let lib = library();
     let locale = unsafe { text(locale) }.and_then(|id| lib.locale(id)).or_else(|| lib.locale("de")).unwrap().clone();
-    let theme_id = unsafe { text(theme) }.unwrap_or("formrausch");
-    let source = THEMES.iter().find(|(id, _)| *id == theme_id).unwrap_or(&THEMES[0]).1;
-    let theme = Theme::from_toml(source).expect("bundled theme");
+    let all = themes();
+    let theme_id = unsafe { text(theme) }.filter(|id| all.themes.contains_key(*id)).unwrap_or("formrausch");
+    let theme = Theme::from_export(theme_id, &all.themes[theme_id]);
     let options = Options {
         intro: flags & 1 != 0,
         dots: flags & 2 != 0,
@@ -49,6 +49,8 @@ pub unsafe extern "C" fn qlock_engine_new(
         effect: flags & 8 != 0,
         transition: flags & 16 != 0,
         ambient: flags & 32 != 0,
+        progress: flags & 64 != 0,
+        all: flags & 128 != 0,
     };
     let caption = unsafe { text(caption) };
     Box::into_raw(Box::new(Engine::new(locale, theme, options, width.max(1), height.max(1), caption)))
@@ -96,18 +98,20 @@ pub unsafe extern "C" fn qlock_face(engine: *const Engine, out: *mut f32) {
     unsafe { std::ptr::copy_nonoverlapping(values.as_ptr(), out, 5) };
 }
 
-/// Instances for this frame; the list has the same length and order every frame.
+/// Instances for this frame; the list has the same length and order every frame, sprite ids may change
+/// and new sprites may appear (check `qlock_sprite_count`).
 ///
 /// # Safety
 /// `engine` must be a live engine, `out` writable. The list is valid until the next call.
 #[unsafe(no_mangle)]
-pub unsafe extern "C" fn qlock_update(engine: *mut Engine, hour: u32, minute: u32, t: f64, out: *mut *const Instance) -> u32 {
-    let list = unsafe { &mut *engine }.update(hour, minute, t);
+pub unsafe extern "C" fn qlock_update(engine: *mut Engine, hour: u32, minute: u32, second: f32, t: f64, out: *mut *const Instance) -> u32 {
+    let list = unsafe { &mut *engine }.update(hour, minute, second, t);
     unsafe { *out = list.as_ptr() };
     list.len() as u32
 }
 
-/// Frees the sprite pixels after the host copied them into its own images.
+/// Frees the sprite pixels after the host copied them into its own images. Sprites made later keep
+/// their pixels until the next call.
 ///
 /// # Safety
 /// `engine` must be a live engine; earlier `qlock_sprite` pointers become invalid.

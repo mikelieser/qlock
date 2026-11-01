@@ -13,3 +13,5 @@ serde_json = { workspace = true }
 toml = "1"
 tiny-skia = "0.12"
 ab_glyph = "0.2.32"
+resvg = { version = "0.49", default-features = false, features = ["raster-images"] }
+percent-encoding = "2"

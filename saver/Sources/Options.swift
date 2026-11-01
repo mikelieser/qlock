@@ -52,7 +52,7 @@ enum Preferences {
     var flags: UInt32 = 0
     for (key, bit) in [
       ("intro", QLOCK_INTRO), ("dots", QLOCK_DOTS), ("stretch", QLOCK_STRETCH), ("effect", QLOCK_EFFECT),
-      ("transition", QLOCK_TRANSITION), ("ambient", QLOCK_AMBIENT),
+      ("transition", QLOCK_TRANSITION), ("ambient", QLOCK_AMBIENT), ("progress", QLOCK_PROGRESS),
     ] where flag(key) {
       flags |= UInt32(bit)
     }
