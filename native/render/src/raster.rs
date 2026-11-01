@@ -98,10 +98,14 @@ pub fn paint_coverage(pixmap: &mut Pixmap, coverage: &Coverage, x: i32, y: i32, 
             let i = ((py * pw + px) * 4) as usize;
             let inv = 1.0 - a;
             let src = [color.r * a, color.g * a, color.b * a, a];
-            for k in 0..4 {
+            // Dither: soft glows span few 8-bit steps and would show rings otherwise.
+            let d = dither(i as u32);
+            let out_a = ((src[3] + data[i + 3] as f32 / 255.0 * inv) * 255.0 + 0.5 + d).clamp(0.0, 255.0);
+            for k in 0..3 {
                 let dst = data[i + k] as f32 / 255.0;
-                data[i + k] = ((src[k] + dst * inv) * 255.0 + 0.5).clamp(0.0, 255.0) as u8;
+                data[i + k] = ((src[k] + dst * inv) * 255.0 + 0.5 + d).clamp(0.0, out_a) as u8;
             }
+            data[i + 3] = out_a as u8;
         }
     }
 }
@@ -384,4 +388,156 @@ impl Face {
         let em = self.font.units_per_em().unwrap_or(1000.0);
         (self.font.ascent_unscaled() / em * px, self.font.descent_unscaled() / em * px)
     }
+}
+
+/// Background compositor in floating point, quantised once with dithering. Large, gentle gradients
+/// (a whole screen from dark purple to coral) have fewer 8-bit steps than pixels, and painting them
+/// straight into 8 bits shows the steps as visible bands.
+pub struct FloatCanvas {
+    pub w: usize,
+    pub h: usize,
+    /// Premultiplied RGBA, 0–1.
+    data: Vec<[f32; 4]>,
+}
+
+impl FloatCanvas {
+    pub fn new(w: u32, h: u32) -> FloatCanvas {
+        FloatCanvas { w: w as usize, h: h as usize, data: vec![[0.0; 4]; (w * h) as usize] }
+    }
+
+    /// Source-over of a straight-alpha colour with extra coverage.
+    #[inline]
+    fn blend(&mut self, i: usize, c: [f32; 4], coverage: f32) {
+        let a = c[3] * coverage;
+        if a <= 0.0 {
+            return;
+        }
+        let d = &mut self.data[i];
+        let inv = 1.0 - a;
+        d[0] = c[0] * a + d[0] * inv;
+        d[1] = c[1] * a + d[1] * inv;
+        d[2] = c[2] * a + d[2] * inv;
+        d[3] = a + d[3] * inv;
+    }
+
+    /// Paints one CSS-like background layer into `area`, optionally through a coverage mask
+    /// (same size as the canvas).
+    pub fn paint(&mut self, fill: &Fill, area: [f32; 4], mask: Option<&Mask>) {
+        let [ax, ay, aw, ah] = area;
+        let x0 = ax.floor().max(0.0) as usize;
+        let y0 = ay.floor().max(0.0) as usize;
+        let x1 = ((ax + aw).ceil() as usize).min(self.w);
+        let y1 = ((ay + ah).ceil() as usize).min(self.h);
+        let mask_at = |i: usize| mask.map_or(1.0, |m| m.data()[i] as f32 / 255.0);
+
+        if let Fill::Path { d, view, fill: color, area: rel } = fill {
+            // Rasterise the shape's coverage with tiny-skia, blend in float.
+            let Some(path) = parse_svg_path(d) else { return };
+            let Some(mut cov) = Mask::new(self.w as u32, self.h as u32) else { return };
+            let t = Transform::from_row(rel[2] * aw / view[0], 0.0, 0.0, rel[3] * ah / view[1], ax + rel[0] * aw, ay + rel[1] * ah);
+            cov.fill_path(&path, FillRule::Winding, true, t);
+            let c = [color.r, color.g, color.b, color.a];
+            for y in y0..y1 {
+                for x in x0..x1 {
+                    let i = y * self.w + x;
+                    let k = cov.data()[i] as f32 / 255.0 * mask_at(i);
+                    self.blend(i, c, k);
+                }
+            }
+            return;
+        }
+
+        // Colour at a gradient position, interpolated between stops like CSS (straight alpha, sRGB).
+        let sample = |stops: &[(Color, f32)], p: f32| -> [f32; 4] {
+            let first = &stops[0];
+            if p <= first.1 {
+                return [first.0.r, first.0.g, first.0.b, first.0.a];
+            }
+            for pair in stops.windows(2) {
+                let ((a, pa), (b, pb)) = (pair[0], pair[1]);
+                if p <= pb {
+                    let k = if pb > pa { (p - pa) / (pb - pa) } else { 1.0 };
+                    return [a.r + (b.r - a.r) * k, a.g + (b.g - a.g) * k, a.b + (b.b - a.b) * k, a.a + (b.a - a.a) * k];
+                }
+            }
+            let last = &stops[stops.len() - 1].0;
+            [last.r, last.g, last.b, last.a]
+        };
+
+        match fill {
+            Fill::Solid(c) => {
+                let c = [c.r, c.g, c.b, c.a];
+                for y in y0..y1 {
+                    for x in x0..x1 {
+                        let i = y * self.w + x;
+                        self.blend(i, c, mask_at(i));
+                    }
+                }
+            }
+            Fill::Linear { angle, stops } => {
+                let a = angle.to_radians();
+                let (dx, dy) = (a.sin(), -a.cos());
+                let len = (aw * a.sin()).abs() + (ah * a.cos()).abs();
+                let (cx, cy) = (ax + aw / 2.0, ay + ah / 2.0);
+                for y in y0..y1 {
+                    for x in x0..x1 {
+                        let (px, py) = (x as f32 + 0.5 - cx, y as f32 + 0.5 - cy);
+                        let p = (px * dx + py * dy) / len + 0.5;
+                        let i = y * self.w + x;
+                        self.blend(i, sample(stops, p), mask_at(i));
+                    }
+                }
+            }
+            Fill::Radial { x: fx, y: fy, ellipse, stops } => {
+                let (cx, cy) = (ax + fx * aw, ay + fy * ah);
+                let far_x = (cx - ax).max(ax + aw - cx);
+                let far_y = (cy - ay).max(ay + ah - cy);
+                let (rx, ry) = if *ellipse {
+                    (far_x * std::f32::consts::SQRT_2, far_y * std::f32::consts::SQRT_2)
+                } else {
+                    let r = (far_x * far_x + far_y * far_y).sqrt();
+                    (r, r)
+                };
+                for y in y0..y1 {
+                    for x in x0..x1 {
+                        let (px, py) = ((x as f32 + 0.5 - cx) / rx, (y as f32 + 0.5 - cy) / ry);
+                        let i = y * self.w + x;
+                        self.blend(i, sample(stops, (px * px + py * py).sqrt()), mask_at(i));
+                    }
+                }
+            }
+            Fill::Path { .. } => unreachable!(),
+        }
+    }
+
+    /// Quantises to premultiplied 8-bit with triangular dither of ±1 step, so gradients don't band.
+    pub fn into_pixmap(self) -> Pixmap {
+        let mut out = Pixmap::new(self.w as u32, self.h as u32).unwrap();
+        let dst = out.data_mut();
+        for (i, px) in self.data.iter().enumerate() {
+            let d = dither(i as u32);
+            let a = (px[3] * 255.0 + 0.5).clamp(0.0, 255.0);
+            dst[i * 4 + 3] = a as u8;
+            for k in 0..3 {
+                // Premultiplied channels must not exceed alpha.
+                let v = (px[k] * 255.0 + 0.5 + d).clamp(0.0, a);
+                dst[i * 4 + k] = v as u8;
+            }
+        }
+        out
+    }
+}
+
+/// Triangular-distributed offset in (-1, 1) from the pixel index: two cheap hashes added.
+fn dither(i: u32) -> f32 {
+    let hash = |seed: u32| {
+        let mut v = i.wrapping_mul(0x9E37_79B9) ^ seed;
+        v ^= v >> 16;
+        v = v.wrapping_mul(0x85EB_CA6B);
+        v ^= v >> 13;
+        v = v.wrapping_mul(0xC2B2_AE35);
+        v ^= v >> 16;
+        v as f32 / u32::MAX as f32
+    };
+    hash(0x68E3_1DA4) + hash(0xB529_7A4D) - 1.0
 }

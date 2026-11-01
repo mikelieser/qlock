@@ -11,7 +11,7 @@ pub mod theme;
 use qlock_core::{Frame, Locale};
 use tiny_skia::Pixmap;
 
-use raster::{Coverage, Face, brighten, circle_coverage, fill_circle, fill_rect, paint_coverage, paint_fill, rounded_rect_mask};
+use raster::{Coverage, Face, FloatCanvas, brighten, circle_coverage, fill_circle, fill_rect, paint_coverage, rounded_rect_mask};
 use theme::{Color, DotShape, Motion, Theme};
 
 /// Inter as a variable font, the web app's default face.
@@ -238,12 +238,13 @@ impl Engine {
         let l = &self.layout;
 
         // Page and face, including the face's decoration.
-        let mut bg = Pixmap::new(width, height).expect("screen size");
-        paint_fill(&mut bg, &theme.page.fill, [0.0, 0.0, width as f32, height as f32], None);
+        let mut bg = FloatCanvas::new(width, height);
+        bg.paint(&theme.page.fill, [0.0, 0.0, width as f32, height as f32], None);
         let mask = rounded_rect_mask(width, height, l.face, l.radius);
         for layer in &theme.face.layers {
-            paint_fill(&mut bg, layer, l.face, mask.as_ref());
+            bg.paint(layer, l.face, mask.as_ref());
         }
+        let bg = bg.into_pixmap();
         self.background = self.push(bg);
 
         // Letters: one sprite per distinct letter and state.
