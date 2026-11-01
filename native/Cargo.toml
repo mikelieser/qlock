@@ -1,0 +1,19 @@
+[workspace]
+resolver = "3"
+members = ["core", "render", "ffi", "preview"]
+
+[workspace.package]
+edition = "2024"
+license = "GPL-2.0"
+publish = false
+
+[workspace.dependencies]
+qlock-core = { path = "core" }
+qlock-render = { path = "render" }
+serde = { version = "1", default-features = false, features = ["derive", "alloc"] }
+serde_json = "1"
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = 3

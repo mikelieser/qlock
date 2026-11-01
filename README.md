@@ -82,25 +82,21 @@ Alle Einstellungen lassen sich per URL setzen und gehen dem Gespeicherten vor, z
 ## Mac-Bildschirmschoner
 
 `bun run saver:install` baut `QLOCK.saver` und legt ihn nach `~/Library/Screen Savers`. Danach in den
-Systemeinstellungen unter **Hintergrundbild → Bildschirmschoner …** „QLOCK" wählen (einen eigenen Bereich „Bildschirmschoner" gibt es nicht mehr; wann er startet, steht unter **Sperrbildschirm**); **Optionen …** öffnet einen Dialog mit Sprache,
-Theme und allen Schaltern (Datum, Effekte, Hintergrund, Sekundenrahmen …).
+Systemeinstellungen unter **Hintergrundbild → Bildschirmschoner …** „QLOCK" wählen (einen eigenen Bereich
+„Bildschirmschoner" gibt es nicht mehr; wann er startet, steht unter **Sperrbildschirm**). **Optionen …** öffnet
+einen Dialog mit Sprache, Theme und Schaltern (Datum, Effekte, Hintergrund, Punkte …).
 
-- Der Bildschirmschoner ist eine schlanke Swift-Hülle (`saver/Sources`) um einen `WKWebView`. Die Uhr steckt als
-  eine einzige HTML-Datei im Bundle (`vite build --mode saver`), läuft also offline.
-- Der Dialog übergibt die Auswahl als URL-Parameter, die Uhrenlogik bleibt komplett in der Web-App.
-- Sprach- und Theme-Listen erzeugt `saver/options.ts` beim Bauen aus `LOCALE_GROUPS` und `THEME_GROUPS`: neue
-  Themes und Dialekte erscheinen ohne Swift-Änderung im Dialog.
-- Ad-hoc signiert, für den eigenen Mac reicht das. Auf einem anderen Mac einmal per Rechtsklick → Öffnen
-  freigeben oder `xattr -dr com.apple.quarantine QLOCK.saver`.
-- macOS nimmt die Ansicht nach dem Start aus ihrem Fenster. WebKit hält die Seite dann für unsichtbar, friert
-  CSS-Animationen ein und verwirft nach ein paar Sekunden die Darstellung (schwarzer Bildschirm). Der
-  Bildschirmschoner zeigt deshalb Schnappschüsse einer unsichtbaren Webansicht: einen pro Minute, mit
-  Sekundenrahmen einen pro Sekunde (spürbar mehr CPU). Die Seite läuft mit `?still` ohne Animationen;
-  Buchstaben-, Übergangs- und Hintergrund-Effekte fehlen deshalb im Dialog.
-- Seit macOS Sonoma hält der Systemprozess alte Bildschirmschoner-Instanzen am Leben und ruft Start/Stopp
-  unzuverlässig auf. QLOCK beendet den Prozess deshalb erst, wenn 10 Sekunden nach dem Ausblenden keine neue
-  Instanz entstanden ist. Sofort beenden führt zu weißen Bildschirmen (macOS startet den Prozess beim Ausblenden
-  neu), einzelne Webansichten freigeben zu leeren Bildschirmen (macOS zeigt manchmal eine ältere Instanz).
+- Der Bildschirmschoner zeichnet **nativ**: Swift-Hülle (`saver/Sources`) um den Rust-Renderer aus `native/`,
+  zusammengesetzt mit Core Animation. Animationen laufen flüssig, ohne WebKit.
+- Warum nicht die Web-App: macOS hängt die Ansicht im Bildschirmschoner-Prozess aus ihrem Fenster. WebKit hält
+  die Seite dann für unsichtbar, friert Animationen ein und verwirft nach ein paar Sekunden die Darstellung.
+- Sprachen kommen als Daten aus der Web-App (`native/export-locales.ts`), alle Sprachen sind dabei. Themes
+  müssen nach `native/themes/*.toml` portiert werden; der Dialog zeigt nur portierte (bisher Formrausch, Sunset).
+- Braucht Rust (`cargo`), gebaut wird für Apple Silicon. Ad-hoc signiert, für den eigenen Mac reicht das.
+- Seit macOS Sonoma hält der Systemprozess alte Instanzen am Leben und ruft Start/Stopp unzuverlässig auf.
+  QLOCK beendet den Prozess deshalb erst, wenn 10 Sekunden nach dem Ausblenden keine neue Instanz entstanden ist.
+
+Architektur und Stand des gemeinsamen Renderers für Mac und Hardware-Uhren: [docs/hardware.md](docs/hardware.md#gemeinsamer-renderer-mac-bildschirmschoner-und-uhren).
 
 ## Sprachen
 
@@ -186,8 +182,15 @@ src/
   components/Spooky.tsx   Spinnen und Fledermaus fürs Katja-Theme
   App.tsx               Einstellungen, Tastatur, Timer, Vollbild
   settings.ts           Defaults, Theme-Gruppen, localStorage, URL-Parameter
+native/
+  core/                 Rust: Uhrenlogik aus exportierten Sprachdaten (no_std)
+  render/               Rust: Themes (TOML), Sprites, Animation pro Frame
+  ffi/                  C-Schnittstelle für den Bildschirmschoner
+  preview/              Ein Frame als PNG, zum Vergleich mit der Web-App
+  themes/*.toml         portierte Themes
+  export-locales.ts     schreibt data/locales.json aus src/locales
 saver/
-  Sources/*.swift       Bildschirmschoner: WKWebView-Hülle und Optionsdialog
+  Sources/*.swift       Bildschirmschoner: Core-Animation-Hülle um die Rust-Engine, Optionsdialog
   options.ts            Sprach-/Theme-Listen für den Optionsdialog
   build.sh              baut QLOCK.saver (universal, ad-hoc signiert), --install installiert
 docs/

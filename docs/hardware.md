@@ -139,7 +139,36 @@ prüfen.
 - **Renderer plattformneutral**: dieselbe Zeichenlogik auf ESP und Linux, nur die unterste Schicht wechselt.
 - **Risiko**: Rust auf dem P4 ist jung (Ziel `riscv32imafc-esp-espidf` ist gelistet, Vollständigkeit
   ungeprüft). Rückfall: Grafik mit LVGL, Logik in Rust – oder S3.
-- Uhrenlogik (Zeit → Wörter) aus `src/core` und `src/locales` portieren; die Vitest-Fälle dienen als Spezifikation.
+- Uhrenlogik (Zeit → Wörter) kommt als Daten aus der Web-App, siehe nächster Abschnitt.
+
+### Gemeinsamer Renderer (Mac-Bildschirmschoner und Uhren)
+
+Stand 01.11.2026, Branch `rust-renderer`, Code in `native/`. Auslöser: Ein Web-Bildschirmschoner kann auf
+aktuellem macOS nicht flüssig animieren. Der Systemprozess hängt die Ansicht aus ihrem Fenster, WebKit hält die
+Seite dann für unsichtbar, friert Animationen ein und verwirft nach ein paar Sekunden die Darstellung. Ein
+eigener Renderer löst das für den Mac und ist zugleich der Renderer der Uhren.
+
+```
+src/locales (TypeScript)  ──export──▶  native/data/locales.json   jede Minute → leuchtende Wörter, alle Sprachen
+native/themes/*.toml                                               Themes als Daten (Farben, Verläufe, Pfade, Effekte)
+native/core     qlock-core     Daten → Frame (Zellen, Punkte), no_std
+native/render   qlock-render   Sprites einmal rastern (tiny-skia + Inter), pro Frame nur Instanzen
+                               (welches Sprite, wo, Deckkraft, Größe); alle Animationszeiten hier
+        ├── Mac:   Core Animation setzt die Instanzen auf der GPU zusammen (saver/, über native/ffi)
+        └── ESP32: kleiner Software-Blitter, nur geänderte Bereiche (noch nicht gebaut)
+```
+
+- **Sprachen bleiben in TypeScript.** `native/export-locales.ts` schreibt für jede Sprache jede Minute des
+  Tages als Tabelle. Der Rust-Kern schlägt nur nach, damit sind alle 27 Raster ohne Port identisch.
+- **Sprite-Prinzip:** Teures wird einmal gerastert (Hintergrund mit Verlauf und Deko, jeder Buchstabe aus,
+  an und unscharf für den Übergang, Punkte, Teilchen, Datum). Pro Frame entstehen nur ca. 350 Instanzen in
+  unter 0,1 ms. Der Mac setzt sie per Core Animation zusammen, der ESP32 blittet nur, was sich bewegt.
+- **Gemessen:** Engine-Aufbau 20–100 ms (einmal pro Sprache/Theme/Größe), Update pro Frame ca. 30 µs.
+  Volle Software-Zusammensetzung 1600×1200 ca. 40 ms auf dem Mac, für den ESP32 also nur mit geänderten
+  Bereichen.
+- **Portiert:** Formrausch und Sunset, Effekte Atmen, Übergang (Fokus und Punkte) und aufsteigende Funken.
+  Offen: übrige 30 Themes, Schimmer und andere Buchstaben-Effekte, Sekundenrahmen, Bild-Locale-Details.
+- **Später:** derselbe Kern als WebAssembly im Browser, dann zeigen Web, Mac und Uhr pixelgleich dasselbe.
 
 ### Zentrale: Elixir-Hub
 

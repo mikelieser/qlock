@@ -1,6 +1,6 @@
 #!/bin/sh
-# Builds saver/build/QLOCK.saver (universal, ad-hoc signed). With --install it also
-# copies it to ~/Library/Screen Savers.
+# Builds saver/build/QLOCK.saver: Swift shell + the Rust engine from native/ (Apple Silicon, ad-hoc
+# signed). With --install it also copies it to ~/Library/Screen Savers.
 set -eu
 cd "$(dirname "$0")/.."
 
@@ -9,22 +9,20 @@ BUNDLE="$OUT/QLOCK.saver"
 rm -rf "$OUT"
 mkdir -p "$BUNDLE/Contents/MacOS" "$BUNDLE/Contents/Resources"
 
-bunx vite build --mode saver --logLevel warn
+bun native/export-locales.ts >/dev/null
 bun saver/options.ts "$OUT/options.json"
+cargo build --release --quiet --manifest-path native/Cargo.toml -p qlock-ffi
 
-for arch in arm64 x86_64; do
-  swiftc -O -swift-version 5 -target "$arch-apple-macos13.0" -module-name Qlock -emit-library \
-    -framework ScreenSaver -framework WebKit -framework AppKit \
-    saver/Sources/*.swift -o "$OUT/Qlock-$arch"
-done
-lipo -create "$OUT/Qlock-arm64" "$OUT/Qlock-x86_64" -output "$BUNDLE/Contents/MacOS/Qlock"
-rm "$OUT"/Qlock-*
+swiftc -O -swift-version 5 -target arm64-apple-macos13.0 -module-name Qlock -emit-library \
+  -import-objc-header native/ffi/qlock.h -Lnative/target/release -lqlock_ffi \
+  -framework ScreenSaver -framework QuartzCore -framework AppKit \
+  saver/Sources/*.swift -o "$BUNDLE/Contents/MacOS/Qlock"
 
 version=$(sed -n 's/.*"version": "\(.*\)".*/\1/p' package.json)
 build=$(git rev-list --count HEAD 2>/dev/null || echo 1)
 sed -e "s/__VERSION__/$version/" -e "s/__BUILD__/$build/" saver/Info.plist >"$BUNDLE/Contents/Info.plist"
-cp -R "$OUT/web" "$OUT/options.json" "$BUNDLE/Contents/Resources/"
-[ -f saver/thumbnail.png ] && cp saver/thumbnail*.png "$BUNDLE/Contents/Resources/"
+cp "$OUT/options.json" "$BUNDLE/Contents/Resources/"
+if [ -f saver/thumbnail.png ]; then cp saver/thumbnail*.png "$BUNDLE/Contents/Resources/"; fi
 
 codesign --force --sign - "$BUNDLE"
 echo "Gebaut: $BUNDLE"
