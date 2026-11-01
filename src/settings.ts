@@ -9,7 +9,7 @@ export const THEME_GROUPS = [
   },
   {
     name: 'Mike',
-    note: 'Strand, Sonne, Retro, Matrix',
+    note: 'Strand, Sonne, Retro',
     themes: [
       // Morning, day, evening, night: the order "Tageslauf" goes through.
       'sunrise',
@@ -22,7 +22,6 @@ export const THEME_GROUPS = [
       'retro-stripes',
       'retro-night',
       'retro-pastel',
-      'matrix',
     ],
   },
   {
@@ -39,6 +38,21 @@ export const THEME_GROUPS = [
     name: 'Katja',
     note: 'Herbst und gemütliche Abende',
     themes: ['autumn-leaves', 'golden-hour', 'forest-mist', 'cozy'],
+  },
+  {
+    name: 'Zocker',
+    note: 'Konsolen und Computer von 8 bis 64 Bit und heute',
+    themes: ['terminal', '8bit', '16bit', 'handheld', 'hybrid', 'konsole-blau', 'konsole-gruen', 'matrix'],
+  },
+  {
+    name: 'Material',
+    note: 'Frontplatten zum Ausprobieren vor dem Bau',
+    themes: ['eiche', 'nussbaum', 'beton', 'acryl'],
+  },
+  {
+    name: 'Atmosphäre',
+    note: 'Licht und Stimmung von Polarlicht bis Stummfilm',
+    themes: ['polarlicht', 'tiefsee', 'lavalampe', 'bauhaus', 'stummfilm'],
   },
   {
     name: 'Jahreszeiten',
@@ -71,7 +85,11 @@ const RENAMED: Record<string, Theme> = { katja: 'halloween', neujahr: 'silvester
 export type Theme = (typeof THEME_GROUPS)[number]['themes'][number];
 export const THEMES: readonly Theme[] = THEME_GROUPS.flatMap((group) => group.themes);
 
+/** Labels the id alone would get wrong. */
+const LABELS: Partial<Record<Theme, string>> = { '8bit': '8 Bit', '16bit': '16 Bit', 'konsole-gruen': 'Konsole Grün' };
+
 export const themeLabel = (theme: Theme): string =>
+  LABELS[theme] ??
   theme
     .split('-')
     .map((part) => part[0]!.toUpperCase() + part.slice(1))

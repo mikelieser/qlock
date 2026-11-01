@@ -131,7 +131,7 @@ pub struct Extras {
     pub particle_glow: f32,
     /// Soap-bubble particles: highlight and thin ring instead of a filled disc.
     pub bubbles: bool,
-    /// The face decoration swells when particles are on (retro `deco-groove`).
+    /// The face decoration swells when particles are on (retro `deco-groove`, aurora).
     pub groove: bool,
     /// The sea: the wave decoration drifts and swells when particles are on (sunset, lagoon …).
     pub waves: bool,
@@ -149,6 +149,10 @@ pub struct Theme {
     pub page_bg: String,
     pub face_bg: String,
     pub face_deco: String,
+    /// `deco-groove`: origin as share of the face, period in seconds, peak scale.
+    pub deco_origin: (f32, f32),
+    pub deco_duration: f32,
+    pub deco_scale: f32,
     /// Shorter screen side share the square face takes (CSS `--clock-size`).
     pub clock_size: f32,
     pub pad: f32,
@@ -285,7 +289,7 @@ impl Theme {
                 extras.letter_stroke = Some((0.06, ink));
                 extras.dot_ring = Some((0.0035, ink));
             }
-            "retro" | "retro-sun" | "retro-stripes" | "retro-night" | "retro-pastel" => extras.groove = true,
+            "retro" | "retro-sun" | "retro-stripes" | "retro-night" | "retro-pastel" | "polarlicht" => extras.groove = true,
             "cozy" | "sommernacht" => extras.particle_glow = 0.01,
             "lagoon" | "cotton-candy" | "lavender" | "bubblegum" | "sky-dream" | "unicorn" => extras.bubbles = true,
             _ => {}
@@ -297,6 +301,12 @@ impl Theme {
             page_bg: var("page-bg").to_string(),
             face_bg: var("face-bg").to_string(),
             face_deco: var("face-deco").to_string(),
+            deco_origin: match css::parse_position(&css::tokens(var("deco-origin"))) {
+                (Len::Pct(x), Len::Pct(y)) if !var("deco-origin").is_empty() => (x / 100.0, y / 100.0),
+                _ => (0.5, 1.0),
+            },
+            deco_duration: seconds(var("deco-duration")).unwrap_or(5.0),
+            deco_scale: num("deco-scale", 1.12),
             clock_size: num("clock-size", 0.8),
             pad: num("pad", 0.14),
             face_radius: pct("face-radius"),

@@ -84,7 +84,7 @@ pub fn groove_sprite(e: &mut Engine, width: u32, height: u32) -> Option<(u32, (f
     let u = e.units();
     let mut canvas = FloatCanvas::new(w.ceil() as u32, h.ceil() as u32);
     canvas.paint_css(&theme.face_deco, [0.0, 0.0, w, h], None, &u);
-    let origin = if theme.id == "retro-stripes" { (x + w, y + h) } else { (x + w / 2.0, y + h) };
+    let origin = (x + w * theme.deco_origin.0, y + h * theme.deco_origin.1);
     let _ = (width, height);
     let id = e.push(canvas.into_pixmap());
     Some((id, origin))
@@ -217,8 +217,9 @@ pub fn before_particles(e: &Engine, out: &mut Vec<Instance>, t: f64) {
         out.push(Instance::at(id, 1, left + w, top + sprite_h / 2.0 + swell, 1.0));
     }
     if let Some((id, (ox, oy))) = e.special().groove {
-        let phase = ((t / 5.0).rem_euclid(1.0)) as f32;
-        let s = keyframes(&[(0.0, 1.0), (0.5, 1.12), (1.0, 1.0)], phase, EASE_IN_OUT);
+        let theme = e.theme();
+        let phase = ((t / theme.deco_duration as f64).rem_euclid(1.0)) as f32;
+        let s = keyframes(&[(0.0, 1.0), (0.5, theme.deco_scale), (1.0, 1.0)], phase, EASE_IN_OUT);
         // Scale about the origin: the centre moves away from it.
         let (cx, cy) = (x + w / 2.0, y + h / 2.0);
         out.push(Instance { scale: s, ..Instance::at(id, 1, ox + (cx - ox) * s, oy + (cy - oy) * s, 1.0) });
