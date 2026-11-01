@@ -1,6 +1,14 @@
 /** Festive themes by date, for the "Feste automatisch" setting. Mirrored in native/core (festival). */
 
-export type Festival = 'karneval' | 'ostern' | 'halloween' | 'weihnachten' | 'silvester';
+export type Festival =
+  | 'karneval'
+  | 'ostern'
+  | 'muttertag'
+  | 'vatertag'
+  | 'halloween'
+  | 'nikolaus'
+  | 'weihnachten'
+  | 'silvester';
 
 /** Easter Sunday (Gregorian, anonymous algorithm) as [month 1–12, day]. */
 export function easter(year: number): [number, number] {
@@ -25,8 +33,9 @@ const DAY = 86_400_000;
 
 /**
  * The festival a date belongs to, if any:
- * Karneval Weiberfastnacht bis Veilchendienstag, Ostern Palmsonntag bis Ostermontag,
- * Halloween 24.–31. Oktober, Weihnachten 1. Advent bis 26. Dezember, Silvester 27.–31. Dezember.
+ * Karneval Weiberfastnacht bis Veilchendienstag, Ostern Palmsonntag bis Ostermontag, Muttertag (2. Sonntag
+ * im Mai), Vatertag (Christi Himmelfahrt), Halloween 24.–31. Oktober, Nikolaus 6. Dezember, Weihnachten
+ * 1. Advent bis 26. Dezember, Silvester 27.–31. Dezember.
  */
 export function festival(date: Date): Festival | undefined {
   const year = date.getFullYear();
@@ -42,7 +51,12 @@ export function festival(date: Date): Festival | undefined {
 
   if (offset >= -52 && offset <= -47) return 'karneval';
   if (offset >= -7 && offset <= 1) return 'ostern';
+  if (offset === 39) return 'vatertag';
+  // Second Sunday in May.
+  const mayFirst = new Date(Date.UTC(year, 4, 1)).getUTCDay();
+  if (month === 5 && day === 1 + ((7 - mayFirst) % 7) + 7) return 'muttertag';
   if (month === 10 && day >= 24) return 'halloween';
+  if (month === 12 && day === 6) return 'nikolaus';
   if (month === 12 && day >= 27) return 'silvester';
   if (today >= advent && (month < 12 || day <= 26)) return 'weihnachten';
   return undefined;

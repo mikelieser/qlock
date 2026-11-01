@@ -4,7 +4,7 @@ const KEYS: [string, string][] = [
   ['T', 'Alle Themes zur Auswahl'],
   ['← →', 'Theme zurück / weiter'],
   ['A', 'Tageslauf: Theme nach Sonnenstand (Sunrise, Lagoon, Sunset, Nightsurf)'],
-  ['K', 'Feste automatisch: Karneval, Ostern, Halloween, Advent, Silvester'],
+  ['K', 'Feste automatisch: Karneval, Ostern, Mutter-/Vatertag, Halloween, Nikolaus, Advent, Silvester'],
   ['L', 'Alle Sprachen zur Auswahl'],
   ['↑ ↓', 'Sprache zurück / weiter'],
   ['M', 'Modus: Live, Demo, alle Wörter'],

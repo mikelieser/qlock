@@ -1820,6 +1820,109 @@ body {
   color-scheme: light;
 }
 
+/* Mother's Day: blush and peach, tulips and hearts, falling petals. */
+[data-theme='muttertag'] {
+  --page-bg: #f3dcdc;
+  --face-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cpath d='M12 6 Q12.6 17 12 29' fill='none' stroke='%235f9e5a' stroke-width='1.1'/%3E%3Cpath d='M12 21 Q7 17 6 11 Q10.5 14 12 21Z' fill='%2376b56f'/%3E%3Cpath d='M8 3 L8 7 Q8 11 12 11 Q16 11 16 7 L16 3 L14 5.5 L12 3 L10 5.5Z' fill='%23ff7aa5'/%3E%3Cpath d='M21 4 Q21.6 15 21 27' fill='none' stroke='%235f9e5a' stroke-width='1.1'/%3E%3Cpath d='M21 19 Q16 15 15 9 Q19.5 12 21 19Z' fill='%2376b56f'/%3E%3Cpath d='M17 1 L17 5 Q17 9 21 9 Q25 9 25 5 L25 1 L23 3.5 L21 1 L19 3.5Z' fill='%23ff5c7a'/%3E%3Cpath d='M30 7 Q30.6 18 30 30' fill='none' stroke='%235f9e5a' stroke-width='1.1'/%3E%3Cpath d='M30 22 Q25 18 24 12 Q28.5 15 30 22Z' fill='%2376b56f'/%3E%3Cpath d='M26 4 L26 8 Q26 12 30 12 Q34 12 34 8 L34 4 L32 6.5 L30 4 L28 6.5Z' fill='%23ffa07a'/%3E%3C/svg%3E") 6% 97% / auto 14% no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cpath d='M22 21.2 C12.399999999999999 14 16 8.6 22 12.8 C28 8.6 31.6 14 22 21.2Z' fill='%23ff6f91'/%3E%3Cpath d='M33 12.6 C28.2 9 30 6.3 33 8.4 C36 6.3 37.8 9 33 12.6Z' fill='%23ffb3c6'/%3E%3Cpath d='M10 24.08 C4.56 20 6.6 16.94 10 19.32 C13.4 16.94 15.440000000000001 20 10 24.08Z' fill='%23ff9fb8'/%3E%3C/svg%3E") 94% 97% / auto 14% no-repeat,
+    radial-gradient(ellipse at 50% 20%, rgb(255 255 255 / 0.6), transparent 60%),
+    linear-gradient(160deg, #ffe8ea 0%, #ffd9d6 50%, #ffcdbf 100%);
+  --face-radius: 4%;
+  --face-shadow: 0 2vmin 8vmin rgb(150 80 80 / 0.25);
+  --weight-off: 300;
+  --weight-on: 620;
+  --char-off: rgb(138 45 79 / 0.15);
+  --char-on: #8a2d4f;
+  --char-glow: 0 0 0.4em rgb(255 255 255 / 0.8);
+  --dot-off: rgb(138 45 79 / 0.13);
+  --dot-1: #ff7aa5;
+  --dot-2: #ff5c7a;
+  --dot-3: #ffa07a;
+  --dot-4: #c47bd6;
+  --fx-name: fx-breathe;
+  --fx-duration: 5s;
+  --amb-display: block;
+  --amb-name: amb-fall;
+  --amb-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 24'%3E%3Cpath d='M10 1 C17 6 17 17 10 23 C3 17 3 6 10 1Z'/%3E%3C/svg%3E");
+  --amb-size: 2cqmin;
+  --amb-duration: 17s;
+  --amb-opacity: 0.75;
+  --amb-c1: #ff9fb8;
+  --amb-c2: #ffffff;
+  --amb-c3: #ffb8a0;
+  --progress-color: rgb(138 45 79 / 0.3);
+  color-scheme: light;
+}
+
+/* Father's Day (Ascension): blue sky, meadow, a handcart with a crate. */
+[data-theme='vatertag'] {
+  --page-bg: #cfe3ec;
+  --face-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M0 9 Q60 2 120 8 T200 6 V20 H0Z' fill='%238fcf6f'/%3E%3Cpath d='M0 13 Q70 8 140 13 T200 12 V20 H0Z' fill='%2374b85a'/%3E%3C/svg%3E") bottom / 100% 7% no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 30'%3E%3Cpath d='M3 13 L12 19' stroke='%236b4a2e' stroke-width='1.2' stroke-linecap='round'/%3E%3Crect x='12' y='14' width='30' height='9' rx='1' fill='%23a0623a'/%3E%3Cpath d='M12 17 H42' stroke='%237a4a2b' stroke-width='0.6'/%3E%3Crect x='17' y='8' width='18' height='6' fill='%23c9963f'/%3E%3Crect x='18.5' y='3' width='2.2' height='5' rx='0.8' fill='%233f7d4a'/%3E%3Crect x='19.1' y='1.6' width='1' height='1.6' fill='%233f7d4a'/%3E%3Crect x='22.5' y='3' width='2.2' height='5' rx='0.8' fill='%233f7d4a'/%3E%3Crect x='23.1' y='1.6' width='1' height='1.6' fill='%233f7d4a'/%3E%3Crect x='26.5' y='3' width='2.2' height='5' rx='0.8' fill='%233f7d4a'/%3E%3Crect x='27.1' y='1.6' width='1' height='1.6' fill='%233f7d4a'/%3E%3Crect x='30.5' y='3' width='2.2' height='5' rx='0.8' fill='%233f7d4a'/%3E%3Crect x='31.1' y='1.6' width='1' height='1.6' fill='%233f7d4a'/%3E%3Ccircle cx='17' cy='25' r='4' fill='%233b3b3b'/%3E%3Ccircle cx='17' cy='25' r='1.4' fill='%23bbb'/%3E%3Ccircle cx='37' cy='25' r='4' fill='%233b3b3b'/%3E%3Ccircle cx='37' cy='25' r='1.4' fill='%23bbb'/%3E%3C/svg%3E") 6% 96% / auto 14% no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Crect x='26' y='16' width='2.5' height='12' fill='%237a5233'/%3E%3Ccircle cx='27' cy='11' r='8' fill='%235fa15a'/%3E%3Ccircle cx='22' cy='15' r='5' fill='%236db866'/%3E%3Ccircle cx='32' cy='15' r='5' fill='%23579550'/%3E%3Ccircle cx='10' cy='24' r='3' fill='%23ffd84d'/%3E%3Ccircle cx='14' cy='26' r='2' fill='%23fff'/%3E%3C/svg%3E") 94% 96% / auto 14% no-repeat,
+    radial-gradient(circle at 84% 12%, #fff7c2 0 5%, rgb(255 240 160 / 0.45) 8%, transparent 22%),
+    linear-gradient(#bfe2f7 0%, #dff1fb 60%, #f2fbf0 100%);
+  --face-radius: 3%;
+  --face-shadow: 0 2vmin 8vmin rgb(40 80 100 / 0.25);
+  --weight-off: 300;
+  --weight-on: 640;
+  --char-off: rgb(25 55 85 / 0.15);
+  --char-on: #193755;
+  --char-glow: 0 0 0.4em rgb(255 255 255 / 0.75);
+  --dot-off: rgb(25 55 85 / 0.13);
+  --dot-1: #3f7d4a;
+  --dot-2: #c9963f;
+  --dot-3: #2f6fa8;
+  --dot-4: #a0623a;
+  --dot-glow: none;
+  --fx-name: fx-bob;
+  --fx-duration: 2.6s;
+  --fx-step: 160ms;
+  --progress-color: rgb(25 55 85 / 0.3);
+  color-scheme: light;
+}
+
+/* St Nicholas: a red boot with sweets on a snowy night, walnuts and a mandarin, snow falling. */
+[data-theme='nikolaus'] {
+  --page-bg: radial-gradient(ellipse at 50% 30%, #3a0f16, #160407 75%);
+  --face-bg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 10' preserveAspectRatio='none'%3E%3Cpath d='M0 4 Q50 0 100 3.5 T200 3 V10 H0Z' fill='%23e9eef0'/%3E%3Cpath d='M0 7 Q60 4 120 7 T200 6.5 V10 H0Z' fill='%23f8fafb'/%3E%3C/svg%3E") bottom / 100% 5% no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Cpath d='M13 9 H23 V22 Q30 22 31 25 Q31 28 27 28 H13 Z' fill='%23c8102e'/%3E%3Crect x='11.5' y='6' width='13' height='4.5' rx='2' fill='%23f4f1ea'/%3E%3Cpath d='M15 7 V0.5 Q15 -1 17.5 -1 Q20 -1 20 1.5' fill='none' stroke='%23fff' stroke-width='1.6'/%3E%3Cpath d='M15 7 V0.5 Q15 -1 17.5 -1 Q20 -1 20 1.5' fill='none' stroke='%23e5484d' stroke-width='1.6' stroke-dasharray='1.2 1.2'/%3E%3Ccircle cx='21' cy='5' r='3' fill='%23f39c2b'/%3E%3Ccircle cx='21.5' cy='3.4' r='0.5' fill='%235f9e5a'/%3E%3C/svg%3E") 6% 98% / auto 14% no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 30'%3E%3Ccircle cx='14' cy='24' r='4' fill='%23f39c2b'/%3E%3Ccircle cx='14.6' cy='20.4' r='0.6' fill='%235f9e5a'/%3E%3Cellipse cx='23' cy='25' rx='3.4' ry='3' fill='%23a67c52'/%3E%3Cpath d='M23 22 V28' stroke='%237a5233' stroke-width='0.5'/%3E%3Cellipse cx='29.5' cy='26' rx='3' ry='2.6' fill='%239a7149'/%3E%3Cpath d='M30 6 L31 9 L34 9.2 L31.6 11 L32.4 14 L30 12.3 L27.6 14 L28.4 11 L26 9.2 L29 9Z' fill='%23ffd36b'/%3E%3Cpath d='M20 11 L20.6 12.8 L22.4 12.9 L21 14 L21.4 15.8 L20 14.8 L18.6 15.8 L19 14 L17.6 12.9 L19.4 12.8Z' fill='%23ffd36b' opacity='0.8'/%3E%3C/svg%3E") 94% 98% / auto 14% no-repeat,
+    radial-gradient(ellipse at 50% 0%, rgb(255 200 120 / 0.16), transparent 55%),
+    radial-gradient(circle 0.2vmin at 14% 8%, #fff 30%, transparent), radial-gradient(circle 0.15vmin at 30% 5%, #fff 30%, transparent), radial-gradient(circle 0.18vmin at 50% 9%, #fff 30%, transparent), radial-gradient(circle 0.14vmin at 68% 4%, #fff 30%, transparent), radial-gradient(circle 0.2vmin at 86% 9%, #fff 30%, transparent),
+    linear-gradient(#2a0c12 0%, #3b1219 60%, #4a1720 100%);
+  --face-radius: 3%;
+  --face-shadow: 0 0 8vmin rgb(255 180 100 / 0.08), 0 2vmin 8vmin rgb(0 0 0 / 0.6);
+  --weight-off: 250;
+  --weight-on: 480;
+  --char-off: rgb(255 230 220 / 0.13);
+  --char-on: #fff1dc;
+  --char-glow: 0 0 0.3em rgb(255 190 110 / 0.85), 0 0 1em rgb(255 120 60 / 0.3);
+  --dot-off: rgb(255 230 220 / 0.12);
+  --dot-1: #e5484d;
+  --dot-2: #ffc94d;
+  --dot-3: #f1f5f2;
+  --dot-4: #f39c2b;
+  --fx-name: fx-flicker;
+  --fx-duration: 4s;
+  --fx-step: 430ms;
+  --amb-display: block;
+  --amb-name: amb-fall;
+  --amb-size: 1.1cqmin;
+  --amb-radius: 50%;
+  --amb-duration: 16s;
+  --amb-opacity: 0.85;
+  --amb-c1: #ffffff;
+  --amb-c2: #f2f6ff;
+  --amb-c3: #fff8f0;
+  --progress-color: rgb(255 220 160 / 0.35);
+}
+
+[data-theme='muttertag'] .dot,
+[data-theme='nikolaus'] .dot {
+  --dot-glow: 0 0 1.2vmin var(--dot-on), 0 0 3vmin var(--dot-on);
+}
+
 /* Christmas: snowy night, firs with fairy lights, a golden star, snow. */
 [data-theme='weihnachten'] {
   --page-bg: radial-gradient(ellipse at 50% 30%, #12332a, #07150f 75%);

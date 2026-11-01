@@ -20,6 +20,13 @@ describe('festival', () => {
     [2026, 3, 29, 'ostern'], // Palmsonntag
     [2026, 4, 6, 'ostern'], // Ostermontag
     [2026, 4, 7, undefined],
+    [2026, 5, 10, 'muttertag'],
+    [2026, 5, 9, undefined],
+    [2027, 5, 9, 'muttertag'],
+    [2026, 5, 14, 'vatertag'], // Christi Himmelfahrt
+    [2026, 5, 15, undefined],
+    [2026, 12, 6, 'nikolaus'],
+    [2026, 12, 7, 'weihnachten'],
     [2026, 10, 23, undefined],
     [2026, 10, 31, 'halloween'],
     [2026, 11, 28, undefined],

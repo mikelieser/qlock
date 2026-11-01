@@ -42,7 +42,7 @@ export const THEME_GROUPS = [
   {
     name: 'Feste',
     note: 'Motto-Themes durchs Jahr',
-    themes: ['karneval', 'ostern', 'halloween', 'weihnachten', 'silvester'],
+    themes: ['karneval', 'ostern', 'muttertag', 'vatertag', 'halloween', 'nikolaus', 'weihnachten', 'silvester'],
   },
 ] as const;
 

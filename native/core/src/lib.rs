@@ -163,6 +163,11 @@ pub fn easter(year: i32) -> (u32, u32) {
     (((h + l - 7 * m + 114) / 31) as u32, ((h + l - 7 * m + 114) % 31 + 1) as u32)
 }
 
+/// 0 = Sunday … 6 = Saturday (1970-01-01 was a Thursday).
+fn weekday_of(days_since_epoch: i64) -> i64 {
+    (days_since_epoch + 4).rem_euclid(7)
+}
+
 /// Days since 1970-01-01 of a civil date (Howard Hinnant's algorithm).
 fn days(year: i32, month: u32, day: u32) -> i64 {
     let y = i64::from(year) - i64::from(month <= 2);
@@ -189,8 +194,14 @@ pub fn festival(year: i32, month: u32, day: u32) -> Option<&'static str> {
         Some("karneval")
     } else if (-7..=1).contains(&offset) {
         Some("ostern")
+    } else if offset == 39 {
+        Some("vatertag")
+    } else if month == 5 && i64::from(day) == 1 + (7 - weekday_of(days(year, 5, 1))) % 7 + 7 {
+        Some("muttertag")
     } else if month == 10 && day >= 24 {
         Some("halloween")
+    } else if month == 12 && day == 6 {
+        Some("nikolaus")
     } else if month == 12 && day >= 27 {
         Some("silvester")
     } else if today >= advent && (month < 12 || day <= 26) {
@@ -216,6 +227,13 @@ mod festival_tests {
             (2026, 3, 29, Some("ostern")),
             (2026, 4, 6, Some("ostern")),
             (2026, 4, 7, None),
+            (2026, 5, 10, Some("muttertag")),
+            (2026, 5, 9, None),
+            (2027, 5, 9, Some("muttertag")),
+            (2026, 5, 14, Some("vatertag")),
+            (2026, 5, 15, None),
+            (2026, 12, 6, Some("nikolaus")),
+            (2026, 12, 7, Some("weihnachten")),
             (2026, 10, 23, None),
             (2026, 10, 31, Some("halloween")),
             (2026, 11, 28, None),
