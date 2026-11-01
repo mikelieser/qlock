@@ -267,11 +267,7 @@ impl Theme {
         let mut extras = Extras::default();
         match id {
             "formrausch" => extras.dot_image = Some("cross.png"),
-            "ticktack" => {
-                extras.no_dots = true;
-                extras.spring_in = true;
-            }
-            "gradient" => extras.dot_border = Some(Color::WHITE),
+            "ticktack" => extras.spring_in = true,
             "chaos" | "chaos-burst" | "chaos-night" => {
                 let ink = Color::parse("#1a1033").unwrap();
                 extras.letter_stroke = Some((0.07, ink));

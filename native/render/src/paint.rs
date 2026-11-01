@@ -15,7 +15,6 @@ fn asset(url: &str) -> Option<&'static [u8]> {
     Some(match name {
         "pattern.jpg" => include_bytes!("../../assets/themes/formrausch-pattern.png"),
         "cross.png" => include_bytes!("../../assets/themes/formrausch-cross.png"),
-        "bg.png" => include_bytes!("../../assets/themes/metal-bg.png"),
         _ => return None,
     })
 }

@@ -520,8 +520,7 @@ body {
 
 /* ---- Themes -------------------------------------------------------------- */
 
-[data-theme='formrausch'],
-[data-theme='ticktack'] {
+[data-theme='formrausch'] {
   --page-bg: #111 url('./assets/themes/formrausch/pattern.jpg');
   --face-bg: linear-gradient(rgb(0 0 0 / 0.5), rgb(0 0 0 / 0.5)),
     radial-gradient(rgb(255 255 255 / 0.25) 0%, rgb(255 255 255 / 0.02) 60%, transparent 100%);
@@ -535,8 +534,7 @@ body {
   --caption-color: rgb(255 228 0);
 }
 
-[data-theme='formrausch'] .dot,
-[data-theme='ticktack'] .dot {
+[data-theme='formrausch'] .dot {
   background: url('./assets/themes/formrausch/cross.png') center / contain no-repeat;
   box-shadow: none;
   opacity: 0;
@@ -546,22 +544,33 @@ body {
   opacity: 1;
 }
 
+/* ---- Classics: calm, plain materials ------------------------------------------- */
+
+/* Chalkboard: slate, chalk letters in Amatic, springs in like the 2014 original. */
 [data-theme='ticktack'] {
+  --page-bg: radial-gradient(ellipse at 50% 40%, #3a2a1c, #1d140d 75%);
+  --face-bg: radial-gradient(ellipse at 40% 30%, rgb(255 255 255 / 0.07), transparent 60%),
+    radial-gradient(ellipse at 70% 80%, rgb(255 255 255 / 0.04), transparent 50%),
+    linear-gradient(160deg, #2f3b35 0%, #26302b 55%, #1f2824 100%);
+  --face-radius: 2%;
+  --face-shadow: 0 0 0 1.4vmin #6b4a2e, 0 0 0 1.6vmin #4a321f, 0 2vmin 8vmin rgb(0 0 0 / 0.6);
   --font: 'Amatic SC', 'Helvetica Neue', sans-serif;
   --weight-off: 400;
   --weight-on: 700;
-  --face-radius: 3%;
-  --char-scale: 0.8;
-  --fade: 200ms;
-  --stagger: 0ms;
+  --char-scale: 0.82;
+  --char-off: rgb(240 240 230 / 0.16);
+  --char-on: #f4f3ea;
+  --char-glow: 0 0 0.12em rgb(255 255 245 / 0.5);
+  --dot-off: rgb(240 240 230 / 0.14);
+  --dot-on: #f4f3ea;
+  --dot-glow: none;
+  --fade: 250ms;
+  --stagger: 25ms;
+  --progress-color: rgb(244 243 234 / 0.35);
 }
 
 [data-theme='ticktack'] .clock {
   animation: ticktack-in 1600ms cubic-bezier(0.34, 1.8, 0.5, 1) both;
-}
-
-[data-theme='ticktack'] .dot {
-  display: none;
 }
 
 @keyframes ticktack-in {
@@ -570,63 +579,168 @@ body {
   }
 }
 
+/* Brushed steel: fine horizontal grain, engraved dark letters. */
 [data-theme='metal'] {
-  --page-bg: #1a1a1a;
-  --face-bg: url('./assets/themes/metal/bg.png') center / cover;
-  --face-radius: 1%;
-  --char-off: rgb(255 255 255 / 0.22);
-  --char-on: #444;
-  --char-glow: 0 0 8px #555;
-  --weight-on: 500;
-  --dot-off: rgb(255 255 255 / 0.1);
-  --dot-glow: none;
+  --page-bg: radial-gradient(ellipse at 50% 40%, #3a3d42, #16181b 75%);
+  --face-bg: repeating-linear-gradient(0deg, rgb(255 255 255 / 0.05) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(0deg, rgb(0 0 0 / 0.035) 0 1px, transparent 1px 5px),
+    linear-gradient(135deg, #c9ccd1 0%, #eef0f2 38%, #b9bdc4 62%, #e2e5e8 100%);
+  --face-radius: 1.5%;
+  --face-shadow: 0 2vmin 8vmin rgb(0 0 0 / 0.55);
+  --weight-off: 300;
+  --weight-on: 600;
+  --char-off: rgb(40 45 52 / 0.13);
+  --char-on: #23272d;
+  --char-glow: 0 0.03em 0 rgb(255 255 255 / 0.75);
+  --dot-off: rgb(40 45 52 / 0.12);
+  --dot-on: #23272d;
+  --dot-glow: 0 0.06vmin 0 rgb(255 255 255 / 0.7);
+  --progress-color: rgb(35 39 45 / 0.35);
+  --caption-color: #23272d;
+  color-scheme: light;
 }
 
+/* Deep ocean blue, warm white letters. */
 [data-theme='blue'] {
-  --page-bg: #062a3a;
-  --face-bg: #0ab1e4;
-  --face-radius: 1%;
-  --case: lowercase;
-  --char-off: #0389be;
-  --char-glow: 0 0 8px #555;
-  --char-decoration: underline;
-  --dot-off: transparent;
-  --dot-glow: none;
-}
-
-[data-theme='red'],
-[data-theme='timeonly'] {
-  --page-bg: #e10600;
-  --face-bg: #e10600;
-  --face-shadow: none;
-  --char-off: rgb(20 20 20 / 0.15);
-  --char-glow: none;
-  --weight-on: 500;
-  --dot-off: rgb(20 20 20 / 0.15);
-  --dot-glow: none;
-}
-
-[data-theme='red'] {
+  --page-bg: radial-gradient(ellipse at 50% 40%, #0d2f4f, #06172a 75%);
+  --face-bg: radial-gradient(ellipse at 50% 25%, rgb(120 180 255 / 0.18), transparent 60%),
+    linear-gradient(#11406e 0%, #0c2f55 60%, #0a2645 100%);
   --face-radius: 2%;
+  --face-shadow: 0 2vmin 8vmin rgb(0 10 30 / 0.6);
+  --weight-off: 250;
+  --weight-on: 480;
+  --char-off: rgb(180 210 255 / 0.15);
+  --char-on: #f5f8ff;
+  --char-glow: 0 0 0.3em rgb(150 200 255 / 0.55);
+  --dot-off: rgb(180 210 255 / 0.13);
+  --dot-on: #f5f8ff;
+  --dot-glow: 0 0 1vmin rgb(150 200 255 / 0.8);
+  --progress-color: rgb(200 220 255 / 0.35);
 }
 
-[data-theme='timeonly'] {
-  --char-off: transparent;
-  --dot-off: transparent;
-}
-
-[data-theme='gradient'] {
-  --page-bg: #03263a;
-  --face-bg: radial-gradient(ellipse at center, #87e0fd 0%, #53cbf1 24%, #05abe0 100%);
-  --face-radius: 4%;
-  --char-off: rgb(255 255 255 / 0.25);
-  --char-glow: 0 0 0.3em rgb(0 60 90 / 0.6);
-  --dot-off: transparent;
+/* Signal red, crisp white letters. */
+[data-theme='red'] {
+  --page-bg: radial-gradient(ellipse at 50% 40%, #4a0a10, #1c0306 75%);
+  --face-bg: radial-gradient(ellipse at 50% 30%, rgb(255 255 255 / 0.14), transparent 60%),
+    linear-gradient(160deg, #d3182f 0%, #b81228 55%, #9c0d21 100%);
+  --face-radius: 2%;
+  --face-shadow: 0 2vmin 8vmin rgb(40 0 5 / 0.6);
+  --weight-off: 300;
+  --weight-on: 600;
+  --char-off: rgb(255 255 255 / 0.17);
+  --char-on: #ffffff;
+  --char-glow: 0 0 0.25em rgb(255 255 255 / 0.35);
+  --dot-off: rgb(255 255 255 / 0.15);
+  --dot-on: #ffffff;
   --dot-glow: none;
+  --progress-color: rgb(255 255 255 / 0.4);
 }
 
-[data-theme='gradient'] .dot {
-  border: 1px solid #fff;
+/* Soft colour flow from indigo through violet to pink. */
+[data-theme='gradient'] {
+  --page-bg: radial-gradient(ellipse at 50% 40%, #241a4a, #0e0a22 75%);
+  --face-bg: radial-gradient(ellipse at 25% 20%, rgb(255 255 255 / 0.22), transparent 55%),
+    linear-gradient(135deg, #4f5bd5 0%, #7b4fd6 40%, #b24bc4 70%, #e05a9a 100%);
+  --face-radius: 4%;
+  --face-shadow: 0 2vmin 10vmin rgb(30 10 60 / 0.6);
+  --weight-off: 250;
+  --weight-on: 520;
+  --char-off: rgb(255 255 255 / 0.2);
+  --char-on: #ffffff;
+  --char-glow: 0 0 0.3em rgb(255 220 255 / 0.55);
+  --dot-off: rgb(255 255 255 / 0.18);
+  --dot-on: #ffffff;
+  --dot-glow: 0 0 1vmin rgb(255 255 255 / 0.8);
+  --progress-color: rgb(255 255 255 / 0.4);
+}
+
+/* Only the time: black, nothing but the lit words. */
+[data-theme='timeonly'] {
+  --page-bg: #000;
+  --face-bg: #000;
+  --face-shadow: none;
+  --weight-on: 420;
+  --char-off: transparent;
+  --char-on: #f2f2f2;
+  --char-glow: 0 0 0.25em rgb(255 255 255 / 0.35);
+  --dot-off: transparent;
+  --dot-on: #f2f2f2;
+  --dot-glow: none;
+  --progress-color: rgb(255 255 255 / 0.25);
+}
+
+/* Graphite: matt charcoal, soft white letters. */
+[data-theme='graphite'] {
+  --page-bg: radial-gradient(ellipse at 50% 40%, #2c2f34, #121315 75%);
+  --face-bg: radial-gradient(ellipse at 50% 25%, rgb(255 255 255 / 0.06), transparent 60%),
+    linear-gradient(#2e3136 0%, #24272b 60%, #1e2024 100%);
+  --face-radius: 2%;
+  --face-shadow: 0 2vmin 8vmin rgb(0 0 0 / 0.6);
+  --weight-off: 250;
+  --weight-on: 460;
+  --char-off: rgb(255 255 255 / 0.1);
+  --char-on: #f2f2f0;
+  --char-glow: 0 0 0.3em rgb(255 255 255 / 0.4);
+  --dot-off: rgb(255 255 255 / 0.1);
+  --dot-on: #f2f2f0;
+  --dot-glow: 0 0 1vmin rgb(255 255 255 / 0.6);
+  --progress-color: rgb(255 255 255 / 0.3);
+}
+
+/* Paper: bright matt white, dark grey letters, like a printed sheet. */
+[data-theme='paper'] {
+  --page-bg: #e4e3df;
+  --face-bg: radial-gradient(ellipse at 50% 25%, rgb(255 255 255 / 0.9), transparent 65%),
+    linear-gradient(#f7f6f2 0%, #f1f0ec 100%);
+  --face-radius: 1.5%;
+  --face-shadow: 0 1.5vmin 6vmin rgb(60 55 45 / 0.22);
+  --weight-off: 300;
+  --weight-on: 640;
+  --char-off: rgb(30 30 30 / 0.09);
+  --char-on: #232323;
+  --char-glow: none;
+  --dot-off: rgb(30 30 30 / 0.08);
+  --dot-on: #232323;
+  --dot-glow: none;
+  --progress-color: rgb(35 35 35 / 0.3);
+  color-scheme: light;
+}
+
+/* Brass: almost black, warm golden letters. */
+[data-theme='brass'] {
+  --page-bg: radial-gradient(ellipse at 50% 40%, #241d14, #0c0a07 75%);
+  --face-bg: radial-gradient(ellipse at 50% 25%, rgb(255 210 140 / 0.08), transparent 60%),
+    linear-gradient(#17140f 0%, #120f0b 100%);
+  --face-radius: 2%;
+  --face-shadow: 0 0 0 0.35vmin #6f5733, 0 2vmin 8vmin rgb(0 0 0 / 0.7);
+  --weight-off: 250;
+  --weight-on: 500;
+  --char-off: rgb(232 195 122 / 0.11);
+  --char-on: #ecc77d;
+  --char-glow: 0 0 0.3em rgb(236 190 110 / 0.55);
+  --dot-off: rgb(232 195 122 / 0.1);
+  --dot-on: #ecc77d;
+  --dot-glow: 0 0 1vmin rgb(236 190 110 / 0.7);
+  --progress-color: rgb(236 199 125 / 0.35);
+}
+
+/* Sage: muted green, dark forest letters. */
+[data-theme='sage'] {
+  --page-bg: #a9b5a3;
+  --face-bg: radial-gradient(ellipse at 50% 25%, rgb(255 255 255 / 0.3), transparent 60%),
+    linear-gradient(#c4cfbd 0%, #b5c2ae 100%);
+  --face-radius: 2.5%;
+  --face-shadow: 0 1.5vmin 6vmin rgb(40 55 35 / 0.25);
+  --weight-off: 300;
+  --weight-on: 620;
+  --char-off: rgb(35 55 35 / 0.12);
+  --char-on: #23372a;
+  --char-glow: none;
+  --dot-off: rgb(35 55 35 / 0.11);
+  --dot-on: #23372a;
+  --dot-glow: none;
+  --progress-color: rgb(35 55 42 / 0.3);
+  color-scheme: light;
 }
 
 /* ---- Home themes: colourful corner dots, one colour each ------------------- */
@@ -1948,7 +2062,6 @@ body {
 }
 
 /* Per-theme picks. Shimmer clips a moving gradient to the glyphs. */
-[data-theme='blue'],
 [data-theme='gradient'],
 [data-theme='lagoon'],
 [data-theme='sky-dream'] {
@@ -2014,7 +2127,18 @@ body {
 }
 
 [data-theme='metal'] {
-  --fx-gradient: linear-gradient(90deg, #444 0 35%, #bbb 45%, #fff 50%, #bbb 55%, #444 65% 100%);
+  --fx-gradient: linear-gradient(90deg, #23272d 0 35%, #5d6672 45%, #a9b2bd 50%, #5d6672 55%, #23272d 65% 100%);
+}
+
+[data-theme='brass'] {
+  --fx-name: fx-shimmer;
+  --fx-duration: 6s;
+  --fx-ease: linear;
+  --fx-step: 90ms;
+  --fx-clip: text;
+  --fx-color: transparent;
+  --fx-shadow: none;
+  --fx-gradient: linear-gradient(90deg, #ecc77d 0 35%, #f6dfa8 45%, #fff6dc 50%, #f6dfa8 55%, #ecc77d 65% 100%);
 }
 
 [data-theme='sunset'] {

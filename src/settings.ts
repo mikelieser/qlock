@@ -5,7 +5,7 @@ export const THEME_GROUPS = [
   {
     name: 'Standard',
     note: 'Die Klassiker aus dem alten Stand',
-    themes: ['standard', 'formrausch', 'ticktack', 'metal', 'blue', 'red', 'gradient', 'timeonly'],
+    themes: ['standard', 'formrausch', 'graphite', 'paper', 'brass', 'sage', 'blue', 'red', 'metal', 'gradient', 'ticktack', 'timeonly'],
   },
   {
     name: 'Mike',
