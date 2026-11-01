@@ -58,7 +58,9 @@
 
 ## Produktidee (01.11.2026, offen)
 
-- Web-Uhr frei auf einer Website, Bildschirmschoner für Mac und Windows als Einmalkauf (ca. 5 €), alle Optionen.
+- Web-Uhr frei auf einer Website als Schaufenster. Bildschirmschoner für Mac und Windows als Einmalkauf für
+  9,99 € (entschieden 01.11.2026, eine Lizenz für beide Systeme, alle Themes und Updates), alle Optionen.
+  Zum Start eventuell ein Einführungspreis.
 - Eigene Themes und Zifferblätter bauen (Theme-Editor im Browser, Vorschau per WebAssembly-Renderer),
   Community-Store mit Abstimmung.
 - Vor jedem Verkauf: anderer Name (nicht „QLOCK“), eigene Raster für Deutsch und Englisch (die jetzigen stammen
