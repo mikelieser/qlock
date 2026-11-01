@@ -208,7 +208,7 @@ Der Hub wandelt alles in ein gerätefertiges Format um, die Geräte bleiben einf
 
 ### Umgebung und Wetter
 
-Idee vom 01.11.2026: Die Uhr zeigt nicht nur Tageszeit und Datum, sondern so genau wie möglich, wie es draußen
+Stand: nur Idee, Details klären wir später. Idee vom 01.11.2026: Die Uhr zeigt nicht nur Tageszeit und Datum, sondern so genau wie möglich, wie es draußen
 gerade ist. Umsetzung später, über Home Assistant.
 
 - **Ohne Sensoren, offline berechnet:** Sonnenstand (Dämmerung, Sonnenaufgang, Mittag, Untergang), Mondphase
@@ -220,6 +220,10 @@ gerade ist. Umsetzung später, über Home Assistant.
   Jedes Theme bestimmt, wie es darauf reagiert: Teilchen-Effekte (Regen, Schnee, Blätter) mit Dichte und
   Fallwinkel aus Niederschlag und Wind, Wolken und Nebel als Ebenen, Helligkeit und Sättigung nach Lichtlage.
   Stärke stufenlos, damit leichter Niesel anders aussieht als Starkregen.
+- **Wettertaugliche Themes:** Nicht jedes Theme muss mitmachen. Themes werden nach und nach
+  „echtzeitwettertauglich“ und erklären das in ihrer Theme-Datei (z. B. `weather = true` plus eigene
+  Regeln, wie sie auf Regen, Wind, Wolken reagieren). Andere bleiben wie sie sind und zeigen höchstens
+  Warnungen. Wie das im Detail aussieht, ist noch offen.
 - **Warnungen** (Sturm, Unwetter, Glätte) überlagern jedes Theme deutlich, aber ruhig; nicht blinkend.
 - **Datenweg:** Home Assistant → Hub → MQTT an alle Uhren und den Mac-Bildschirmschoner; ohne Daten fällt die
   Uhr auf „klares Wetter“ zurück. Der Renderer bekommt nur Zahlen (z. B. `rain_mm_h`, `wind_ms`, `cloud`,
