@@ -13,6 +13,7 @@ const SWITCHES: { key: Switch; label: string; group: 'Anzeige' | 'Bewegung'; hin
   { key: 'date', label: 'Wochentag und Datum', group: 'Anzeige', hint: 'Klein über den Buchstaben, z. B. „So · 1. November“.' },
   { key: 'progress', label: 'Sekundenrahmen', group: 'Anzeige', hint: 'Eine feine Linie durch die Eckpunkte, einmal herum pro Minute.' },
   { key: 'stretch', label: 'Ganzer Bildschirm', group: 'Anzeige', hint: 'Die Uhr füllt den Bildschirm statt eines Quadrats in der Mitte.' },
+  { key: 'festive', label: 'Feste automatisch', group: 'Anzeige', hint: 'Zu Karneval, Ostern, Halloween, Advent, Silvester und Neujahr das passende Theme statt des gewählten.' },
   { key: 'effect', label: 'Buchstaben', group: 'Bewegung', hint: 'Leuchtende Buchstaben bewegen sich je nach Theme: atmen, wippen, schimmern, flackern …' },
   { key: 'transition', label: 'Zeitwechsel', group: 'Bewegung', hint: 'Neue Wörter kommen beim Minutenwechsel aus der Unschärfe.' },
   { key: 'ambient', label: 'Hintergrund', group: 'Bewegung', hint: 'Wellen, Schnee, Blätter, Konfetti – je nach Theme.' },

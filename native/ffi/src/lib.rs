@@ -156,3 +156,17 @@ pub unsafe extern "C" fn qlock_update(engine: *mut Engine, hour: u32, minute: u3
 pub unsafe extern "C" fn qlock_release_pixels(engine: *mut Engine) {
     unsafe { &mut *engine }.release_pixels();
 }
+
+/// The festive theme id for a date ("neujahr", "karneval", …), or null. The string is static.
+#[unsafe(no_mangle)]
+pub extern "C" fn qlock_festival(year: i32, month: u32, day: u32) -> *const c_char {
+    match qlock_core::festival(year, month, day) {
+        Some("neujahr") => c"neujahr".as_ptr(),
+        Some("karneval") => c"karneval".as_ptr(),
+        Some("ostern") => c"ostern".as_ptr(),
+        Some("halloween") => c"halloween".as_ptr(),
+        Some("weihnachten") => c"weihnachten".as_ptr(),
+        Some("silvester") => c"silvester".as_ptr(),
+        _ => std::ptr::null(),
+    }
+}

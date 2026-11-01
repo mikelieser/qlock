@@ -3,6 +3,7 @@ import { For } from 'solid-js';
 const KEYS: [string, string][] = [
   ['T', 'Alle Themes zur Auswahl'],
   ['← →', 'Theme zurück / weiter'],
+  ['K', 'Feste automatisch: Karneval, Ostern, Halloween, Advent, Silvester, Neujahr'],
   ['L', 'Alle Sprachen zur Auswahl'],
   ['↑ ↓', 'Sprache zurück / weiter'],
   ['M', 'Modus: Live, Demo, alle Wörter'],

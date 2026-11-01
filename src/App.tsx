@@ -7,6 +7,7 @@ import { ThemePicker } from './components/ThemePicker';
 import { Spooky } from './components/Spooky';
 import { frameText, sameFrame, type Frame } from './core/locale';
 import { formatDate } from './core/date';
+import { festival } from './core/festival';
 import { secondsFrame } from './core/seconds';
 import { createNow } from './now';
 import { LOCALES, localeById } from './locales';
@@ -49,7 +50,9 @@ export function App() {
   const caption = createMemo(() => (settings.date ? formatDate(now(), locale().lang) : undefined));
 
   createEffect(() => saveSettings({ ...settings }));
-  createEffect(() => (document.documentElement.dataset.theme = settings.theme));
+  // With "Feste automatisch" the festive theme of the day wins over the chosen one.
+  const theme = createMemo(() => (settings.festive && festival(now())) || settings.theme);
+  createEffect(() => (document.documentElement.dataset.theme = theme()));
   createEffect(() => {
     if (ready()) document.title = text() || 'QLOCK';
   });
@@ -150,6 +153,10 @@ export function App() {
         setSettings('transition', (v) => !v);
         notify(settings.transition ? 'Übergangseffekt an' : 'Übergangseffekt aus');
         break;
+      case 'k':
+        setSettings('festive', (v) => !v);
+        notify(settings.festive ? `Feste automatisch an${festival(now()) ? ` (${festival(now())})` : ''}` : 'Feste automatisch aus');
+        break;
       case 'd':
         setSettings('date', (v) => !v);
         notify(settings.date ? 'Datum an' : 'Datum aus');
@@ -228,7 +235,7 @@ export function App() {
         caption={caption()}
         ambient={settings.ambient}
       />
-      <Show when={settings.theme === 'halloween'}>
+      <Show when={theme() === 'halloween'}>
         <Spooky />
       </Show>
       <div class="toast" classList={{ visible: toast() !== '' }} role="status">

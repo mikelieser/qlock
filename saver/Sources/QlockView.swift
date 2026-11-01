@@ -75,7 +75,13 @@ final class QlockView: ScreenSaverView {
     let day = Calendar.current.ordinality(of: .day, in: .era, for: Date()) ?? 0
     let flags = Preferences.flags()
     let locale = Preferences.string("locale")
-    let theme = Preferences.string("theme")
+    var theme = Preferences.string("theme")
+    if Preferences.flag("festive") {
+      let today = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+      if let id = qlock_festival(Int32(today.year ?? 2026), UInt32(today.month ?? 1), UInt32(today.day ?? 1)) {
+        theme = String(cString: id)
+      }
+    }
     if let b = built, b.size == size, b.day == day, b.flags == flags, b.locale == locale, b.theme == theme { return }
     guard size.width > 0, size.height > 0 else { return }
     built = (size, day, flags, locale, theme)

@@ -147,3 +147,92 @@ mod tests {
         }
     }
 }
+
+/// Easter Sunday (Gregorian, anonymous algorithm) as (month 1–12, day).
+pub fn easter(year: i32) -> (u32, u32) {
+    let a = year % 19;
+    let b = year / 100;
+    let c = year % 100;
+    let (d, e) = (b / 4, b % 4);
+    let f = (b + 8) / 25;
+    let g = (b - f + 1) / 3;
+    let h = (19 * a + b - d - g + 15) % 30;
+    let (i, k) = (c / 4, c % 4);
+    let l = (32 + 2 * e + 2 * i - h - k) % 7;
+    let m = (a + 11 * h + 22 * l) / 451;
+    (((h + l - 7 * m + 114) / 31) as u32, ((h + l - 7 * m + 114) % 31 + 1) as u32)
+}
+
+/// Days since 1970-01-01 of a civil date (Howard Hinnant's algorithm).
+fn days(year: i32, month: u32, day: u32) -> i64 {
+    let y = i64::from(year) - i64::from(month <= 2);
+    let era = y.div_euclid(400);
+    let yoe = y - era * 400;
+    let mp = (i64::from(month) + 9) % 12;
+    let doy = (153 * mp + 2) / 5 + i64::from(day) - 1;
+    let doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
+    era * 146_097 + doe - 719_468
+}
+
+/// The festive theme for a date, as the web app's `festival()` (src/core/festival.ts): Neujahr 1.–6.1.,
+/// Karneval Weiberfastnacht–Veilchendienstag, Ostern Palmsonntag–Ostermontag, Halloween 24.–31.10.,
+/// Weihnachten 1. Advent–26.12., Silvester 27.–31.12.
+pub fn festival(year: i32, month: u32, day: u32) -> Option<&'static str> {
+    let today = days(year, month, day);
+    let (em, ed) = easter(year);
+    let offset = today - days(year, em, ed);
+    // Fourth Advent is the Sunday on or before 24 December (1970-01-01 was a Thursday).
+    let eve = days(year, 12, 24);
+    let weekday = (eve + 4).rem_euclid(7);
+    let advent = eve - weekday - 21;
+    if month == 1 && day <= 6 {
+        Some("neujahr")
+    } else if (-52..=-47).contains(&offset) {
+        Some("karneval")
+    } else if (-7..=1).contains(&offset) {
+        Some("ostern")
+    } else if month == 10 && day >= 24 {
+        Some("halloween")
+    } else if month == 12 && day >= 27 {
+        Some("silvester")
+    } else if today >= advent && (month < 12 || day <= 26) {
+        Some("weihnachten")
+    } else {
+        None
+    }
+}
+
+#[cfg(test)]
+mod festival_tests {
+    use super::*;
+
+    #[test]
+    fn same_dates_as_the_web() {
+        assert_eq!(easter(2026), (4, 5));
+        assert_eq!(easter(2027), (3, 28));
+        let cases: &[(i32, u32, u32, Option<&str>)] = &[
+            (2026, 1, 1, Some("neujahr")),
+            (2026, 1, 6, Some("neujahr")),
+            (2026, 1, 7, None),
+            (2026, 2, 12, Some("karneval")),
+            (2026, 2, 17, Some("karneval")),
+            (2026, 2, 18, None),
+            (2026, 3, 29, Some("ostern")),
+            (2026, 4, 6, Some("ostern")),
+            (2026, 4, 7, None),
+            (2026, 10, 23, None),
+            (2026, 10, 31, Some("halloween")),
+            (2026, 11, 28, None),
+            (2026, 11, 29, Some("weihnachten")),
+            (2026, 12, 26, Some("weihnachten")),
+            (2026, 12, 27, Some("silvester")),
+            (2027, 11, 28, Some("weihnachten")),
+            (2027, 11, 27, None),
+            (2023, 12, 3, Some("weihnachten")),
+            (2023, 12, 2, None),
+        ];
+        for &(y, m, d, expected) in cases {
+            assert_eq!(festival(y, m, d), expected, "{y}-{m}-{d}");
+        }
+    }
+}
