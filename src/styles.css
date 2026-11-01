@@ -2167,6 +2167,40 @@ body {
   box-shadow: 0 0 1cqmin var(--c);
 }
 
+/* Matrix: green code rain on black, the time lit like a found message. */
+[data-theme='matrix'] {
+  --page-bg: #000;
+  --face-bg: radial-gradient(ellipse at 50% 40%, rgb(0 255 90 / 0.07), transparent 70%),
+    linear-gradient(#010a03, #000 70%);
+  --face-radius: 2%;
+  --face-shadow: 0 0 6vmin rgb(0 255 90 / 0.1), 0 2vmin 8vmin rgb(0 0 0 / 0.8);
+  --weight-off: 300;
+  --weight-on: 600;
+  --char-off: rgb(0 255 90 / 0.16);
+  --char-on: #d8ffe0;
+  --char-glow: 0 0 0.25em rgb(0 255 90 / 0.95), 0 0 0.8em rgb(0 200 70 / 0.5);
+  --dot-off: rgb(0 255 90 / 0.14);
+  --dot-1: #00ff5a;
+  --dot-2: #00ff5a;
+  --dot-3: #00ff5a;
+  --dot-4: #00ff5a;
+  --progress-color: rgb(0 255 90 / 0.4);
+  --fx-name: fx-flicker;
+  --fx-duration: 5s;
+  --fx-step: 610ms;
+  --amb-display: block;
+  --amb-name: amb-rain;
+  --amb-top: -30%;
+  --amb-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 96'%3E%3Cpath transform='translate(0 0)' d='M2 2H8M5 2V9M2 6H8' stroke='%23fff' stroke-opacity='0.12' stroke-width='1.4' fill='none' stroke-linecap='square'/%3E%3Cpath transform='translate(0 12)' d='M2 3H8M8 3V8H2M5 3V8' stroke='%23fff' stroke-opacity='0.16' stroke-width='1.4' fill='none' stroke-linecap='square'/%3E%3Cpath transform='translate(0 24)' d='M2 2H8V5H2M5 5V9' stroke='%23fff' stroke-opacity='0.24' stroke-width='1.4' fill='none' stroke-linecap='square'/%3E%3Cpath transform='translate(0 36)' d='M2 2H8L5 9M5 5L8 8' stroke='%23fff' stroke-opacity='0.35' stroke-width='1.4' fill='none' stroke-linecap='square'/%3E%3Cpath transform='translate(0 48)' d='M2 2L8 8M8 2L5 5M2 9H8' stroke='%23fff' stroke-opacity='0.48' stroke-width='1.4' fill='none' stroke-linecap='square'/%3E%3Cpath transform='translate(0 60)' d='M8 2L2 9M4 4H8' stroke='%23fff' stroke-opacity='0.63' stroke-width='1.4' fill='none' stroke-linecap='square'/%3E%3Cpath transform='translate(0 72)' d='M3 2V9M3 5H8M8 2V9' stroke='%23fff' stroke-opacity='0.81' stroke-width='1.4' fill='none' stroke-linecap='square'/%3E%3Cpath transform='translate(0 84)' d='M5 1V9M2 4H8M2 8L8 6' stroke='%23fff' stroke-opacity='1.0' stroke-width='1.4' fill='none' stroke-linecap='square'/%3E%3C/svg%3E");
+  --amb-ratio: 0.104;
+  --amb-size: 2.4cqmin;
+  --amb-duration: 6s;
+  --amb-opacity: 0.75;
+  --amb-c1: #00ff5a;
+  --amb-c2: #3dff7f;
+  --amb-c3: #00c846;
+}
+
 /* ---- Festive themes through the year ------------------------------------------ */
 
 /* Carnival: red and white like the Rhineland, streamers, confetti. */
@@ -2729,6 +2763,16 @@ body {
   }
   to {
     transform: translate(calc(var(--w) * 1cqw), -115cqh) scale(0) rotate(360deg);
+  }
+}
+
+/* Straight down without turning, e.g. code rain. */
+@keyframes amb-rain {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(0, 140cqh);
   }
 }
 

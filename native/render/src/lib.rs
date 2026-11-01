@@ -837,6 +837,7 @@ impl Engine {
                     amb.opacity,
                     1.0,
                 ),
+                Motion::Rain => (0.0, 140.0 * ch * p, 1.0, 0.0, amb.opacity, 1.0),
                 Motion::Confetti => (
                     lin(&[(0.0, 0.0), (1.0, wander * 3.0 * cw)]),
                     lin(&[(0.0, 0.0), (1.0, 118.0 * ch)]),

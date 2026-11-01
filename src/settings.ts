@@ -9,7 +9,7 @@ export const THEME_GROUPS = [
   },
   {
     name: 'Mike',
-    note: 'Strand, Sonne, Retro',
+    note: 'Strand, Sonne, Retro, Matrix',
     themes: [
       // Morning, day, evening, night: the order "Tageslauf" goes through.
       'sunrise',
@@ -22,6 +22,7 @@ export const THEME_GROUPS = [
       'retro-stripes',
       'retro-night',
       'retro-pastel',
+      'matrix',
     ],
   },
   {

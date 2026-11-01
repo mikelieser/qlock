@@ -93,6 +93,7 @@ pub enum Motion {
     Rise,
     Sparkle,
     Confetti,
+    Rain,
 }
 
 /// Background particles (CSS `--amb-*`).
@@ -249,6 +250,7 @@ impl Theme {
                     "amb-rise" => Motion::Rise,
                     "amb-sparkle" => Motion::Sparkle,
                     "amb-confetti" => Motion::Confetti,
+                    "amb-rain" => Motion::Rain,
                     _ => Motion::Fall,
                 },
                 top: pct("amb-top"),
