@@ -1,5 +1,6 @@
 # Hinweise für Agents
 
+- **Natives Git, kein GitButler**: alle Git-Schreibbefehle direkt mit `git` (`git add`, `git commit`, `git push` …), nie `but`. Das geht dem globalen GitButler-Skill vor. Hauptbranch ist `main`.
 - Web-Wortuhr (Vite + Solid + TypeScript). Doku auf Deutsch, Code und Kommentare auf Englisch.
 - Uhrenlogik ist rein (`src/core`, `src/locales`) und per Vitest getestet: nach Änderungen `bun run test` und `bun run build` (nicht `bun test`, das ist Buns eigener Runner). Pakete nur mit `bun add`, kein npm.
 - Wörter immer über `grid.word(row, col, 'TEXT')` adressieren, nie über rohe Zellnummern (Ausnahmen: Bilder im Formrausch-Locale, Pixelziffern in `core/seconds.ts`). Neue Dialekte am einfachsten mit `layoutGrid` aus Wortlisten.

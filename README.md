@@ -1,5 +1,8 @@
 # qlock
 
+> **Versionsverwaltung: natives Git, kein GitButler.** Commits, Branches und Pushes laufen hier mit `git`
+> selbst. Bitte kein `but` und keinen GitButler-Workspace verwenden – das gilt auch für Agents.
+
 Eine Wortuhr für den Browser – und bald für die Wand. Die Uhr zeigt die Zeit als Satz in einem Buchstabenraster
 („ES IST FÜNF VOR HALB NEUN"), vier Eckpunkte zählen die Minuten dazwischen. Angelehnt an die QLOCKTWO von
 Biegert & Funk; ein privates, nicht-kommerzielles Familienprojekt.
