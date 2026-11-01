@@ -8,7 +8,7 @@ import { en } from './en';
 import { es } from './es';
 import { formrauschLocale } from './formrausch';
 import { fr } from './fr';
-import { anhalter, boerse, derb, digga, kids, nerd, zen } from './fun';
+import { amt, anhalter, bahn, boerse, derb, digga, familie, fussball, kids, nerd, pirat, zen } from './fun';
 import { it } from './it';
 import { ja } from './ja';
 import { nl } from './nl';
@@ -39,7 +39,7 @@ export const LOCALE_GROUPS: readonly { name: string; note: string; locales: read
       saarland,
     ],
   },
-  { name: 'Spaß', note: 'Augenzwinkernde Blätter auf Deutsch', locales: [kids, digga, boerse, nerd, anhalter, zen, derb] },
+  { name: 'Spaß', note: 'Augenzwinkernde Blätter auf Deutsch', locales: [familie, kids, digga, boerse, nerd, anhalter, bahn, amt, pirat, fussball, zen, derb] },
   { name: 'Sprachen', note: 'Eigene Raster, Japanisch mit quadratischen Schriftzeichen', locales: [en, nl, da, sv, fr, es, it, el, ja] },
 ];
 

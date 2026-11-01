@@ -221,6 +221,8 @@ pub struct Engine {
     progress: Vec<(u32, f32, f32)>,
     particles: Vec<u32>,
     caption: Option<u32>,
+    /// Today's (month, day) for date words, set by the host.
+    date: Option<(u32, u32)>,
     special: special::Special,
     state: Vec<CellState>,
     dots_lit: u8,
@@ -264,6 +266,7 @@ impl Engine {
             progress: Vec::new(),
             particles: Vec::new(),
             caption: None,
+            date: None,
             dots_lit: 0,
             dots_since: f64::MIN,
             current: None,
@@ -719,6 +722,11 @@ impl Engine {
         self.current = Some(frame);
     }
 
+    /// Today's date for birthday words and the like.
+    pub fn set_date(&mut self, month: u32, day: u32) {
+        self.date = Some((month, day));
+    }
+
     fn all_frame(&self) -> Frame {
         let mut cells: Vec<u16> = Vec::new();
         for word in &self.locale.words {
@@ -736,7 +744,7 @@ impl Engine {
     pub fn update(&mut self, hour: u32, minute: u32, second: f32, t: f64) -> &[Instance] {
         let started = *self.started.get_or_insert(t);
         if t - started >= START_DELAY {
-            let frame = if self.options.all { self.all_frame() } else { self.locale.frame(hour, minute, self.options.intro) };
+            let frame = if self.options.all { self.all_frame() } else { self.locale.frame_on(hour, minute, self.options.intro, self.date) };
             if self.current.as_ref() != Some(&frame) {
                 self.set_frame(frame, t);
             }

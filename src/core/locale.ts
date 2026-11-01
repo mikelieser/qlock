@@ -22,6 +22,14 @@ export interface Locale {
   /** Every word the locale can show, for the "all" mode. */
   words: readonly Cells[];
   frame(now: Date, options: FrameOptions): Frame;
+  /** Words that light on one day of the year (birthdays, Towel Day); `frame` already includes them. */
+  dated?: readonly Dated[];
+}
+
+export interface Dated {
+  month: number;
+  day: number;
+  words: readonly Cells[];
 }
 
 export function frameText(grid: Grid, frame: Frame): string {

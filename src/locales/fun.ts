@@ -1,7 +1,7 @@
 import { minutesFirst } from '../core/clock';
 import type { Cells } from '../core/grid';
 import { layoutGrid, type LayoutRow } from '../core/layout';
-import type { Locale } from '../core/locale';
+import type { Dated, Locale } from '../core/locale';
 
 /*
  * Tongue-in-cheek German faces: the same "zehn vor halb" counting as Koblenz, with their own opening and
@@ -58,11 +58,44 @@ interface FunSpec {
   filler: string;
   intro: string[];
   outro: string[];
+  /** Occasion words lit during a time of day, `[key, 'HH:MM' from, 'HH:MM' until]`; may wrap past midnight. */
+  moments?: [key: string, from: string, until: string][];
+  /** Words lit all day on a date, `[key, month, day]`. */
+  dated?: [key: string, month: number, day: number][];
+  width?: number;
 }
 
+const minuteOfDay = (hhmm: string) => {
+  const [h, m] = hhmm.split(':').map(Number);
+  return h! * 60 + m!;
+};
+
 function fun(spec: FunSpec): Locale {
-  const { grid, w } = layoutGrid([...spec.before, ...TIME, ...spec.after], spec.filler);
-  const { fuenf, zehn, viertel, nach, vor, halb } = w as Record<string, Cells>;
+  const { grid, w } = layoutGrid([...spec.before, ...TIME, ...spec.after], spec.filler, spec.width);
+  const moments = (spec.moments ?? []).map(([key, from, until]) => ({
+    word: w[key]!,
+    from: minuteOfDay(from),
+    until: minuteOfDay(until),
+  }));
+  const dated: Dated[] = (spec.dated ?? []).map(([key, month, day]) => ({ month, day, words: [w[key]!] }));
+  const base = clock(spec, grid, w);
+  if (moments.length === 0 && dated.length === 0) return base;
+  return {
+    ...base,
+    words: [...base.words, ...moments.map((m) => m.word), ...dated.flatMap((d) => d.words)],
+    dated,
+    frame(now, options) {
+      const frame = base.frame(now, options);
+      const m = now.getHours() * 60 + now.getMinutes();
+      const lit = moments.filter(({ from, until }) => (from <= until ? m >= from && m < until : m >= from || m < until));
+      const today = dated.filter((d) => d.month === now.getMonth() + 1 && d.day === now.getDate());
+      return { ...frame, words: [...frame.words, ...lit.map((x) => x.word), ...today.flatMap((d) => d.words)] };
+    },
+  };
+}
+
+function clock(spec: FunSpec, grid: Locale['grid'], w: Record<string, Cells>): Locale {
+  const { fuenf, zehn, viertel, nach, vor, halb } = w;
   return minutesFirst({
     id: spec.id,
     name: spec.name,
@@ -103,10 +136,16 @@ export const kids = fun({
       ['ist', 'IST'],
     ],
   ],
-  after: [[['juhu', 'JUHU']]],
+  after: [
+    [
+      ['juhu', 'JUHU'],
+      ['heia', 'HEIA'],
+    ],
+  ],
   filler: 'EISKEKSTEDDYBONBON',
   intro: ['guck', 'mal', 'es', 'ist'],
   outro: ['juhu'],
+  moments: [['heia', '19:00', '07:00']],
 });
 
 /** For bankers: "Zeit ist Geld: … bullish." */
@@ -136,10 +175,16 @@ export const zen = fun({
       ['ist', 'IST'],
     ],
   ],
-  after: [[['om', 'OM']]],
+  after: [
+    [
+      ['om', 'OM'],
+      ['teezeit', 'TEEZEIT'],
+    ],
+  ],
   filler: 'ATMELIEBESEINRUHE',
   intro: ['jetzt', 'ist'],
   outro: ['om'],
+  moments: [['teezeit', '16:00', '17:00']],
 });
 
 /** Rude: "Scheiße, es ist schon … Alter." */
@@ -154,10 +199,16 @@ export const derb = fun({
       ['schon', 'SCHON'],
     ],
   ],
-  after: [[['alter', 'ALTER']]],
+  after: [
+    [
+      ['alter', 'ALTER'],
+      ['bier', 'BIER'],
+    ],
+  ],
   filler: 'MISTMANNOKACKE',
   intro: ['scheisse', 'es', 'ist', 'schon'],
   outro: ['alter'],
+  moments: [['bier', '18:00', '02:00']],
 });
 
 /** For nerds: "sudo es ist … EOF", a bug and the answer in the filler letters. */
@@ -198,11 +249,13 @@ export const digga = fun({
     [
       ['no', 'NO'],
       ['cap', 'CAP'],
+      ['lit', 'LIT'],
     ],
   ],
   filler: 'AURASUSBRO67LOWKEY',
   intro: ['digga', 'es', 'ist'],
   outro: ['no', 'cap'],
+  moments: [['lit', '22:00', '04:00']],
 });
 
 /** The Hitchhiker's Guide: "Keine Panik", the towel and the answer to everything. */
@@ -224,4 +277,127 @@ export const anhalter = fun({
   filler: 'BABELFISCHDNTARTHUR',
   intro: ['keine', 'panik'],
   outro: ['answer'],
+  // Towel Day.
+  dated: [['tuch', 5, 25]],
+});
+
+/** Deutsche Bahn: "Es ist ca. … +10 Min", disruptions in the filler letters. */
+export const bahn = fun({
+  id: 'bahn',
+  name: 'Bahn',
+  before: [
+    [
+      ['es', 'ES'],
+      ['ist', 'IST'],
+      ['ca', 'CA.'],
+    ],
+  ],
+  after: [
+    [
+      ['delay', '+10'],
+      ['min', 'MIN'],
+    ],
+  ],
+  filler: 'STÖRUNGSEVGLEISICE',
+  intro: ['es', 'ist', 'ca'],
+  outro: ['delay', 'min'],
+});
+
+/** Officialese: "Amtlich ist …", and from half past three it's closing time. */
+export const amt = fun({
+  id: 'amt',
+  name: 'Amt',
+  before: [
+    [
+      ['amtlich', 'AMTLICH'],
+      ['ist', 'IST'],
+    ],
+  ],
+  after: [[['feierabend', 'FEIERABEND']]],
+  filler: 'AKTENSTEMPELFORMULAR',
+  intro: ['amtlich', 'ist'],
+  outro: [],
+  moments: [['feierabend', '15:30', '08:00']],
+});
+
+/** Pirates: "Ahoi, es ist … arrr", rum from six. */
+export const pirat = fun({
+  id: 'pirat',
+  name: 'Pirat',
+  before: [
+    [
+      ['ahoi', 'AHOI'],
+      ['es', 'ES'],
+      ['ist', 'IST'],
+    ],
+  ],
+  after: [
+    [
+      ['arrr', 'ARRR'],
+      ['rum', 'RUM'],
+    ],
+  ],
+  filler: 'SCHATZKAPERNMEERHAI',
+  intro: ['ahoi', 'es', 'ist'],
+  outro: ['arrr'],
+  moments: [['rum', '18:00', '02:00']],
+});
+
+/** Football: a goal every full hour, final whistle after the Saturday games. */
+export const fussball = fun({
+  id: 'fussball',
+  name: 'Fußball',
+  before: [
+    [
+      ['es', 'ES'],
+      ['ist', 'IST'],
+    ],
+  ],
+  after: [
+    [
+      ['abpfiff', 'ABPFIFF'],
+      ['tor', 'TOR'],
+    ],
+  ],
+  filler: 'BALLELFMETERECKEABSEITS',
+  intro: ['es', 'ist'],
+  outro: [],
+  moments: [
+    ...Array.from({ length: 24 }, (_, h): [string, string, string] => ['tor', `${h}:00`, `${h}:01`]),
+    ['abpfiff', '17:20', '17:30'],
+  ],
+});
+
+/** `[key, month, day]` per family member; their name and JUHU light all day. */
+const BIRTHDAYS: [key: string, month: number, day: number][] = [];
+
+/** The family: everyone's name hidden in the grid, lit on their birthday. */
+export const familie = fun({
+  id: 'familie',
+  name: 'Familie',
+  width: 12,
+  before: [
+    [
+      ['es', 'ES'],
+      ['ist', 'IST'],
+      ['mike', 'MIKE'],
+    ],
+  ],
+  after: [
+    [
+      ['katja', 'KATJA'],
+      ['henry', 'HENRY'],
+    ],
+    [
+      ['susanna', 'SUSANNA'],
+      ['juhu', 'JUHU'],
+    ],
+  ],
+  filler: 'HERZLICHLIEBFAMILIE',
+  intro: ['es', 'ist'],
+  outro: [],
+  dated: BIRTHDAYS.flatMap(([key, month, day]) => [
+    [key, month, day],
+    ['juhu', month, day],
+  ]),
 });

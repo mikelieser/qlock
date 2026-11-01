@@ -15,7 +15,7 @@ import { nl } from './nl';
 import { sv } from './sv';
 import type { Locale } from '../core/locale';
 import { LOCALES } from '.';
-import { anhalter, boerse, derb, digga, kids, nerd, zen } from './fun';
+import { amt, anhalter, bahn, derb, digga, fussball, kids, nerd, pirat, zen, boerse } from './fun';
 
 const at = (time: string, seconds = 0) => {
   const [h, m] = time.split(':').map(Number);
@@ -288,6 +288,24 @@ describe('fun faces', () => {
   it('nerd', () => expect(say(nerd, '13:45')).toBe('SUDO ES IST VIERTEL VOR ZWEI EOF'));
   it('zen', () => expect(say(zen, '9:00')).toBe('JETZT IST NEUN OM'));
   it('hitchhiker', () => expect(say(anhalter, '13:45')).toBe('KEINE PANIK VIERTEL VOR ZWEI 42'));
-  it('rude', () => expect(say(derb, '23:55')).toBe('SCHEISSE ES IST SCHON FÜNF VOR ZWÖLF ALTER'));
-  it('without intro and outro', () => expect(say(derb, '23:55', false)).toBe('FÜNF VOR ZWÖLF'));
+  it('railway', () => expect(say(bahn, '13:45')).toBe('ES IST CA. VIERTEL VOR ZWEI +10 MIN'));
+  it('pirate with rum after six', () => expect(say(pirat, '18:30')).toBe('AHOI ES IST HALB SIEBEN ARRR RUM'));
+  it('closing time at the office', () => {
+    expect(say(amt, '15:00')).toBe('AMTLICH IST DREI');
+    expect(say(amt, '15:30')).toBe('AMTLICH IST HALB VIER FEIERABEND');
+    expect(say(amt, '07:55')).toBe('AMTLICH IST FÜNF VOR ACHT FEIERABEND');
+    expect(say(amt, '08:00')).toBe('AMTLICH IST ACHT');
+  });
+  it('a goal every full hour', () => {
+    expect(say(fussball, '15:00')).toBe('ES IST DREI TOR');
+    expect(say(fussball, '15:01')).toBe('ES IST DREI');
+  });
+  it('bedtime on the kids face', () => expect(say(kids, '19:30')).toBe('GUCK MAL ES IST HALB ACHT JUHU HEIA'));
+  it('towel day', () => {
+    const at = (d: string) => frameText(anhalter.grid, anhalter.frame(new Date(d), { intro: true }));
+    expect(at('2027-05-25T13:45')).toBe('KEINE PANIK VIERTEL VOR ZWEI 42 HANDTUCH');
+    expect(at('2027-05-26T13:45')).toBe('KEINE PANIK VIERTEL VOR ZWEI 42');
+  });
+  it('rude', () => expect(say(derb, '23:55')).toBe('SCHEISSE ES IST SCHON FÜNF VOR ZWÖLF ALTER BIER'));
+  it('without intro and outro', () => expect(say(derb, '23:55', false)).toBe('FÜNF VOR ZWÖLF BIER'));
 });

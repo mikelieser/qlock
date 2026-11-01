@@ -21,8 +21,10 @@ const locales = LOCALE_GROUPS.flatMap((group) =>
       }
       return wordIndex.get(key)!;
     };
+    // Words of a single date (birthdays …) are exported on their own; the host knows the date.
+    const datedWords = new Set((locale.dated ?? []).flatMap((d) => d.words));
     const frameId = (frame: Frame) => {
-      const entry = { words: frame.words.map(wordId), ...(frame.title ? { title: frame.title } : {}) };
+      const entry = { words: frame.words.filter((word) => !datedWords.has(word)).map(wordId), ...(frame.title ? { title: frame.title } : {}) };
       const key = JSON.stringify(entry);
       if (!frameIndex.has(key)) {
         frameIndex.set(key, frames.length);
@@ -54,6 +56,7 @@ const locales = LOCALE_GROUPS.flatMap((group) =>
       // [without intro, with intro], one frame index per minute of the day
       minutes,
       dots,
+      dated: (locale.dated ?? []).map((d) => ({ month: d.month, day: d.day, words: d.words.map(wordId) })),
     };
   }),
 );

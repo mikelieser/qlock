@@ -31,7 +31,32 @@
       „echtzeitwettertauglich“ (nicht alle müssen), wie genau ist noch offen. Details in
       [docs/hardware.md](docs/hardware.md#umgebung-und-wetter).
 - [ ] Erinnerungen mit Textanzeige („Aufwachen", „Auf geht's zur Schule"), gekoppelt mit Quak-Ansagen.
+- [ ] Geburtstage für das Blatt „Familie“ eintragen (`BIRTHDAYS` in `src/locales/fun.ts`).
 - [ ] Dialekte von Leuten aus der Gegend gegenlesen lassen (v. a. Koblenz, Pfalz, Ostfriesland, Schweiz).
+
+## Ideen für später (01.11.2026)
+
+Einstellungen:
+
+- [ ] Nachtmodus: Helligkeit folgt der Sonnenhöhe (Rechnung vom Tageslauf), nachts inaktive Buchstaben fast aus.
+- [ ] Theme- und Blattwechsel automatisch: stündlich, täglich oder „des Tages“ aus einer Favoritenliste.
+- [ ] „Uhr geht vor“: +5 Minuten für alle, die ihre Uhr absichtlich vorstellen.
+- [ ] Countdown-Modus: „NOCH ZEHN MINUTEN“ bis zu einer festen Zeit (Schlafenszeit, Kita, Abfahrt).
+- [ ] Stundengong über Quak: die Zeit im Dialekt des gewählten Blatts auf dem Sonos sprechen.
+- [ ] Uhr lernen: kleine analoge Uhr daneben, Zeiger passend zur Wortzeit.
+- [ ] Pixelschutz im Bildschirmschoner: Ziffernblatt wandert langsam um wenige Pixel (OLED).
+
+Blätter:
+
+- [ ] Tageszeit-Wörter (MORGENS, MITTAGS, ABENDS, NACHTS), damit HALB DREI eindeutig ist; Mechanik dafür gibt
+      es mit den Anlass-Wörtern (`moments` in `src/locales/fun.ts`).
+- [ ] Minutengenau („DREIUNDZWANZIG NACH ACHT“), braucht ein größeres Raster.
+- [ ] Ungefähr-Uhr (KURZ NACH, GLEICH, GEGEN).
+- [ ] Latein („EST HORA TERTIA ET QUADRANS“): die Ordinalzahlen passen nicht in 11×11, braucht ein eigenes Raster.
+
+Themes:
+
+- [ ] Echte Mondphase für Nacht-Themes (Nightsurf, Polarnacht).
 
 ## Web
 

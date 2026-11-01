@@ -95,6 +95,8 @@ final class QlockView: ScreenSaverView {
     engine = qlock_engine_new(
       locale, theme, UInt32(size.width * scale), UInt32(size.height * scale), flags, caption)
     guard let engine else { return }
+    let today = Calendar.current.dateComponents([.month, .day], from: Date())
+    qlock_set_date(engine, UInt32(today.month ?? 1), UInt32(today.day ?? 1))
 
     images = (0..<qlock_sprite_count(engine)).map { i in
       var w: UInt32 = 0

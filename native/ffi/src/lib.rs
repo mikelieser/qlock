@@ -151,6 +151,15 @@ pub unsafe extern "C" fn qlock_update(engine: *mut Engine, hour: u32, minute: u3
     list.len() as u32
 }
 
+/// Today's month (1–12) and day for date words such as birthdays.
+///
+/// # Safety
+/// `engine` must be a live engine.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn qlock_set_date(engine: *mut Engine, month: u32, day: u32) {
+    unsafe { &mut *engine }.set_date(month, day);
+}
+
 /// Frees the sprite pixels after the host copied them into its own images. Sprites made later keep
 /// their pixels until the next call.
 ///

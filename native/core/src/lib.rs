@@ -51,6 +51,16 @@ pub struct Locale {
     pub minutes: [Vec<u16>; 2],
     /// Corner dots lit per minute of the day.
     pub dots: Vec<u8>,
+    /// Words lit all day on one date (birthdays …).
+    #[serde(default)]
+    pub dated: Vec<Dated>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct Dated {
+    pub month: u32,
+    pub day: u32,
+    pub words: Vec<u16>,
 }
 
 /// What the clock shows at one minute.
@@ -74,9 +84,15 @@ impl Locale {
 
     /// Lit cells and dots for a local time.
     pub fn frame(&self, hour: u32, minute: u32, intro: bool) -> Frame {
+        self.frame_on(hour, minute, intro, None)
+    }
+
+    /// Like [`Locale::frame`], plus the words of `date` (month, day).
+    pub fn frame_on(&self, hour: u32, minute: u32, intro: bool, date: Option<(u32, u32)>) -> Frame {
         let m = (hour as usize % 24) * 60 + minute as usize % 60;
         let mut cells: Vec<u16> = Vec::new();
-        for &word in &self.frame_def(m, intro).words {
+        let dated = self.dated.iter().filter(|d| Some((d.month, d.day)) == date).flat_map(|d| d.words.iter());
+        for &word in self.frame_def(m, intro).words.iter().chain(dated) {
             for &cell in &self.words[word as usize] {
                 if !cells.contains(&cell) {
                     cells.push(cell);
@@ -130,6 +146,15 @@ mod tests {
         let lib = library();
         assert_eq!(lib.locale("kob").unwrap().text(2, 20, true), "ET ES ZÄHN VÜR HALWER DREI");
         assert_eq!(lib.locale("formrausch").unwrap().text(18, 1, true), "FEIERABEND ;)");
+    }
+
+    #[test]
+    fn date_words() {
+        let lib = library();
+        let hitchhiker = lib.locale("anhalter").unwrap();
+        let plain = hitchhiker.frame(13, 45, true).cells.len();
+        assert_eq!(hitchhiker.frame_on(13, 45, true, Some((5, 26))).cells.len(), plain);
+        assert_eq!(hitchhiker.frame_on(13, 45, true, Some((5, 25))).cells.len(), plain + "HANDTUCH".len());
     }
 
     #[test]

@@ -156,17 +156,23 @@ Die Dialektformen sind nach bestem Wissen geschrieben, nicht von Muttersprachler
 meist nur ein paar Wörter in einer Liste.
 
 **Spaß** – augenzwinkernde deutsche Blätter, „zehn vor halb“ wie in Koblenz, eigene Wörter vorn und hinten
-(„Es ist“ an/aus schaltet beides):
+(„Es ist“ an/aus schaltet beides). Manche haben Anlass-Wörter, die nur zu einer Tageszeit oder an einem Datum
+leuchten (in Klammern mit Uhrzeit):
 
 | | Beispiel |
 |---|---|
-| `kids` Kinderuhr | GUCK MAL ES IST VIERTEL NACH DREI JUHU (Eis, Keks, Teddy in den Füllbuchstaben) |
-| `digga` Digga | DIGGA ES IST FÜNF NACH HALB SIEBEN NO CAP (Aura, sus, Bro, 67, lowkey) |
+| `familie` Familie | ES IST VIERTEL NACH DREI, am Geburtstag dazu der Name und JUHU (MIKE, KATJA, HENRY, SUSANNA) |
+| `kids` Kinderuhr | GUCK MAL ES IST VIERTEL NACH DREI JUHU (HEIA 19–7 Uhr; Eis, Keks, Teddy in den Füllbuchstaben) |
+| `digga` Digga | DIGGA ES IST FÜNF NACH HALB SIEBEN NO CAP (LIT 22–4 Uhr; Aura, sus, Bro, 67, lowkey) |
 | `boerse` Börse | ZEIT IST GELD ZEHN VOR HALB DREI BULLISH (DAX, Bulle, Bär) |
 | `nerd` Nerd | SUDO ES IST VIERTEL VOR ZWEI EOF (42, Bug, Null, Vim, Git; EOF unten rechts) |
-| `anhalter` Anhalter | KEINE PANIK VIERTEL VOR ZWEI 42 (Handtuch, Babelfisch, Arthur) |
-| `zen` Zen | JETZT IST NEUN OM (Atme, Liebe, Sein, Ruhe) |
-| `derb` Derb | SCHEISSE ES IST SCHON FÜNF VOR ZWÖLF ALTER (Mist, Manno) |
+| `anhalter` Anhalter | KEINE PANIK VIERTEL VOR ZWEI 42 (HANDTUCH am 25. Mai, dem Towel Day; Babelfisch, Arthur) |
+| `bahn` Bahn | ES IST CA. VIERTEL VOR ZWEI +10 MIN (Störung, SEV, Gleis, ICE) |
+| `amt` Amt | AMTLICH IST HALB VIER FEIERABEND (FEIERABEND 15:30–8 Uhr; Akten, Stempel, Formular) |
+| `pirat` Pirat | AHOI ES IST HALB SIEBEN ARRR RUM (RUM 18–2 Uhr; Schatz, Kapern, Meer, Hai) |
+| `fussball` Fußball | ES IST DREI TOR (TOR zur vollen Stunde, ABPFIFF 17:20; Ball, Elfmeter, Ecke, Abseits) |
+| `zen` Zen | JETZT IST NEUN OM (TEEZEIT 16–17 Uhr; Atme, Liebe, Sein, Ruhe) |
+| `derb` Derb | SCHEISSE ES IST SCHON FÜNF VOR ZWÖLF ALTER (BIER 18–2 Uhr; Mist, Manno) |
 
 **Sprachen**
 
