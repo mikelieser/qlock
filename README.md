@@ -50,7 +50,7 @@ Alles läuft über die Tastatur, `?` zeigt die Kürzel. Es gibt bewusst keine Bu
 |---|---|
 | `T` | Theme-Übersicht (Standard, Mike, Susanna, Henry, Katja) |
 | `←` `→` | Theme zurück / weiter |
-| `L` | Sprach-Übersicht mit Beispielsatz (Deutsch, Dialekte, Europa, Asien) |
+| `L` | Sprach-Übersicht mit Beispielsatz (Deutsch, Dialekte, Spaß, Sprachen) |
 | `↑` `↓` | Sprache zurück / weiter |
 | `E` | Buchstaben-Effekt ein/aus |
 | `U` | Übergangseffekt beim Zeitwechsel ein/aus |
@@ -168,7 +168,7 @@ meist nur ein paar Wörter in einer Liste.
 | `zen` Zen | JETZT IST NEUN OM (Atme, Liebe, Sein, Ruhe) |
 | `derb` Derb | SCHEISSE ES IST SCHON FÜNF VOR ZWÖLF ALTER (Mist, Manno) |
 
-**Europa und Asien**
+**Sprachen**
 
 | | Beispiel |
 |---|---|

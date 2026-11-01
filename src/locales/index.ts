@@ -40,8 +40,7 @@ export const LOCALE_GROUPS: readonly { name: string; note: string; locales: read
     ],
   },
   { name: 'Spaß', note: 'Augenzwinkernde Blätter auf Deutsch', locales: [kids, digga, boerse, nerd, anhalter, zen, derb] },
-  { name: 'Europa', note: 'Eigene Raster', locales: [en, nl, da, sv, fr, es, it, el] },
-  { name: 'Asien', note: 'Quadratische Schriftzeichen', locales: [ja] },
+  { name: 'Sprachen', note: 'Eigene Raster, Japanisch mit quadratischen Schriftzeichen', locales: [en, nl, da, sv, fr, es, it, el, ja] },
 ];
 
 export const LOCALES: readonly Locale[] = LOCALE_GROUPS.flatMap((group) => group.locales);
