@@ -53,8 +53,8 @@ schwarz).
 - **Zimmeruhr** (Küche, Flur, Kinderzimmer, Schreibtisch): 7–10".
 - **Wohnzimmerwand**: ab 15", quer durch den Raum lesbar.
 
-Zum Testen gibt es Papiermuster in Originalgröße: [`groessen-muster.html`](groessen-muster.html) in Chrome
-öffnen und drucken (4", 7", 10,1", 13,3", 15,6"; Seitenformate A4/A3 sind hinterlegt). Unbedingt bei 100 % bzw.
+Zum Testen gibt es Papiermuster in Originalgröße: [`groessen-muster.pdf`](groessen-muster.pdf) direkt drucken
+(Quelle: [`groessen-muster.html`](groessen-muster.html), in Chrome als PDF druckbar; 4", 7", 10,1", 13,3", 15,6"; Seitenformate A4/A3 sind hinterlegt). Unbedingt bei 100 % bzw.
 „Tatsächliche Größe" drucken; auf jeder Seite ist eine 10-cm-Kontrolllinie. Gestrichelt ist jeweils das ganze
 Panel eingezeichnet.
 

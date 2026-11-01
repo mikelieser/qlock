@@ -165,7 +165,8 @@ src/
 docs/
   hardware.md           Konzept für eigene Hardware-Uhren
   sprachen.md           Welche Sprachen auf eine Wortuhr passen und warum
-  groessen-muster.html  Papiermuster der Displaygrößen zum Ausdrucken
+  groessen-muster.html  Papiermuster der Displaygrößen (Quelle)
+  groessen-muster.pdf   dasselbe als fertiges PDF zum Drucken
 ```
 
 **Neue Sprache:** Raster anlegen (von Hand mit `createGrid` oder per `layoutGrid` aus Wortlisten), Wörter
