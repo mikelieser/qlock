@@ -42,12 +42,12 @@ export const THEME_GROUPS = [
   {
     name: 'Feste',
     note: 'Motto-Themes durchs Jahr',
-    themes: ['neujahr', 'karneval', 'ostern', 'halloween', 'weihnachten', 'silvester'],
+    themes: ['karneval', 'ostern', 'halloween', 'weihnachten', 'silvester'],
   },
 ] as const;
 
 /** Themes that were renamed; saved settings and old links still work. */
-const RENAMED: Record<string, Theme> = { katja: 'halloween' };
+const RENAMED: Record<string, Theme> = { katja: 'halloween', neujahr: 'silvester' };
 
 export type Theme = (typeof THEME_GROUPS)[number]['themes'][number];
 export const THEMES: readonly Theme[] = THEME_GROUPS.flatMap((group) => group.themes);
@@ -73,7 +73,7 @@ export interface Settings {
   effect: boolean;
   transition: boolean;
   ambient: boolean;
-  /** Switch to the festive theme around Karneval, Ostern, Halloween, Advent, Silvester and Neujahr. */
+  /** Switch to the festive theme around Karneval, Ostern, Halloween, Advent, and Silvester. */
   festive: boolean;
   /** Theme follows the sun: sunrise, lagoon, sunset, nightsurf. */
   daylight: boolean;

@@ -282,7 +282,7 @@ final class OptionsSheet: NSObject {
   /// Themes that "Tageslauf" or "Feste automatisch" pick by themselves get a small label on their tile.
   private func badge(for id: String) -> String? {
     let daylight = ["sunrise": "Morgen", "lagoon": "Tag", "sunset": "Abend", "nightsurf": "Nacht"]
-    let festive = ["neujahr": "1.–6. Jan.", "karneval": "Karneval", "ostern": "Ostern", "halloween": "24.–31. Okt.",
+    let festive = ["karneval": "Karneval", "ostern": "Ostern", "halloween": "24.–31. Okt.",
                    "weihnachten": "ab Advent", "silvester": "27.–31. Dez."]
     if draft["daylight"] as? Bool == true, let label = daylight[id] { return "☀︎ " + label }
     if draft["festive"] as? Bool == true, let label = festive[id] { return "✦ " + label }

@@ -1043,7 +1043,7 @@ mod tests {
     #[test]
     fn instance_list_is_stable() {
         let options = Options { dots: true, ambient: true, transition: true, effect: true, progress: true, ..Options::default() };
-        for theme in ["sunset", "halloween", "chaos-burst", "retro", "formrausch", "chaos-night", "weihnachten", "silvester", "ostern", "karneval", "neujahr"] {
+        for theme in ["sunset", "halloween", "chaos-burst", "retro", "formrausch", "chaos-night", "weihnachten", "silvester", "ostern", "karneval"] {
             let mut e = engine(theme, options);
             let a = e.update(15, 15, 1.0, 0.0).len();
             let b = e.update(15, 15, 5.0, 5.0).len();

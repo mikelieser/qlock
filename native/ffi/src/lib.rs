@@ -41,7 +41,11 @@ pub unsafe extern "C" fn qlock_engine_new(
     let locale = unsafe { text(locale) }.and_then(|id| lib.locale(id)).or_else(|| lib.locale("de")).unwrap().clone();
     let all = themes();
     // Renamed themes keep working from old settings.
-    let requested = unsafe { text(theme) }.map(|id| if id == "katja" { "halloween" } else { id });
+    let requested = unsafe { text(theme) }.map(|id| match id {
+        "katja" => "halloween",
+        "neujahr" => "silvester",
+        other => other,
+    });
     let theme_id = requested.filter(|id| all.themes.contains_key(*id)).unwrap_or("formrausch");
     let theme = Theme::from_export(theme_id, &all.themes[theme_id]);
     let options = Options {
@@ -157,11 +161,10 @@ pub unsafe extern "C" fn qlock_release_pixels(engine: *mut Engine) {
     unsafe { &mut *engine }.release_pixels();
 }
 
-/// The festive theme id for a date ("neujahr", "karneval", …), or null. The string is static.
+/// The festive theme id for a date ("karneval", "ostern", …), or null. The string is static.
 #[unsafe(no_mangle)]
 pub extern "C" fn qlock_festival(year: i32, month: u32, day: u32) -> *const c_char {
     match qlock_core::festival(year, month, day) {
-        Some("neujahr") => c"neujahr".as_ptr(),
         Some("karneval") => c"karneval".as_ptr(),
         Some("ostern") => c"ostern".as_ptr(),
         Some("halloween") => c"halloween".as_ptr(),

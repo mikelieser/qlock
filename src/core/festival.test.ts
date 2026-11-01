@@ -12,9 +12,7 @@ describe('festival', () => {
 
   // Shared with native/core so both sides agree on every date.
   it.each([
-    [2026, 1, 1, 'neujahr'],
-    [2026, 1, 6, 'neujahr'],
-    [2026, 1, 7, undefined],
+    [2026, 1, 1, undefined],
     [2026, 2, 12, 'karneval'], // Weiberfastnacht
     [2026, 2, 16, 'karneval'], // Rosenmontag
     [2026, 2, 17, 'karneval'],

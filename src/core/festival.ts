@@ -1,6 +1,6 @@
 /** Festive themes by date, for the "Feste automatisch" setting. Mirrored in native/core (festival). */
 
-export type Festival = 'neujahr' | 'karneval' | 'ostern' | 'halloween' | 'weihnachten' | 'silvester';
+export type Festival = 'karneval' | 'ostern' | 'halloween' | 'weihnachten' | 'silvester';
 
 /** Easter Sunday (Gregorian, anonymous algorithm) as [month 1–12, day]. */
 export function easter(year: number): [number, number] {
@@ -25,7 +25,7 @@ const DAY = 86_400_000;
 
 /**
  * The festival a date belongs to, if any:
- * Neujahr 1.–6. Januar, Karneval Weiberfastnacht bis Veilchendienstag, Ostern Palmsonntag bis Ostermontag,
+ * Karneval Weiberfastnacht bis Veilchendienstag, Ostern Palmsonntag bis Ostermontag,
  * Halloween 24.–31. Oktober, Weihnachten 1. Advent bis 26. Dezember, Silvester 27.–31. Dezember.
  */
 export function festival(date: Date): Festival | undefined {
@@ -40,7 +40,6 @@ export function festival(date: Date): Festival | undefined {
   // Fourth Advent is the Sunday on or before 24 December, the first three weeks earlier.
   const advent = Date.UTC(year, 11, 24) - (new Date(Date.UTC(year, 11, 24)).getUTCDay() + 21) * DAY;
 
-  if (month === 1 && day <= 6) return 'neujahr';
   if (offset >= -52 && offset <= -47) return 'karneval';
   if (offset >= -7 && offset <= 1) return 'ostern';
   if (month === 10 && day >= 24) return 'halloween';

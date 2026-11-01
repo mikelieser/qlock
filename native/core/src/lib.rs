@@ -174,7 +174,7 @@ fn days(year: i32, month: u32, day: u32) -> i64 {
     era * 146_097 + doe - 719_468
 }
 
-/// The festive theme for a date, as the web app's `festival()` (src/core/festival.ts): Neujahr 1.–6.1.,
+/// The festive theme for a date, as the web app's `festival()` (src/core/festival.ts):
 /// Karneval Weiberfastnacht–Veilchendienstag, Ostern Palmsonntag–Ostermontag, Halloween 24.–31.10.,
 /// Weihnachten 1. Advent–26.12., Silvester 27.–31.12.
 pub fn festival(year: i32, month: u32, day: u32) -> Option<&'static str> {
@@ -185,9 +185,7 @@ pub fn festival(year: i32, month: u32, day: u32) -> Option<&'static str> {
     let eve = days(year, 12, 24);
     let weekday = (eve + 4).rem_euclid(7);
     let advent = eve - weekday - 21;
-    if month == 1 && day <= 6 {
-        Some("neujahr")
-    } else if (-52..=-47).contains(&offset) {
+    if (-52..=-47).contains(&offset) {
         Some("karneval")
     } else if (-7..=1).contains(&offset) {
         Some("ostern")
@@ -211,9 +209,7 @@ mod festival_tests {
         assert_eq!(easter(2026), (4, 5));
         assert_eq!(easter(2027), (3, 28));
         let cases: &[(i32, u32, u32, Option<&str>)] = &[
-            (2026, 1, 1, Some("neujahr")),
-            (2026, 1, 6, Some("neujahr")),
-            (2026, 1, 7, None),
+            (2026, 1, 1, None),
             (2026, 2, 12, Some("karneval")),
             (2026, 2, 17, Some("karneval")),
             (2026, 2, 18, None),

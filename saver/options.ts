@@ -14,7 +14,7 @@ const SWITCHES: { key: Switch; label: string; group: 'Anzeige' | 'Bewegung'; hin
   { key: 'progress', label: 'Sekundenrahmen', group: 'Anzeige', hint: 'Eine feine Linie durch die Eckpunkte, einmal herum pro Minute.' },
   { key: 'stretch', label: 'Ganzer Bildschirm', group: 'Anzeige', hint: 'Die Uhr füllt den Bildschirm statt eines Quadrats in der Mitte.' },
   { key: 'daylight', label: 'Tageslauf', group: 'Anzeige', hint: 'Theme nach Sonnenstand: Sunrise am Morgen, Lagoon am Tag, Sunset am Abend, Nightsurf nachts.' },
-  { key: 'festive', label: 'Feste automatisch', group: 'Anzeige', hint: 'Zu Karneval, Ostern, Halloween, Advent, Silvester und Neujahr das passende Theme statt des gewählten.' },
+  { key: 'festive', label: 'Feste automatisch', group: 'Anzeige', hint: 'Zu Karneval, Ostern, Halloween, Advent und Silvester das passende Theme statt des gewählten.' },
   { key: 'effect', label: 'Buchstaben', group: 'Bewegung', hint: 'Leuchtende Buchstaben bewegen sich je nach Theme: atmen, wippen, schimmern, flackern …' },
   { key: 'transition', label: 'Zeitwechsel', group: 'Bewegung', hint: 'Neue Wörter kommen beim Minutenwechsel aus der Unschärfe.' },
   { key: 'ambient', label: 'Hintergrund', group: 'Bewegung', hint: 'Wellen, Schnee, Blätter, Konfetti – je nach Theme.' },
