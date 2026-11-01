@@ -4,14 +4,17 @@ import os
 
 private let log = Logger(subsystem: "de.mikelieser.qlock", category: "saver")
 
-/// Lets every mouse event fall through to the screensaver, which ends itself on input.
-private final class PassiveWebView: WKWebView {
-  override func hitTest(_ point: NSPoint) -> NSView? { nil }
-}
-
+/// Shows the web clock as snapshots instead of a live web view.
+///
+/// The host (legacyScreenSaver) takes our view out of its window right after the start. WebKit then
+/// treats the page as hidden: it freezes CSS animations and after a few seconds discards the layers,
+/// which turned the Studio Display black. Snapshots of a hidden web view still render fine, so the web
+/// view stays off-screen and we draw a fresh snapshot whenever the clock changes.
 @objc(QlockView)
 final class QlockView: ScreenSaverView, WKNavigationDelegate {
   private var webView: WKWebView?
+  private var timer: Timer?
+  private var lastKey = ""
   private var optionsSheet: OptionsSheet?
   /// Last time the host built or started a clock; the host's start/stop calls are unreliable.
   private static var lastActivity = Date()
@@ -20,16 +23,23 @@ final class QlockView: ScreenSaverView, WKNavigationDelegate {
     super.init(frame: frame, isPreview: isPreview)
     QlockView.lastActivity = Date()
     log.info("init frame=\(NSStringFromRect(frame), privacy: .public) preview=\(isPreview, privacy: .public)")
-    // The web app animates itself; no native drawing loop needed.
     animationTimeInterval = 3600
     wantsLayer = true
     layer?.backgroundColor = NSColor.black.cgColor
-    showClock()
+    layer?.contentsGravity = .resize
+
+    let webView = WKWebView(frame: NSRect(origin: .zero, size: frame.size), configuration: WKWebViewConfiguration())
+    webView.navigationDelegate = self
+    self.webView = webView
+    load()
+
+    // Snapshot only when what's on screen can change: every second with the seconds frame, else per minute.
+    let timer = Timer(timeInterval: 1, repeats: true) { [weak self] _ in self?.tick() }
+    RunLoop.main.add(timer, forMode: .common)
+    self.timer = timer
 
     NotificationCenter.default.addObserver(self, selector: #selector(load), name: Preferences.changed, object: nil)
     if !isPreview {
-      // Since Sonoma the host (legacyScreenSaver) keeps old instances alive and calls start/stop
-      // unreliably, so web views would pile up. See willStop.
       DistributedNotificationCenter.default().addObserver(
         self, selector: #selector(willStop), name: Notification.Name("com.apple.screensaver.willstop"), object: nil)
     }
@@ -37,18 +47,8 @@ final class QlockView: ScreenSaverView, WKNavigationDelegate {
 
   required init?(coder: NSCoder) { nil }
 
-  private func showClock() {
-    guard webView == nil else { return }
-    let view = PassiveWebView(frame: bounds, configuration: WKWebViewConfiguration())
-    view.autoresizingMask = [.width, .height]
-    view.navigationDelegate = self
-    // Black instead of white while the page loads.
-    if view.responds(to: NSSelectorFromString("_setDrawsBackground:")) {
-      view.setValue(false, forKey: "drawsBackground")
-    }
-    addSubview(view)
-    webView = view
-    load()
+  deinit {
+    timer?.invalidate()
   }
 
   @objc private func load() {
@@ -56,12 +56,56 @@ final class QlockView: ScreenSaverView, WKNavigationDelegate {
     let page = resources.appendingPathComponent("web/index.html").absoluteURL
     var components = URLComponents(url: page, resolvingAgainstBaseURL: false)!
     components.queryItems = Preferences.queryItems()
+    lastKey = ""
     webView.loadFileURL(components.url!, allowingReadAccessTo: resources)
+  }
+
+  override func setFrameSize(_ newSize: NSSize) {
+    super.setFrameSize(newSize)
+    webView?.setFrameSize(newSize)
+    lastKey = ""
+  }
+
+  private func tick() {
+    let parts = Calendar.current.dateComponents([.hour, .minute, .second], from: Date())
+    let seconds = Preferences.flag("progress") ? parts.second ?? 0 : 0
+    let key = "\(parts.hour ?? 0):\(parts.minute ?? 0):\(seconds)"
+    guard key != lastKey else { return }
+    lastKey = key
+    snapshot()
+  }
+
+  private func snapshot() {
+    guard let webView else { return }
+    webView.evaluateJavaScript("window.qlockTick?.()") { [weak self] _, _ in
+      let config = WKSnapshotConfiguration()
+      config.snapshotWidth = NSNumber(value: Double(webView.bounds.width))
+      webView.takeSnapshot(with: config) { image, error in
+        guard let self, let image = image?.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
+          log.error("snapshot failed: \(String(describing: error), privacy: .public)")
+          return
+        }
+        let scale = self.window?.backingScaleFactor ?? NSScreen.main?.backingScaleFactor ?? 2
+        self.layer?.contentsScale = scale
+        self.layer?.contents = image
+      }
+    }
+  }
+
+  func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+    // Fonts and the first frame need a moment after load.
+    for delay in [0.3, 1.5] {
+      DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in self?.snapshot() }
+    }
+  }
+
+  func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+    log.error("web content process terminated, reloading")
+    load()
   }
 
   /// Ends the host process once the screensaver is really gone, which frees every web view.
   /// Exiting right away is wrong: the host respawns during the fade-out and shows blank (white) views.
-  /// Dropping single web views is wrong too: the host sometimes keeps showing an older instance.
   @objc private func willStop() {
     let stoppedAt = Date()
     DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
@@ -74,26 +118,6 @@ final class QlockView: ScreenSaverView, WKNavigationDelegate {
   override func startAnimation() {
     super.startAnimation()
     QlockView.lastActivity = Date()
-    showClock()
-  }
-
-  override func stopAnimation() {
-    super.stopAnimation()
-  }
-
-  func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-    // The host never reports the page as visible; this shows whether the clock still ends up fully drawn.
-    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-      let check = "[document.visibilityState, getComputedStyle(document.querySelector('.clock')).opacity, document.title].join(' | ')"
-      webView.evaluateJavaScript(check) { result, _ in
-        log.info("after 3s \(String(describing: result ?? "-"), privacy: .public)")
-      }
-    }
-  }
-
-  func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-    log.error("web content process terminated, reloading")
-    load()
   }
 
   override func draw(_ rect: NSRect) {}

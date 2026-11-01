@@ -24,8 +24,20 @@ export function createNow(mode: Accessor<Mode>): Accessor<Date> {
       timer = setTimeout(tick, 1000 - (Date.now() % 1000));
     };
     tick();
-    onCleanup(() => clearTimeout(timer));
+    // The macOS screensaver keeps the page hidden, where timers may be throttled; it calls this
+    // right before taking each snapshot.
+    window.qlockTick = () => setNow(new Date());
+    onCleanup(() => {
+      clearTimeout(timer);
+      delete window.qlockTick;
+    });
   });
 
   return now;
+}
+
+declare global {
+  interface Window {
+    qlockTick?: () => void;
+  }
 }

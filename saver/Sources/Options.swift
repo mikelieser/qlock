@@ -39,6 +39,10 @@ enum Preferences {
     store.object(forKey: sw.key) as? Bool ?? sw.default
   }
 
+  static func flag(_ key: String) -> Bool {
+    Options.shared.switches.first { $0.key == key }.map(bool) ?? false
+  }
+
   /// URL parameters for the web app; they take precedence over anything it stored itself.
   static func queryItems() -> [URLQueryItem] {
     var items = [

@@ -92,9 +92,11 @@ Theme und allen Schaltern (Datum, Effekte, Hintergrund, Sekundenrahmen …).
   Themes und Dialekte erscheinen ohne Swift-Änderung im Dialog.
 - Ad-hoc signiert, für den eigenen Mac reicht das. Auf einem anderen Mac einmal per Rechtsklick → Öffnen
   freigeben oder `xattr -dr com.apple.quarantine QLOCK.saver`.
-- Der Bildschirmschoner zeigt die Uhr als Standbild ohne Animationen (`?still`): macOS meldet die Seite im
-  Bildschirmschoner-Prozess als unsichtbar, WebKit friert dann alle CSS-Animationen mitten im Ablauf ein
-  (verschwommene oder unsichtbare Uhr). Buchstaben-, Übergangs- und Hintergrund-Effekte fehlen deshalb im Dialog.
+- macOS nimmt die Ansicht nach dem Start aus ihrem Fenster. WebKit hält die Seite dann für unsichtbar, friert
+  CSS-Animationen ein und verwirft nach ein paar Sekunden die Darstellung (schwarzer Bildschirm). Der
+  Bildschirmschoner zeigt deshalb Schnappschüsse einer unsichtbaren Webansicht: einen pro Minute, mit
+  Sekundenrahmen einen pro Sekunde (spürbar mehr CPU). Die Seite läuft mit `?still` ohne Animationen;
+  Buchstaben-, Übergangs- und Hintergrund-Effekte fehlen deshalb im Dialog.
 - Seit macOS Sonoma hält der Systemprozess alte Bildschirmschoner-Instanzen am Leben und ruft Start/Stopp
   unzuverlässig auf. QLOCK beendet den Prozess deshalb erst, wenn 10 Sekunden nach dem Ausblenden keine neue
   Instanz entstanden ist. Sofort beenden führt zu weißen Bildschirmen (macOS startet den Prozess beim Ausblenden
