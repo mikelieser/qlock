@@ -96,6 +96,19 @@ einen Dialog mit Sprache, Theme und Schaltern (Datum, Effekte, Hintergrund, Punk
 - Seit macOS Sonoma hält der Systemprozess alte Instanzen am Leben und ruft Start/Stopp unzuverlässig auf.
   QLOCK beendet den Prozess deshalb erst, wenn 10 Sekunden nach dem Ausblenden keine neue Instanz entstanden ist.
 
+**Messen ohne Bildschirm:** `bun run saver:bench <ordner> [optionen]` lädt den gebauten Bildschirmschoner,
+treibt ihn mit simulierter Zeit und rendert per `CARenderer` genau das, was Core Animation zeigen würde, als
+PNG-Bilder. Ausgabe: Aufbauzeit, Zeit pro Frame, mit `only=particle:N` die Bahn eines einzelnen Funkens
+(Ruckler, Stillstand, Sprünge). Beispiele:
+
+```sh
+bun run saver:bench /tmp/q only=particle:3 seconds=20 frames=none      # läuft ein Funke flüssig?
+bun run saver:bench /tmp/q frames=png minute-change=3 video=~/Desktop/q.mp4  # Clip mit Minutenwechsel
+```
+
+Optionen: `theme=` `locale=` `seconds=` `fps=` `size=1512x982` `frames=png|none` `only=particles|particle:N`
+`minute-change=<s>` `realtime=1` `video=<datei.mp4>` (braucht ffmpeg).
+
 Architektur und Stand des gemeinsamen Renderers für Mac und Hardware-Uhren: [docs/hardware.md](docs/hardware.md#gemeinsamer-renderer-mac-bildschirmschoner-und-uhren).
 
 ## Sprachen

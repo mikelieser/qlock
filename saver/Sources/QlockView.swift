@@ -16,6 +16,8 @@ final class QlockView: ScreenSaverView {
   /// End of the last sampled window (media time); the next window starts there.
   private var windowEnd: CFTimeInterval = 0
   private var windowKey = false
+  /// Shifts the clock, for the bench to show a minute change on demand.
+  @objc public var clockOffset: TimeInterval = 0
   private let canvas = CALayer()
   private let faceLayer = CALayer()
   private var timer: Timer?
@@ -108,9 +110,14 @@ final class QlockView: ScreenSaverView {
   private static let rate: Double = 30
 
   private func tick() {
+    advance(to: CACurrentMediaTime())
+  }
+
+  /// Keeps the animation tracks filled up to `now` + a few seconds. Public for the offline bench
+  /// (saver/bench), which drives it with simulated time.
+  @objc public func advance(to now: CFTimeInterval) {
     ensureEngine()
     guard engine != nil else { return }
-    let now = CACurrentMediaTime()
     // Queue the next window two seconds early; a first window starts right away.
     if windowEnd == 0 || windowEnd < now {
       windowEnd = now
@@ -125,7 +132,8 @@ final class QlockView: ScreenSaverView {
     guard let engine else { return }
     let started = CACurrentMediaTime()
     let steps = Int(Self.window * Self.rate)
-    let wallStart = Date().addingTimeInterval(start - CACurrentMediaTime())
+    let wallStart = Date().addingTimeInterval(clockOffset + start - CACurrentMediaTime())
+    // Track values of the previous window's last sample; this window must continue from exactly there.
     var samples: [[QlockInstance]] = []
     samples.reserveCapacity(steps + 1)
     for step in 0...steps {
@@ -159,8 +167,13 @@ final class QlockView: ScreenSaverView {
         anim.beginTime = begin
         anim.duration = Self.window
         anim.calculationMode = .linear
-        // Hold the first value until the window starts, so queueing early never shows a jump.
-        anim.fillMode = .backwards
+        // Without this Core Animation may step slow tracks at a low rate (measured ~10 Hz in the bench).
+        if #available(macOS 12.0, *) {
+          anim.preferredFrameRateRange = CAFrameRateRange(minimum: 30, maximum: 120, preferred: 60)
+        }
+        // No fill: until `begin` the previous window's track (added earlier, so lower priority) is still
+        // running, and a backwards fill here would freeze the layer for the overlap.
+        anim.fillMode = .removed
         layer.add(anim, forKey: path + key)
       }
       let last = track[track.count - 1]
@@ -169,10 +182,12 @@ final class QlockView: ScreenSaverView {
         animate("position", track.map { NSValue(point: point($0)) })
       }
       if track.contains(where: { $0.scale != last.scale }) { animate("transform.scale", track.map { CGFloat($0.scale) }) }
-      // Model values: where each layer rests once the tracks have run out.
-      layer.opacity = last.opacity
-      layer.position = point(last)
-      layer.setValue(CGFloat(last.scale), forKeyPath: "transform.scale")
+      // Model values: the window's first sample. Before `begin` they only show where the previous window
+      // had no track, i.e. where the value didn't change and already equals this first sample.
+      let first = track[0]
+      layer.opacity = first.opacity
+      layer.position = point(first)
+      layer.setValue(CGFloat(first.scale), forKeyPath: "transform.scale")
     }
     CATransaction.commit()
     windowEnd = start + Self.window

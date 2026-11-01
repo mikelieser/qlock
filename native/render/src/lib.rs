@@ -436,7 +436,9 @@ impl Engine {
                 let size = 0.7 + ((i * 3) % 4) as f32 * 0.2;
                 let wander = ((i * 5) % 7) as f32 - 3.0;
                 let duration = amb.duration * speed;
-                let p = (((t as f32 - delay) / duration) % 1.0 + 1.0) % 1.0;
+                // f64 on purpose: hosts pass uptime-based seconds (CACurrentMediaTime is ~10^5–10^6), where f32
+                // only resolves ~1/32 s and the particles would move in steps.
+                let p = ((((t - delay as f64) / duration as f64) % 1.0 + 1.0) % 1.0) as f32;
                 let (dx, dy, scale, opacity) = match amb.motion {
                     Motion::Rise => {
                         let (dx, dy, sc) = if p < 0.5 {
@@ -608,6 +610,22 @@ mod tests {
         assert_eq!(lit(&e), 0);
         e.update(15, 15, 10.0);
         assert_eq!(lit(&e), "VIERTELNACHDREI".chars().count());
+    }
+
+    #[test]
+    fn particles_move_every_frame_at_large_host_times() {
+        // CACurrentMediaTime after a few days of uptime.
+        let base = 345_600.0;
+        let options = Options { ambient: true, ..Options::default() };
+        let mut e = engine(include_str!("../../themes/sunset.toml"), options);
+        let particle = |e: &mut Engine, t: f64| e.update(15, 15, t).iter().find(|i| i.group == 1).copied().unwrap();
+        let mut last = particle(&mut e, base);
+        for k in 1..120 {
+            let now = particle(&mut e, base + k as f64 / 60.0);
+            assert!(now.y != last.y || now.opacity == 0.0, "particle stood still at frame {k}");
+            assert!((now.y - last.y).abs() < 20.0, "particle jumped at frame {k}");
+            last = now;
+        }
     }
 
     #[test]
