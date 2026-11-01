@@ -11,7 +11,7 @@ const SWITCHES: { key: Switch; label: string; group: 'Anzeige' | 'Bewegung'; hin
   { key: 'intro', label: '„Es ist“', group: 'Anzeige', hint: 'Den Satzanfang mit anzeigen, wie bei der echten Uhr.' },
   { key: 'dots', label: 'Minutenpunkte', group: 'Anzeige', hint: 'Die vier Eckpunkte zählen die Minuten zwischen den Fünferschritten.' },
   { key: 'date', label: 'Wochentag und Datum', group: 'Anzeige', hint: 'Klein über den Buchstaben, z. B. „So · 1. November“.' },
-  { key: 'progress', label: 'Sekundenrahmen', group: 'Anzeige', hint: 'Eine feine Linie durch die Eckpunkte, einmal herum pro Minute.' },
+  { key: 'progress', label: 'Sekundenrahmen', group: 'Anzeige', hint: 'Eine feine Linie durch die Eckpunkte, einmal herum pro Minute. Nur zusammen mit den Minutenpunkten.' },
   { key: 'stretch', label: 'Ganzer Bildschirm', group: 'Anzeige', hint: 'Die Uhr füllt den Bildschirm statt eines Quadrats in der Mitte.' },
   { key: 'daylight', label: 'Tageslauf', group: 'Anzeige', hint: 'Theme nach Sonnenstand: Sunrise am Morgen, Lagoon am Tag, Sunset am Abend, Nightsurf nachts.' },
   { key: 'festive', label: 'Feste automatisch', group: 'Anzeige', hint: 'Zu Karneval, Ostern, Mutter- und Vatertag, Halloween, Nikolaus, Advent und Silvester das passende Theme statt des gewählten.' },

@@ -373,7 +373,8 @@ impl Engine {
         }
 
         self.build_dots();
-        if self.options.progress {
+        // Seconds only make sense when the dots give the minute.
+        if self.options.progress && self.options.dots {
             self.build_progress();
         }
         if self.options.ambient {

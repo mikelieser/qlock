@@ -79,6 +79,7 @@ final class OptionsSheet: NSObject {
       }
       content.addArrangedSubview(columns(boxes, perRow: 3))
     }
+    updateDependentSwitches()
 
     let reset = NSButton(title: "Standard", target: self, action: #selector(resetToDefaults))
     reset.toolTip = "Alle Einstellungen auf den Anfangszustand, Sprache bleibt."
@@ -273,10 +274,20 @@ final class OptionsSheet: NSObject {
     guard let sw = checkboxes.first(where: { $0.1 === sender })?.0 else { return }
     draft[sw.key] = sender.state == .on
     changed()
+    updateDependentSwitches()
     if sw.key == "daylight" || sw.key == "festive" {
       for (id, tile) in tiles { tile.badge = badge(for: id) }
       updateGroupNote()
     }
+  }
+
+ /// The seconds frame needs the minute dots: without them the minute itself is unknown.
+  private func updateDependentSwitches() {
+    guard let progress = checkboxes.first(where: { $0.0.key == "progress" })?.1 else { return }
+    progress.isEnabled = draft["dots"] as? Bool ?? true
+    progress.toolTip = progress.isEnabled
+      ? checkboxes.first(where: { $0.0.key == "progress" })?.0.hint
+      : "Braucht die Minutenpunkte – ohne sie ist schon die Minute unklar."
   }
 
   /// Themes that "Tageslauf" or "Feste automatisch" pick by themselves get a small label on their tile.

@@ -12,7 +12,7 @@ const KEYS: [string, string][] = [
   ['P', 'Minutenpunkte ein/aus'],
   ['F', 'Vollbild (oder Doppelklick)'],
   ['S', 'Uhr vollflächig statt quadratisch'],
-  ['R', 'Sekundenrahmen ein/aus'],
+  ['R', 'Sekundenrahmen ein/aus (nur mit Minutenpunkten)'],
   ['D', 'Wochentag und Datum ein/aus'],
   ['E', 'Buchstaben-Effekt ein/aus (je Theme)'],
   ['U', 'Übergangseffekt beim Zeitwechsel ein/aus'],

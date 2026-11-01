@@ -238,7 +238,8 @@ export function App() {
         frame={frame()}
         label={text()}
         showDots={settings.dots}
-        progress={settings.progress && !showSeconds() ? now().getSeconds() : undefined}
+        // Seconds only make sense when the dots give the minute.
+        progress={settings.progress && settings.dots && !showSeconds() ? now().getSeconds() : undefined}
         caption={caption()}
         ambient={settings.ambient}
       />
