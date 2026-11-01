@@ -13,10 +13,12 @@ private final class PassiveWebView: WKWebView {
 final class QlockView: ScreenSaverView, WKNavigationDelegate {
   private var webView: WKWebView?
   private var optionsSheet: OptionsSheet?
-  private var running = false
+  /// Last time the host built or started a clock; the host's start/stop calls are unreliable.
+  private static var lastActivity = Date()
 
   override init?(frame: NSRect, isPreview: Bool) {
     super.init(frame: frame, isPreview: isPreview)
+    QlockView.lastActivity = Date()
     log.info("init frame=\(NSStringFromRect(frame), privacy: .public) preview=\(isPreview, privacy: .public)")
     // The web app animates itself; no native drawing loop needed.
     animationTimeInterval = 3600
@@ -26,9 +28,8 @@ final class QlockView: ScreenSaverView, WKNavigationDelegate {
 
     NotificationCenter.default.addObserver(self, selector: #selector(load), name: Preferences.changed, object: nil)
     if !isPreview {
-      // Since Sonoma the host (legacyScreenSaver) often never calls stopAnimation and keeps old
-      // instances alive, so web views would pile up. Exiting the process instead makes the host
-      // respawn it during the fade-out and flash blank views, so just drop the web view.
+      // Since Sonoma the host (legacyScreenSaver) keeps old instances alive and calls start/stop
+      // unreliably, so web views would pile up. See willStop.
       DistributedNotificationCenter.default().addObserver(
         self, selector: #selector(willStop), name: Notification.Name("com.apple.screensaver.willstop"), object: nil)
     }
@@ -58,26 +59,26 @@ final class QlockView: ScreenSaverView, WKNavigationDelegate {
     webView.loadFileURL(components.url!, allowingReadAccessTo: resources)
   }
 
+  /// Ends the host process once the screensaver is really gone, which frees every web view.
+  /// Exiting right away is wrong: the host respawns during the fade-out and shows blank (white) views.
+  /// Dropping single web views is wrong too: the host sometimes keeps showing an older instance.
   @objc private func willStop() {
-    running = false
-    // Keep the clock on screen while the screensaver fades out, then free the web view.
-    DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
-      guard let self, !self.running else { return }
-      log.info("releasing web view")
-      self.webView?.removeFromSuperview()
-      self.webView = nil
+    let stoppedAt = Date()
+    DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+      guard QlockView.lastActivity < stoppedAt else { return }
+      log.info("screensaver gone, exiting host")
+      exit(0)
     }
   }
 
   override func startAnimation() {
     super.startAnimation()
-    running = true
+    QlockView.lastActivity = Date()
     showClock()
   }
 
   override func stopAnimation() {
     super.stopAnimation()
-    running = false
   }
 
   func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
