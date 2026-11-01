@@ -214,13 +214,21 @@ pub fn rounded_rect_path(rect: [f32; 4], rx: f32, ry: f32) -> Option<tiny_skia::
 /// A font at one weight: a variable font with its `wght` axis set, or a static cut.
 pub struct Face {
     font: FontVec,
+    /// For letters the main font lacks: Japanese (a subset of Noto Sans JP with just the clock's kanji).
+    fallback: Option<FontVec>,
 }
+
+const FALLBACK: &[u8] = include_bytes!("../../assets/fonts/NotoSansJP-subset.ttf");
 
 impl Face {
     pub fn new(bytes: &[u8], weight: f32) -> Option<Face> {
         let mut font = FontVec::try_from_vec(bytes.to_vec()).ok()?;
         font.set_variation(b"wght", weight);
-        Some(Face { font })
+        let fallback = FontVec::try_from_vec(FALLBACK.to_vec()).ok().map(|mut f| {
+            f.set_variation(b"wght", weight);
+            f
+        });
+        Some(Face { font, fallback })
     }
 
     /// Underline offset below the baseline and thickness, at `px`.
@@ -238,6 +246,20 @@ impl Face {
         let mut prev = None;
         for ch in text.chars() {
             let id = self.font.glyph_id(ch);
+            if id.0 == 0 {
+                // Not in the main font: draw it from the fallback at the same size.
+                if let Some(fb) = self.fallback.as_ref().filter(|f| f.glyph_id(ch).0 != 0) {
+                    let fscale = PxScale::from(px * fb.height_unscaled() / fb.units_per_em().unwrap_or(1000.0));
+                    let fid = fb.glyph_id(ch);
+                    let glyph = fid.with_scale_and_position(fscale, ab_glyph::point(pen, 0.0));
+                    pen += fb.as_scaled(fscale).h_advance(fid) + tracking;
+                    prev = None;
+                    if let Some(o) = fb.outline_glyph(glyph) {
+                        outlined.push(o);
+                    }
+                    continue;
+                }
+            }
             if let Some(p) = prev {
                 pen += scaled.kern(p, id);
             }
