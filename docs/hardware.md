@@ -154,7 +154,8 @@ native/themes/*.toml                                               Themes als Da
 native/core     qlock-core     Daten → Frame (Zellen, Punkte), no_std
 native/render   qlock-render   Sprites einmal rastern (tiny-skia + Inter), pro Frame nur Instanzen
                                (welches Sprite, wo, Deckkraft, Größe); alle Animationszeiten hier
-        ├── Mac:   Core Animation setzt die Instanzen auf der GPU zusammen (saver/, über native/ffi)
+        ├── Mac:   Instanzen 6 s voraus abgetastet (30/s) und als Keyframe-Spuren an Core Animation;
+        │          der Render-Server interpoliert mit Bildschirmrate (saver/, über native/ffi)
         └── ESP32: kleiner Software-Blitter, nur geänderte Bereiche (noch nicht gebaut)
 ```
 
@@ -163,6 +164,9 @@ native/render   qlock-render   Sprites einmal rastern (tiny-skia + Inter), pro F
 - **Sprite-Prinzip:** Teures wird einmal gerastert (Hintergrund mit Verlauf und Deko, jeder Buchstabe aus,
   an und unscharf für den Übergang, Punkte, Teilchen, Datum). Pro Frame entstehen nur ca. 350 Instanzen in
   unter 0,1 ms. Der Mac setzt sie per Core Animation zusammen, der ESP32 blittet nur, was sich bewegt.
+- **Mac-Ruckeln:** Jeden Frame Ebenen setzen ruckelte sichtbar (der Bildschirmschoner-Prozess reicht seinen
+  Ebenenbaum nur stockend an den Bildschirm weiter). Deshalb Spuren statt Einzelbilder: ein Commit alle
+  paar Sekunden, die Bewegung selbst rechnet der Render-Server.
 - **Gemessen:** Engine-Aufbau 20–100 ms (einmal pro Sprache/Theme/Größe), Update pro Frame ca. 30 µs.
   Volle Software-Zusammensetzung 1600×1200 ca. 40 ms auf dem Mac, für den ESP32 also nur mit geänderten
   Bereichen.

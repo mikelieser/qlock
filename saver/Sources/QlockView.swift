@@ -4,15 +4,18 @@ import os
 
 private let log = Logger(subsystem: "de.mikelieser.qlock", category: "saver")
 
-/// The screensaver: the Rust engine (native/) rasterises sprites once and says every frame where each one
-/// goes; Core Animation composites them on the GPU. No WebKit, so nothing gets frozen or discarded when
-/// the host takes the view out of its window.
+/// The screensaver: the Rust engine (native/) rasterises sprites once and says for any moment where each
+/// one goes. Pushing that to Core Animation every frame stutters, because the host forwards our layer tree
+/// to the screen process at its own pace. So we sample the engine a few seconds ahead and hand Core
+/// Animation keyframe tracks; the render server then interpolates at the display's refresh rate.
 @objc(QlockView)
 final class QlockView: ScreenSaverView {
   private var engine: OpaquePointer?
   private var images: [CGImage] = []
   private var layers: [CALayer] = []
-  private var last: [QlockInstance] = []
+  /// End of the last sampled window (media time); the next window starts there.
+  private var windowEnd: CFTimeInterval = 0
+  private var windowKey = false
   private let canvas = CALayer()
   private let faceLayer = CALayer()
   private var timer: Timer?
@@ -21,7 +24,6 @@ final class QlockView: ScreenSaverView {
   private let scale: CGFloat
   /// Last time the host built or started a clock; the host's start/stop calls are unreliable.
   private static var lastActivity = Date()
-
   override init?(frame: NSRect, isPreview: Bool) {
     scale = NSScreen.main?.backingScaleFactor ?? 2
     super.init(frame: frame, isPreview: isPreview)
@@ -34,7 +36,7 @@ final class QlockView: ScreenSaverView {
     canvas.frame = bounds
     layer?.addSublayer(canvas)
 
-    let timer = Timer(timeInterval: 1.0 / 60.0, repeats: true) { [weak self] _ in self?.tick() }
+    let timer = Timer(timeInterval: 0.25, repeats: true) { [weak self] _ in self?.tick() }
     RunLoop.main.add(timer, forMode: .common)
     self.timer = timer
 
@@ -80,6 +82,7 @@ final class QlockView: ScreenSaverView {
       let pixels = qlock_sprite(engine, i, &w, &h)!
       return Self.image(pixels, width: Int(w), height: Int(h))
     }
+    qlock_release_pixels(engine)
 
     var face = [Float](repeating: 0, count: 5)
     qlock_face(engine, &face)
@@ -95,39 +98,85 @@ final class QlockView: ScreenSaverView {
     faceLayer.masksToBounds = true
     faceLayer.isGeometryFlipped = false
     layers = []
-    last = []
+    windowEnd = 0
     CATransaction.commit()
     log.info("engine \(locale, privacy: .public)/\(theme, privacy: .public) \(self.images.count) sprites in \(Date().timeIntervalSince(started), privacy: .public)s")
   }
 
+  /// Seconds per sampled window and samples per second; Core Animation interpolates linearly in between.
+  private static let window: CFTimeInterval = 6
+  private static let rate: Double = 30
+
   private func tick() {
     ensureEngine()
+    guard engine != nil else { return }
+    let now = CACurrentMediaTime()
+    // Queue the next window two seconds early; a first window starts right away.
+    if windowEnd == 0 || windowEnd < now {
+      windowEnd = now
+      queueWindow(from: now)
+    } else if windowEnd - now < 2 {
+      queueWindow(from: windowEnd)
+    }
+  }
+
+  /// Samples the engine over [start, start + window] and adds the tracks as animations starting at `start`.
+  private func queueWindow(from start: CFTimeInterval) {
     guard let engine else { return }
-    let parts = Calendar.current.dateComponents([.hour, .minute], from: Date())
-    var list: UnsafePointer<QlockInstance>?
-    let count = Int(qlock_update(engine, UInt32(parts.hour ?? 0), UInt32(parts.minute ?? 0), CACurrentMediaTime(), &list))
-    guard let list else { return }
+    let started = CACurrentMediaTime()
+    let steps = Int(Self.window * Self.rate)
+    let wallStart = Date().addingTimeInterval(start - CACurrentMediaTime())
+    var samples: [[QlockInstance]] = []
+    samples.reserveCapacity(steps + 1)
+    for step in 0...steps {
+      let dt = Double(step) / Self.rate
+      let parts = Calendar.current.dateComponents([.hour, .minute], from: wallStart.addingTimeInterval(dt))
+      var list: UnsafePointer<QlockInstance>?
+      let count = Int(qlock_update(engine, UInt32(parts.hour ?? 0), UInt32(parts.minute ?? 0), start + dt, &list))
+      guard let list else { return }
+      samples.append(Array(UnsafeBufferPointer(start: list, count: count)))
+    }
+    let count = samples[0].count
 
     CATransaction.begin()
     CATransaction.setDisableActions(true)
-    if layers.count != count { createLayers(list, count) }
+    if layers.count != count { samples[0].withUnsafeBufferPointer { createLayers($0.baseAddress!, count) } }
+    let key = windowKey ? "b" : "a"
+    windowKey.toggle()
+    let keyTimes = (0...steps).map { NSNumber(value: Double($0) / Double(steps)) }
     for i in 0..<count {
-      let inst = list[i]
-      if i < last.count, last[i] == inst { continue }
       let layer = layers[i]
-      let origin = inst.group == 1 ? faceLayer.frame.origin : .zero
-      layer.position = CGPoint(x: CGFloat(inst.x) / scale - origin.x, y: CGFloat(inst.y) / scale - origin.y)
-      layer.opacity = inst.opacity
-      layer.isHidden = inst.opacity < 0.002
-      if inst.scale != 1 || inst.rotation != 0 {
-        layer.setAffineTransform(
-          CGAffineTransform(rotationAngle: CGFloat(inst.rotation)).scaledBy(x: CGFloat(inst.scale), y: CGFloat(inst.scale)))
-      } else if i < last.count, last[i].scale != 1 || last[i].rotation != 0 {
-        layer.setAffineTransform(.identity)
+      let track = samples.map { $0[i] }
+      let origin = track[0].group == 1 ? faceLayer.frame.origin : .zero
+      let point = { (inst: QlockInstance) in
+        CGPoint(x: CGFloat(inst.x) / self.scale - origin.x, y: CGFloat(inst.y) / self.scale - origin.y)
       }
+      let begin = layer.convertTime(start, from: nil)
+      func animate(_ path: String, _ values: [Any]) {
+        let anim = CAKeyframeAnimation(keyPath: path)
+        anim.values = values
+        anim.keyTimes = keyTimes
+        anim.beginTime = begin
+        anim.duration = Self.window
+        anim.calculationMode = .linear
+        // Hold the first value until the window starts, so queueing early never shows a jump.
+        anim.fillMode = .backwards
+        layer.add(anim, forKey: path + key)
+      }
+      let last = track[track.count - 1]
+      if track.contains(where: { $0.opacity != last.opacity }) { animate("opacity", track.map { $0.opacity }) }
+      if track.contains(where: { $0.x != last.x || $0.y != last.y }) {
+        animate("position", track.map { NSValue(point: point($0)) })
+      }
+      if track.contains(where: { $0.scale != last.scale }) { animate("transform.scale", track.map { CGFloat($0.scale) }) }
+      // Model values: where each layer rests once the tracks have run out.
+      layer.opacity = last.opacity
+      layer.position = point(last)
+      layer.setValue(CGFloat(last.scale), forKeyPath: "transform.scale")
     }
-    last = Array(UnsafeBufferPointer(start: list, count: count))
     CATransaction.commit()
+    windowEnd = start + Self.window
+    log.debug("window \(count) layers in \(CACurrentMediaTime() - started, privacy: .public)s")
   }
 
   private func createLayers(_ list: UnsafePointer<QlockInstance>, _ count: Int) {
@@ -150,7 +199,6 @@ final class QlockView: ScreenSaverView {
       }
       return layer
     }
-    last = []
   }
 
   private static func image(_ pixels: UnsafePointer<UInt8>, width: Int, height: Int) -> CGImage {

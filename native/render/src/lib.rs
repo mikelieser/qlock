@@ -212,6 +212,13 @@ impl Engine {
         &self.sprites
     }
 
+    /// Frees the sprite pixels once the host has copied them (sizes stay); `compose` draws nothing after.
+    pub fn release_pixels(&mut self) {
+        for s in &mut self.sprites {
+            s.rgba = Vec::new();
+        }
+    }
+
     /// The clock face in pixels, for clipping group 1.
     pub fn face(&self) -> [f32; 4] {
         self.layout.face
@@ -535,6 +542,9 @@ impl Engine {
                 continue;
             }
             let s = &self.sprites[inst.sprite as usize];
+            if s.rgba.is_empty() {
+                continue;
+            }
             let Some(src) = tiny_skia::PixmapRef::from_bytes(&s.rgba, s.width, s.height) else { continue };
             let paint = tiny_skia::PixmapPaint { opacity: inst.opacity.min(1.0), ..Default::default() };
             let transform = tiny_skia::Transform::from_translate(inst.x, inst.y)

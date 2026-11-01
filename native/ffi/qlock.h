@@ -26,3 +26,4 @@ uint32_t qlock_sprite_count(const QlockEngine *engine);
 const uint8_t *qlock_sprite(const QlockEngine *engine, uint32_t index, uint32_t *width, uint32_t *height);
 void qlock_face(const QlockEngine *engine, float *out);
 uint32_t qlock_update(QlockEngine *engine, uint32_t hour, uint32_t minute, double t, const QlockInstance **out);
+void qlock_release_pixels(QlockEngine *engine);

@@ -106,3 +106,12 @@ pub unsafe extern "C" fn qlock_update(engine: *mut Engine, hour: u32, minute: u3
     unsafe { *out = list.as_ptr() };
     list.len() as u32
 }
+
+/// Frees the sprite pixels after the host copied them into its own images.
+///
+/// # Safety
+/// `engine` must be a live engine; earlier `qlock_sprite` pointers become invalid.
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn qlock_release_pixels(engine: *mut Engine) {
+    unsafe { &mut *engine }.release_pixels();
+}
