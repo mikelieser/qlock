@@ -155,6 +155,17 @@ Füllbuchstaben der Dialekte steckt jeweils ein Wort aus der Gegend.
 Die Dialektformen sind nach bestem Wissen geschrieben, nicht von Muttersprachlern geprüft. Korrekturen sind
 meist nur ein paar Wörter in einer Liste.
 
+**Spaß** – augenzwinkernde deutsche Blätter, „zehn vor halb“ wie in Koblenz, eigene Wörter vorn und hinten
+(„Es ist“ an/aus schaltet beides):
+
+| | Beispiel |
+|---|---|
+| `kids` Kinderuhr | GUCK MAL ES IST VIERTEL NACH DREI JUHU (Eis, Keks, Teddy in den Füllbuchstaben) |
+| `boerse` Börse | ZEIT IST GELD ZEHN VOR HALB DREI BULLISH (DAX, Bulle, Bär) |
+| `nerd` Nerd | SUDO ES IST VIERTEL VOR ZWEI EOF (42, Bug, Null, Vim, Git) |
+| `zen` Zen | JETZT IST NEUN OM (Atme, Liebe, Sein, Ruhe) |
+| `derb` Derb | SCHEISSE ES IST SCHON FÜNF VOR ZWÖLF ALTER (Mist, Manno) |
+
 **Europa und Asien**
 
 | | Beispiel |
