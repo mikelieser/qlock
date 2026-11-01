@@ -541,68 +541,86 @@ impl Engine {
         }
     }
 
-    /// Seconds frame: the line through the dots in 60 pieces, one per second, faded in at the start.
+    /// Seconds frame: the line through the corner dots, cut into 60 pieces, one per second.
+    ///
+    /// The whole line is drawn once and every pixel is then given to exactly one piece (by its position
+    /// along the line), so the pieces add up to the unbroken line: no seams or darker dots where they meet.
     fn build_progress(&mut self) {
         let [fx, fy, fw, fh] = self.layout.face;
         let half = self.layout.pad / 2.0;
+        // Through the dot centres, like the web's SVG (inset by half the padding).
         let (x0, y0, w, h) = (fx + half, fy + half, fw - 2.0 * half, fh - 2.0 * half);
         let perimeter = 2.0 * (w + h);
-        let color = self.theme.progress_color;
-        // 1 CSS px; the host renders at the backing scale, so roughly two device pixels.
+        // 1 CSS px; the host renders at the backing scale, so two device pixels.
         let width = self.theme.progress_width * 2.0;
-        let point = |d: f32| -> (f32, f32) {
-            let legs = [(w / 2.0, (1.0, 0.0)), (h, (0.0, 1.0)), (w, (-1.0, 0.0)), (h, (0.0, -1.0)), (w / 2.0, (1.0, 0.0))];
-            let (mut x, mut y, mut left) = (x0 + w / 2.0, y0, d.rem_euclid(perimeter));
-            for (len, (dx, dy)) in legs {
-                let step = left.min(len);
-                x += dx * step;
-                y += dy * step;
-                left -= step;
-                if left <= 0.0 {
-                    break;
-                }
-            }
-            (x, y)
+        let m = width + 2.0;
+        let (ox, oy) = ((x0 - m).floor(), (y0 - m).floor());
+        let (bw, bh) = ((w + 2.0 * m).ceil() as u32 + 2, (h + 2.0 * m).ceil() as u32 + 2);
+        let Some(mut line) = Pixmap::new(bw, bh) else { return };
+        if let Some(rect) = tiny_skia::Rect::from_xywh(x0 - ox, y0 - oy, w, h) {
+            let path = tiny_skia::PathBuilder::from_rect(rect);
+            let mut paint = tiny_skia::Paint::default();
+            paint.set_color(self.theme.progress_color.to_skia());
+            paint.anti_alias = true;
+            let stroke = tiny_skia::Stroke { width, line_join: tiny_skia::LineJoin::Round, ..Default::default() };
+            line.stroke_path(&path, &paint, &stroke, tiny_skia::Transform::identity(), None);
+        }
+
+        // Position along the line (from the top centre, clockwise) of a pixel, by its nearest edge.
+        let along = |px: f32, py: f32| -> f32 {
+            let (top, right, bottom, left) = ((py - y0).abs(), (px - x0 - w).abs(), (py - y0 - h).abs(), (px - x0).abs());
+            let near = top.min(right).min(bottom).min(left);
+            let d = if near == top {
+                px - (x0 + w / 2.0)
+            } else if near == right {
+                w / 2.0 + (py - y0)
+            } else if near == bottom {
+                w / 2.0 + h + (x0 + w - px)
+            } else {
+                w / 2.0 + h + w + (y0 + h - py)
+            };
+            d.rem_euclid(perimeter)
         };
         let fade = w * 0.25;
-        for s in 0..60 {
-            let (a, b) = (perimeter * s as f32 / 60.0, perimeter * (s + 1) as f32 / 60.0);
-            let pts: Vec<(f32, f32)> = (0..=24).map(|k| point(a + (b - a) * k as f32 / 24.0)).collect();
-            let (minx, miny) = pts.iter().fold((f32::MAX, f32::MAX), |m, p| (m.0.min(p.0), m.1.min(p.1)));
-            let (maxx, maxy) = pts.iter().fold((f32::MIN, f32::MIN), |m, p| (m.0.max(p.0), m.1.max(p.1)));
-            let m = width + 2.0;
-            let (pw, ph) = ((maxx - minx + 2.0 * m).ceil() as u32, (maxy - miny + 2.0 * m).ceil() as u32);
-            let mut p = Pixmap::new(pw.max(1), ph.max(1)).unwrap();
-            let mut pb = tiny_skia::PathBuilder::new();
-            pb.move_to(pts[0].0 - minx + m, pts[0].1 - miny + m);
-            for q in &pts[1..] {
-                pb.line_to(q.0 - minx + m, q.1 - miny + m);
-            }
-            if let Some(path) = pb.finish() {
-                let mut paint = tiny_skia::Paint::default();
-                paint.set_color(color.to_skia());
-                paint.anti_alias = true;
-                let stroke = tiny_skia::Stroke { width, line_join: tiny_skia::LineJoin::Round, ..Default::default() };
-                p.stroke_path(&path, &paint, &stroke, tiny_skia::Transform::identity(), None);
-            }
-            // The start fades in over the first quarter of the top edge (the web's SVG mask).
-            if a < fade {
-                let start_x = x0 + w / 2.0;
-                let data = p.data_mut();
-                for py in 0..ph as usize {
-                    for px in 0..pw as usize {
-                        let k = ((minx - m + px as f32 - start_x) / fade).clamp(0.0, 1.0);
-                        if (miny - m + py as f32 - y0).abs() < 10.0 {
-                            for c in 0..4 {
-                                let i = (py * pw as usize + px) * 4 + c;
-                                data[i] = (data[i] as f32 * k) as u8;
-                            }
-                        }
-                    }
+        let start_x = x0 + w / 2.0;
+        let data = line.data();
+        let mut pieces: Vec<Vec<(u32, u32, [u8; 4])>> = vec![Vec::new(); 60];
+        for py in 0..bh {
+            for px in 0..bw {
+                let i = ((py * bw + px) * 4) as usize;
+                if data[i + 3] == 0 {
+                    continue;
                 }
+                let (ax, ay) = (ox + px as f32 + 0.5, oy + py as f32 + 0.5);
+                let d = along(ax, ay);
+                let piece = ((d / perimeter * 60.0) as usize).min(59);
+                let mut c = [data[i], data[i + 1], data[i + 2], data[i + 3]];
+                // The start fades in over the first quarter of the top edge (the web's SVG mask).
+                if (ay - y0).abs() < m && ax >= start_x - 1.0 && ax < start_x + fade {
+                    let k = ((ax - start_x) / fade).clamp(0.0, 1.0);
+                    c = c.map(|v| (v as f32 * k) as u8);
+                }
+                pieces[piece].push((px, py, c));
+            }
+        }
+        for piece in pieces {
+            if piece.is_empty() {
+                let id = self.push(Pixmap::new(1, 1).unwrap());
+                self.progress.push((id, 0.0, 0.0));
+                continue;
+            }
+            let (minx, miny) = piece.iter().fold((u32::MAX, u32::MAX), |a, p| (a.0.min(p.0), a.1.min(p.1)));
+            let (maxx, maxy) = piece.iter().fold((0, 0), |a, p| (a.0.max(p.0), a.1.max(p.1)));
+            let (pw, ph) = (maxx - minx + 1, maxy - miny + 1);
+            let mut p = Pixmap::new(pw, ph).unwrap();
+            let out = p.data_mut();
+            for (x, y, c) in piece {
+                let i = (((y - miny) * pw + (x - minx)) * 4) as usize;
+                out[i..i + 4].copy_from_slice(&c);
             }
             let id = self.push(p);
-            self.progress.push((id, minx - m + pw as f32 / 2.0, miny - m + ph as f32 / 2.0));
+            // Integer origin, so the piece lands on the same pixels it was cut from.
+            self.progress.push((id, ox + minx as f32 + pw as f32 / 2.0, oy + miny as f32 + ph as f32 / 2.0));
         }
     }
 
