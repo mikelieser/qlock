@@ -72,5 +72,9 @@
   Bildschirmschoner direkt verkaufen, App Store höchstens für eine Uhr-App. Microsoft Store nimmt klassische
   Installer (EXE/MSI) an, darüber ginge die .scr. Zahlung beim Direktverkauf: Stripe Managed Payments
   (Merchant of Record, Stripe hat Lemon Squeezy übernommen) – entschieden 01.11.2026, kein Paddle.
+- Plattformen (01.11.2026): Mac- und Windows-Bildschirmschoner, Web-Uhr. Dazu interessant: iPhone/iPad-Widgets
+  inklusive StandBy (Nachttischuhr am Ladekabel; Widgets aktualisieren je Minute, kaum Animation). Apple TV nur für
+  Anlässe, bei denen die Uhrzeit im Mittelpunkt steht (z. B. Silvester-Countdown, Weihnachten). Wallpaper Engine,
+  Smartwatches, Android TV vorerst nein.
 - Store: Themes nur als Daten (geprüfte CSS-Teilmenge, keine eigenen Skripte), Moderation, Melde-Funktion,
   Rechte an hochgeladenen Bildern, Impressum und Datenschutz.
