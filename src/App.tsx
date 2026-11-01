@@ -11,6 +11,7 @@ import { festival } from './core/festival';
 import { daylight } from './core/daylight';
 import { secondsFrame } from './core/seconds';
 import { createNow } from './now';
+import { setFavicon, themeIcon } from './favicon';
 import { LOCALES, localeById } from './locales';
 import { cycle, loadSettings, MODES, saveSettings, THEMES } from './settings';
 
@@ -55,7 +56,11 @@ export function App() {
   const theme = createMemo(
     () => (settings.festive && festival(now())) || (settings.daylight && daylight(now())) || settings.theme,
   );
-  createEffect(() => (document.documentElement.dataset.theme = theme()));
+  createEffect(() => {
+    document.documentElement.dataset.theme = theme();
+    // Tab icon in the theme's colours, read after the theme's CSS applies.
+    setFavicon(themeIcon(document.documentElement));
+  });
   createEffect(() => {
     if (ready()) document.title = text() || 'QLOCK';
   });

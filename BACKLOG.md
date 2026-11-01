@@ -55,3 +55,16 @@
 - [ ] Prettier/ESLint oder Biome, falls das Projekt wächst.
 - [ ] Bilder (`metal/bg.png`, 118 kB) nach WebP/AVIF.
 - [ ] Hintergrundmuster des Formrausch-Themes als CSS statt JPG.
+
+## Produktidee (01.11.2026, offen)
+
+- Web-Uhr frei auf einer Website, Bildschirmschoner für Mac und Windows als Einmalkauf (ca. 5 €), alle Optionen.
+- Eigene Themes und Zifferblätter bauen (Theme-Editor im Browser, Vorschau per WebAssembly-Renderer),
+  Community-Store mit Abstimmung.
+- Vor jedem Verkauf: anderer Name (nicht „QLOCK“), eigene Raster für Deutsch und Englisch (die jetzigen stammen
+  von 2014 und lehnen sich an das Original an), Marken- und Designrecht prüfen lassen, Lizenz des eigenen Codes
+  klären (derzeit GPL-2.0 in package.json).
+- Technik: Mac-Signatur und Notarisierung (Apple Developer, ca. 99 €/Jahr), Windows-Bildschirmschoner (.scr) mit
+  Code-Signatur, Zahlung über einen Merchant of Record (z. B. Paddle, Lemon Squeezy: Umsatzsteuer EU inklusive).
+- Store: Themes nur als Daten (geprüfte CSS-Teilmenge, keine eigenen Skripte), Moderation, Melde-Funktion,
+  Rechte an hochgeladenen Bildern, Impressum und Datenschutz.
